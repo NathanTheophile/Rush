@@ -1,0 +1,119 @@
+name: gitlab-release
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    env:
+      GITLAB_URL: ${{ secrets.GITLAB_URL }}
+      GITLAB_PROJECT_ID: ${{ secrets.GITLAB_PROJECT_ID }}
+      GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      GITLAB_REF: ${{ secrets.GITLAB_REF }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+
+      - name: Install deps
+        run: |
+          npm ci || npm i
+          npm i -D conventional-changelog-cli
+
+      - name: Build artifacts
+        run: bash vrs/build.sh
+
+      - name: Compute next version
+        id: ver
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --tags --force || true
+          LATEST_TAG="$(git describe --tags --abbrev=0 2>/dev/null || echo v0.0.0)"
+          LATEST_TAG="${LATEST_TAG#v}"
+          if ! [[ "$LATEST_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then LATEST_TAG="0.0.0"; fi
+          IFS=. read -r MAJOR MINOR PATCH <<EOF
+          $LATEST_TAG
+          EOF
+          TITLE_BRANCH="$(printf '%s %s' "${{ github.event.head_commit.message }}" "${{ github.ref_name }}" | tr '[:upper:]' '[:lower:]')"
+          BUMP=none
+          if   echo "$TITLE_BRANCH" | grep -Eq '(major|breaking|release)'; then BUMP=major
+          elif echo "$TITLE_BRANCH" | grep -Eq '(feature|feat|patch|refactor|add)'; then BUMP=minor
+          elif echo "$TITLE_BRANCH" | grep -Eq '(fix|hotfix)'; then BUMP=patch
+          fi
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR+1)); MINOR=0; PATCH=0;;
+            minor) MINOR=$((MINOR+1)); PATCH=0;;
+            patch) PATCH=$((PATCH+1));;
+            none)  ;;
+          esac
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "prev=v$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "bump=$BUMP" >> $GITHUB_OUTPUT
+          echo "Next: $NEW_VERSION"
+
+      - name: Create Git tag in GitLab
+        if: steps.ver.outputs.bump != 'none'
+        run: |
+          NEW_SHA="$(git rev-parse HEAD)"
+          curl -sS --fail -X POST \
+            "$GITLAB_URL/api/v4/projects/$GITLAB_PROJECT_ID/repository/tags" \
+            -H "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+            --data-urlencode "tag_name=${{ steps.ver.outputs.new }}" \
+            --data-urlencode "ref=$NEW_SHA"
+
+      - name: Generate CHANGELOG.md + update README
+        if: steps.ver.outputs.bump != 'none'
+        run: |
+          npx conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0
+          bash vrs/update-readme.sh
+
+      - name: Commit changelog and README to GitLab
+        if: steps.ver.outputs.bump != 'none'
+        run: |
+          git config user.name  "ci-bot"
+          git config user.email "ci-bot@example.invalid"
+          git add CHANGELOG.md README.md || true
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(changelog): update for ${{ steps.ver.outputs.new }} [skip ci]"
+          fi
+          git remote remove gitlab 2>/dev/null || true
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlabstudents.isartintra.com/projets/2025_gdp2_rush_2026_gdp2rush_2025_2026-gdp2_theophile_n.git"
+          git push gitlab "${GITLAB_REF}:${GITLAB_REF}" || true
+
+      - name: Build release notes block
+        id: notes
+        if: steps.ver.outputs.bump != 'none'
+        run: |
+          PREV="${{ steps.ver.outputs.prev }}"
+          if [ "$PREV" = "v0.0.0" ]; then RANGE=""; else RANGE="$PREV..HEAD"; fi
+          printf "## Changes\n" > notes.txt
+          git log --pretty='* %s (%h)' $RANGE >> notes.txt
+          node -e "const fs=require('fs');const {applyCommitEmojis}=require('./vrs/release-notes-utils');process.stdout.write(applyCommitEmojis(fs.readFileSync('notes.txt','utf8')))" > notes-emoji.txt
+          echo "text<<EOF" >> $GITHUB_OUTPUT
+          cat notes-emoji.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitLab release
+        if: steps.ver.outputs.bump != 'none'
+        run: |
+          curl -sS --fail -X POST \
+            "$GITLAB_URL/api/v4/projects/$GITLAB_PROJECT_ID/releases" \
+            -H "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+            --data-urlencode "name=${{ steps.ver.outputs.new }}" \
+            --data-urlencode "tag_name=${{ steps.ver.outputs.new }}" \
+            --data-urlencode "description=${{ steps.notes.outputs.text }}"
+
+      - name: Notify Discord
+        if: steps.ver.outputs.bump != 'none'
+        env:
+          RELEASE_VERSION: ${{ steps.ver.outputs.new }}
+          RELEASE_NOTES: ${{ steps.notes.outputs.text }}
+        run: node vrs/post-discord.js
