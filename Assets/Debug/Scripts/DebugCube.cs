@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Cube : MonoBehaviour
+public class DebugCube : MonoBehaviour
 {
     [Range(0.1f, 5f), SerializeField] private float speed = 1.0f;
     [SerializeField] private float raycastOffset = 0.4f;
