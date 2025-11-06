@@ -1,7 +1,7 @@
 name: gitlab-release
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   release:
@@ -35,8 +35,27 @@ jobs:
         run: |
           set -euo pipefail
           git fetch --tags --force || true
-          LATEST_TAG="$(git describe --tags --abbrev=0 2>/dev/null || echo v0.0.0)"
-          LATEST_TAG="${LATEST_TAG#v}"
+          BRANCH="${GITHUB_REF_NAME:-${GITHUB_REF##*/}}"
+          case "$BRANCH" in
+            main)
+              TAG_PREFIX="v"
+              TAG_PATTERN='v[0-9]*.[0-9]*.[0-9]*'
+              ;;
+            dev)
+              TAG_PREFIX="alpha-"
+              TAG_PATTERN='alpha-[0-9]*.[0-9]*.[0-9]*'
+              ;;
+            *)
+              TAG_PREFIX="v"
+              TAG_PATTERN='v[0-9]*.[0-9]*.[0-9]*'
+              ;;
+          esac
+
+          LATEST_TAG="$(git tag --list "$TAG_PATTERN" --sort=-v:refname | head -n 1)"
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="${TAG_PREFIX}0.0.0"
+          fi
+          LATEST_TAG="${LATEST_TAG#$TAG_PREFIX}"
           if ! [[ "$LATEST_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then LATEST_TAG="0.0.0"; fi
           IFS=. read -r MAJOR MINOR PATCH <<EOF
           $LATEST_TAG
@@ -53,10 +72,11 @@ jobs:
             patch) PATCH=$((PATCH+1));;
             none)  ;;
           esac
-          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          NEW_VERSION="$TAG_PREFIX$MAJOR.$MINOR.$PATCH"
           echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "prev=v$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "prev=${TAG_PREFIX}$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "bump=$BUMP" >> $GITHUB_OUTPUT
+          echo "prefix=$TAG_PREFIX" >> $GITHUB_OUTPUT
           echo "Next: $NEW_VERSION"
 
       - name: Create Git tag in GitLab
@@ -93,7 +113,8 @@ jobs:
         if: steps.ver.outputs.bump != 'none'
         run: |
           PREV="${{ steps.ver.outputs.prev }}"
-          if [ "$PREV" = "v0.0.0" ]; then RANGE=""; else RANGE="$PREV..HEAD"; fi
+          PREFIX="${{ steps.ver.outputs.prefix }}"
+          if [ "$PREV" = "${PREFIX}0.0.0" ]; then RANGE=""; else RANGE="$PREV..HEAD"; fi
           printf "## Changes\n" > notes.txt
           git log --pretty='* %s (%h)' $RANGE >> notes.txt
           node -e "const fs=require('fs');const {applyCommitEmojis}=require('./vrs/release-notes-utils');process.stdout.write(applyCommitEmojis(fs.readFileSync('notes.txt','utf8')))" > notes-emoji.txt
