@@ -447,12 +447,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TargetPosition: {x: 0, y: 0, z: 0}
-  _Radius: 10
+  _Radius: 20
   _MinRadius: 5
-  _MaxRadius: 30
+  _MaxRadius: 50
   _Colatitude: 60
-  _RotationSensitivity: 0.2
-  _ScrollZoomSensitivity: 1.5
+  _RotationSensitivity: 0.1
+  _ScrollZoomSensitivity: 0.2
   _PinchZoomSensitivity: 0.02
   _InertiaDamping: 4
 --- !u!1 &410087039
