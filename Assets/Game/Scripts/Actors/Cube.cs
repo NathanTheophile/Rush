@@ -11,13 +11,20 @@ namespace Rush.Game
 {
     public class Cube : MonoBehaviour, ITickDependant
     {
-        public float currentTickRatio { get; set; }
+        #region _________________________/ TIME VALUES
+        [Header("Time")]
+        public float currentTickStep { get; set; }
 
-        private float _BaseAngle = 90f;
+        #endregion
 
-        private Vector3 _Pivot;
-        private Quaternion _StartRotation, _EndRotation;
-        private Vector3 _StartPosition, _EndPosition;
+        #region _________________________/ MOVEMENT VALUES
+        [Header("Time")]
+        private float       _BaseAngle = 90f;
+        private Vector3     _Pivot;
+        private Quaternion  _StartRotation, _EndRotation;
+        private Vector3     _StartPosition, _EndPosition;
+        
+        #endregion
 
         void Start()
         {
@@ -29,7 +36,7 @@ namespace Rush.Game
 
         void Update()
         {
-            Roll(currentTickRatio);
+            Roll(currentTickStep);
         }
 
         public void TickUpdate()
@@ -49,16 +56,16 @@ namespace Rush.Game
             _EndPosition = _StartPosition + Vector3.forward * 1f;
         }
 
-        void Roll(float t)
+        void Roll(float pCurrentTickStep)
         {
-            transform.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, t);
-            transform.position = _Pivot + Vector3.Slerp(_StartPosition, _EndPosition, t);
+            transform.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, pCurrentTickStep);
+            transform.position = _Pivot + Vector3.Slerp(_StartPosition, _EndPosition, pCurrentTickStep);
+        }
 
-            if (t >= 1f)
-            {
-                transform.rotation = _EndRotation;
-                transform.position = _Pivot + _EndPosition;
-            }
+        void Snap()
+        {
+            transform.rotation = _EndRotation;
+            transform.position = _Pivot + _EndPosition;
         }
     
     }
