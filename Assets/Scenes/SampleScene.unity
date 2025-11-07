@@ -653,7 +653,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 3
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -981,9 +981,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79f30c6ec17d79a4490c5dde55240a6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tailleGrille: 1
-  angleRotation: 90
-  directionInitiale: {x: 0, y: 0, z: 1}
 --- !u!1 &1043454412
 GameObject:
   m_ObjectHideFlags: 0
