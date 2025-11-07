@@ -54,16 +54,19 @@ namespace Rush.Game
             if (pause) return;
 
             _ElapsedTime += Time.deltaTime * _GlobalTickSpeed;
+
+
+            if (_ElapsedTime >= _TickDuration)
+            {
+                _ElapsedTime = 0f;
+                _TickIndex++;
+                onTickFinished.Invoke(_TickIndex);
+            }
+            
             _CurrentTickRatio = _ElapsedTime / _TickDuration;
 
             AdministrateTime();
 
-            if (_ElapsedTime >= _TickDuration)
-            {
-                _TickIndex++;
-                onTickFinished.Invoke(_TickIndex);
-                _ElapsedTime = 0f;
-            } 
         }
 
         private void AdministrateTime() {
