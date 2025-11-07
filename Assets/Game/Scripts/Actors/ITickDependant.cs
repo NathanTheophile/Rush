@@ -11,7 +11,7 @@ namespace Rush.Game
 {
     public interface ITickDependant
     {
-        float currentTickRatio { set; }
+        float currentTickStep { set; }
 
         void TickUpdate();
     }

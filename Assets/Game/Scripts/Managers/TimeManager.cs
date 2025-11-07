@@ -58,6 +58,6 @@ namespace Rush.Game
         }
 
         private void AdministrateTime() {
-            foreach (ITickDependant lObject in objectsAffectedByTime) lObject.currentTickRatio = _CurrentTickRatio; }
+            foreach (ITickDependant lObject in objectsAffectedByTime) lObject.currentTickStep = _CurrentTickRatio; }
     }
 }
