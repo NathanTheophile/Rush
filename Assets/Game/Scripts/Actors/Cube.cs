@@ -50,6 +50,7 @@ namespace Rush.Game
 
         public void TickUpdate(int pTickIndex)
         {
+            Snap();
             SetModeRoll();
         }
 
