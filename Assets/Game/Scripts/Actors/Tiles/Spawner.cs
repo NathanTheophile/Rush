@@ -15,17 +15,20 @@ namespace Rush.Game
 
         TimeManager timeManager;
 
+        private Transform self;
+
         private int _TickBetweenSpawns = 2;
 
         void Awake()
         {
             tileVariant = TileVariants.Spawner;
+            self = transform;
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
-            direction = transform.forward;
+            direction = self.forward;
             timeManager = TimeManager.Instance;
             timeManager.onTickFinished += SpawnCube;
             SpawnCube(0);
@@ -34,7 +37,7 @@ namespace Rush.Game
         void SpawnCube(int pTickIndex)
         {
             if (pTickIndex % _TickBetweenSpawns != 0) return;
-            Cube lCube = Instantiate(cubePrefab, transform.position + Vector3.up, Quaternion.identity);
+            Cube lCube = Instantiate(cubePrefab, self.position, Quaternion.identity);
             timeManager.objectsAffectedByTime.Add(lCube);
             timeManager.onTickFinished += lCube.TickUpdate;
         }
