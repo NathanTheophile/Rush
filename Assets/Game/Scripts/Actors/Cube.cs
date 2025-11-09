@@ -12,71 +12,97 @@ namespace Rush.Game
 {
     public class Cube : MonoBehaviour, ITickDependant
     {
-        #region _________________________/ TIME VALUES
-        [Header("Time")]
-        public float currentTickStep { get; set; }
-
-        private float _GridSize = 1f;
-
-        #endregion
-
-        #region _________________________/ MOVEMENT VALUES
-        [Header("Time")]
-        private float       _BaseAngle = 90f;
-        private Vector3     pivotPoint;
-        private Quaternion  _StartRotation, _EndRotation;
-        private Vector3 fromPosition, toPosition;
-        private Vector3 direction;
+        #region _________________________/ MAIN VALUES
+        [Header("Main")]
         private Transform selfTransform;
-
+        private float _GridSize = 1f;
         private Action doAction;
 
         #endregion
 
-        #region _________________________/ RAYCAST VARS
-        [Header("Raycasts")]
-        [SerializeField] private LayerMask _GroundLayer;
-        [SerializeField] private LayerMask _TilesLayer;
+        #region _________________________/ TIME VALUES
+        [Header("Time")]
+        public float currentTickStep { get; set; }
 
         #endregion
 
+        #region _________________________/ MOVEMENT VALUES
+        [Header("Movement")]
+        private float   _BaseAngle = 90f;
+        private Vector3 _PivotPoint;
+        private Vector3 _Direction;
+        private bool _DirectionChanged = true;
+        private Quaternion  _StartRotation, _EndRotation;
+        private Vector3     _StartPosition, _EndPosition;
 
-    // On utilise des directions logiques pr ne pas avoir à rotate le transform, on stocke les 4 directions dans une liste,
-    // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
-    // et pouvoir check facilement les 3 directions peut importe la direction actuel du cube
-    static readonly Vector3Int[] DIRECTIONS = { Vector3Int.forward, Vector3Int.right, Vector3Int.back, Vector3Int.left };
-    static int RightOf(int i) => (i + 1) % DIRECTIONS.Length;
-    static int BackOf(int i) => (i + 2) % DIRECTIONS.Length;
-    static int LeftOf(int i) => (i + 3) % DIRECTIONS.Length;
-    private int DirectionIndexOf(Vector3Int pDirection) => System.Array.IndexOf(DIRECTIONS, pDirection);
+        #endregion
 
+        #region _________________________/ COLLISION VALUES
+        [Header("Collisions")]
+        [SerializeField] private LayerMask _GroundLayer;
+        [SerializeField] private LayerMask _TilesLayer;
 
-        void Awake()
+        // On utilise des directions logiques pr ne pas avoir à rotate le transform, on stocke les 4 directions dans une liste,
+        // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
+        // et pouvoir check facilement les 3 directions peut importe la direction actuel du cube
+        static readonly Vector3Int[] DIRECTIONS = { Vector3Int.forward, Vector3Int.right, Vector3Int.back, Vector3Int.left };
+        static int RightOf(int i) => (i + 1) % DIRECTIONS.Length;
+        static int BackOf(int i) => (i + 2) % DIRECTIONS.Length;
+        static int LeftOf(int i) => (i + 3) % DIRECTIONS.Length;
+        private int DirectionIndexOf(Vector3Int pDirection) => System.Array.IndexOf(DIRECTIONS, pDirection);
+
+        #endregion
+
+        #region _________________________/ INIT
+        private void Awake()
         {
             selfTransform = transform;
-            direction = selfTransform.forward;
-            doAction = Wait;
+            _Direction = selfTransform.forward;
+            doAction = Pause;
         }
-        void Start()
+
+        #endregion
+
+        #region _________________________/ GAME FLOW METHODS
+
+        private void Update() => doAction();
+
+        public void TickUpdate(int pTickIndex) => SetNextMode();
+
+        private void SetNextMode()
         {
+            if (!TryFindGround()) { SetModeFall(); return; }
 
+            var lDirsCheckingOrder = SetSidesCheckingOrder();    
+            FindNewDirection(lDirsCheckingOrder); // Je set une nouvelle direction et dedans je gère la pause
+
+            SetModeFall();
         }
 
-        void Update()
+        #endregion
+
+        #region _________________________/ PHYSIC METHODS
+
+        /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
+        private bool TryFindGround()
         {
-            doAction();
+            if (Physics.Raycast(selfTransform.position, Vector3.down, out var hit, _GridSize, _GroundLayer | _TilesLayer)) return true;
+            else return false;
         }
 
-        public void TickUpdate(int pTickIndex)
+        /// <summary>
+        /// on récupère l'index des directions correpsondant à la driection actuelle du cube, puis on définit depuis
+        /// cette index les directiction du transform correspondant aux trois directions à checker dans l'ordre d'apres la direction actuelle
+        /// </summary>
+        /// <param name="currentOrientation">l'orientation LOGIQUE actuelle du cube</param>
+        /// <returns></returns>
+        private Vector3Int[] SetSidesCheckingOrder()
         {
-            //Snap();
-            Debug.Log("Tick update reçu");
-            SetNextMode();
+            int i = DirectionIndexOf(Vector3Int.RoundToInt(_Direction));
+            return new[] { DIRECTIONS[i], DIRECTIONS[RightOf(i)], DIRECTIONS[LeftOf(i)], DIRECTIONS[BackOf(i)] };
         }
 
-
-    private bool CheckForWall(Vector3Int pDirection) => Physics.Raycast(selfTransform.position, pDirection, _GridSize, _GroundLayer); //oeoe le raycast
-
+        private bool CheckForWall(Vector3Int pDirection) => Physics.Raycast(selfTransform.position, pDirection, _GridSize, _GroundLayer); //oeoe le raycast
 
         /// <summary>
         /// on se base sur la liste pour check les 4 directions depuis la direction actuelle et on sort si un checkwall renvoie false
@@ -87,66 +113,29 @@ namespace Rush.Game
             foreach (var lDirection in pCheckingOrder)
                 if (!CheckForWall(lDirection)) //là il a trouvé une direction ou il prend rien dans la goule
                 {
-                    direction = lDirection;
+                    _Direction = lDirection;
                     return;
                 }
                 else SetModePause(); //là il a mangé un truc dans la goule mdrrr
         }
 
-
-        private void SetNextMode()
-        {
-            if (TryFindGround()) { Debug.Log("Sol detecté"); SetModeRoll(); }
-            else { Debug.Log("Sol non detecté"); SetModeFall(); }
-        }
-
-        #region _________________________| COLLISIONS
-        /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
-        private bool TryFindGround()
-        {
-            Debug.DrawRay(selfTransform.position, Vector3.down);
-            if (Physics.Raycast(selfTransform.position, Vector3.down, out var hit, _GridSize, _GroundLayer | _TilesLayer))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private void Wait()
-        {
-            Snap();
-            SetModeRoll();
-        }
-
         #endregion
 
-        private void GetLerpMovement(Vector3 pOrigin, Vector3 pDirection)
-        {
-            fromPosition = pOrigin;
-            toPosition = fromPosition + pDirection * _GridSize;
-        }
-    
+        #region _________________________/ STATE MACHINE SETTERS
+
+        private void SetModePause() { doAction = Pause; }
 
         public void SetModeRoll()
         {
-            Debug.Log("Setting roll mode");
-
             Vector3 lAxis = Vector3.Cross(Vector3.up, Vector3.forward);
-            pivotPoint = selfTransform.position + (Vector3.down + Vector3.forward) * (1f / 2f);
+            _PivotPoint = selfTransform.position + (Vector3.down + Vector3.forward) * (1f / 2f);
 
             _StartRotation = selfTransform.rotation;
             _EndRotation = Quaternion.AngleAxis(_BaseAngle, lAxis) * _StartRotation;
 
-            GetLerpMovement(selfTransform.position - pivotPoint, direction);
+            GetLerpMovement(selfTransform.position - _PivotPoint, _Direction);
 
-            Debug.Log($"Start position = {fromPosition}. To Position = {toPosition}.");
             doAction = Roll;
-        }
-
-        void Roll()
-        {
-            selfTransform.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, currentTickStep);
-            selfTransform.position = pivotPoint + Vector3.Slerp(fromPosition, toPosition, currentTickStep);
         }
 
         private void SetModeFall()
@@ -155,17 +144,33 @@ namespace Rush.Game
             doAction = Fall;
         }
 
-        void Fall()
+        #endregion
+
+        #region _________________________/ STATES
+
+        void Roll()
         {
-            selfTransform.position = Vector3.Lerp(fromPosition, toPosition, currentTickStep);
+            selfTransform.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, currentTickStep);
+            selfTransform.position = _PivotPoint + Vector3.Slerp(_StartPosition, _EndPosition, currentTickStep);
         }
 
-        void Snap()
+
+        void Fall()
         {
-            selfTransform.rotation = _EndRotation;
-            selfTransform.position = pivotPoint + toPosition;
+            selfTransform.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
         }
-    void SetModePause() { doAction = Pause; }
         void Pause() { }
+
+        #endregion
+
+        #region _________________________/ MISC METHODS
+
+        private void GetLerpMovement(Vector3 pOrigin, Vector3 pDirection)
+        {
+            _StartPosition = pOrigin;
+            _EndPosition = _StartPosition + pDirection * _GridSize;
+        }
+
+        #endregion
     }
 }
