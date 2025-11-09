@@ -31,7 +31,6 @@ namespace Rush.Game
         private float   _BaseAngle = 90f;
         private Vector3 _PivotPoint;
         private Vector3 _Direction;
-        private bool _DirectionChanged = true;
         private Quaternion  _StartRotation, _EndRotation;
         private Vector3     _StartPosition, _EndPosition;
 
