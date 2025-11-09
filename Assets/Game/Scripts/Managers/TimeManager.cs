@@ -7,6 +7,8 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System;
+using UnityEngine.Events;
 
 namespace Rush.Game
 {
@@ -17,6 +19,7 @@ namespace Rush.Game
         [Header("Speed Values")]
         [SerializeField, Range(1f, 5f)] private float _MaxSpeed = 3f;
 
+        public event Action<int> onTickFinished;
 
         private float _GlobalTickSpeed = 1f;
         public float GlobalTickSpeed { get => _GlobalTickSpeed; set => _GlobalTickSpeed = Mathf.Clamp(value, 0f, _MaxSpeed); }
@@ -26,23 +29,24 @@ namespace Rush.Game
         public bool pause = false;
         private float _ElapsedTime = 0f;
         private float _TickDuration = 1f;
+        private int _TickIndex = 0;
 
-        public static TimeManager instance { get; private set; }
+        public static TimeManager Instance { get; private set; }
 
         private void Awake()
         {
-            if (instance != null && instance != this)
+            if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
         private void OnDestroy()
         {
-            if (instance == this) instance = null;
+            if (Instance == this) Instance = null;
         }
 
         private void Update()
@@ -50,11 +54,19 @@ namespace Rush.Game
             if (pause) return;
 
             _ElapsedTime += Time.deltaTime * _GlobalTickSpeed;
+
+
+            if (_ElapsedTime >= _TickDuration)
+            {
+                _ElapsedTime = 0f;
+                _TickIndex++;
+                onTickFinished.Invoke(_TickIndex);
+            }
+            
             _CurrentTickRatio = _ElapsedTime / _TickDuration;
 
             AdministrateTime();
 
-            if (_ElapsedTime >= _TickDuration) _ElapsedTime = 0f;
         }
 
         private void AdministrateTime() {

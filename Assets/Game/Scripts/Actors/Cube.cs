@@ -37,8 +37,8 @@ namespace Rush.Game
 
         void Start()
         {
-            if (TimeManager.instance != null)
-                TimeManager.instance.objectsAffectedByTime.Add(this);
+            if (TimeManager.Instance != null)
+                TimeManager.Instance.objectsAffectedByTime.Add(this);
 
             SetModeRoll();
         }
@@ -48,8 +48,9 @@ namespace Rush.Game
             Roll(currentTickStep);
         }
 
-        public void TickUpdate()
+        public void TickUpdate(int pTickIndex)
         {
+            Snap();
             SetModeRoll();
         }
 

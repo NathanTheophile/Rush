@@ -13,6 +13,6 @@ namespace Rush.Game
     {
         float currentTickStep { set; }
 
-        void TickUpdate();
+        void TickUpdate(int pTickIndex);
     }
 }
