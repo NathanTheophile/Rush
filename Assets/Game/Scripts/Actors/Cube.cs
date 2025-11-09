@@ -23,8 +23,17 @@ namespace Rush.Game
         private Vector3     _Pivot;
         private Quaternion  _StartRotation, _EndRotation;
         private Vector3     _StartPosition, _EndPosition;
-        
+
         #endregion
+
+        #region _________________________/ RAYCAST VARS
+        [Header("Raycasts")]
+        [SerializeField] private LayerMask _GroundLayer;
+        [SerializeField] private LayerMask _TilesLayer;
+
+        #endregion
+
+    
 
         void Start()
         {
@@ -41,7 +50,7 @@ namespace Rush.Game
 
         public void TickUpdate()
         {
-            
+            SetModeRoll();
         }
 
         public void SetModeRoll()
