@@ -14,7 +14,7 @@ namespace Rush.Game
     {
         #region _________________________/ MAIN VALUES
         [Header("Main")]
-        private Transform selfTransform;
+        private Transform _Self;
         private float _GridSize = 1f;
         private Action doAction;
 
@@ -56,8 +56,8 @@ namespace Rush.Game
         #region _________________________/ INIT
         private void Awake()
         {
-            selfTransform = transform;
-            _Direction = selfTransform.forward;
+            _Self = transform;
+            _Direction = _Self.forward;
             doAction = Pause;
         }
 
@@ -76,7 +76,7 @@ namespace Rush.Game
             var lDirsCheckingOrder = SetSidesCheckingOrder();    
             FindNewDirection(lDirsCheckingOrder); // Je set une nouvelle direction et dedans je gère la pause
 
-            SetModeFall();
+            SetModeRoll();
         }
 
         #endregion
@@ -86,7 +86,7 @@ namespace Rush.Game
         /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
         private bool TryFindGround()
         {
-            if (Physics.Raycast(selfTransform.position, Vector3.down, out var hit, _GridSize, _GroundLayer | _TilesLayer)) return true;
+            if (Physics.Raycast(_Self.position, Vector3.down, out var hit, _GridSize, _GroundLayer | _TilesLayer)) return true;
             else return false;
         }
 
@@ -102,7 +102,7 @@ namespace Rush.Game
             return new[] { DIRECTIONS[i], DIRECTIONS[RightOf(i)], DIRECTIONS[LeftOf(i)], DIRECTIONS[BackOf(i)] };
         }
 
-        private bool CheckForWall(Vector3Int pDirection) => Physics.Raycast(selfTransform.position, pDirection, _GridSize, _GroundLayer); //oeoe le raycast
+        private bool CheckForWall(Vector3Int pDirection) => Physics.Raycast(_Self.position, pDirection, _GridSize, _GroundLayer); //oeoe le raycast
 
         /// <summary>
         /// on se base sur la liste pour check les 4 directions depuis la direction actuelle et on sort si un checkwall renvoie false
@@ -127,20 +127,20 @@ namespace Rush.Game
 
         public void SetModeRoll()
         {
-            Vector3 lAxis = Vector3.Cross(Vector3.up, Vector3.forward);
-            _PivotPoint = selfTransform.position + (Vector3.down + Vector3.forward) * (1f / 2f);
+            Vector3 lAxis = Vector3.Cross(Vector3.up, _Direction);
+            _PivotPoint = _Self.position + (Vector3.down + _Direction) * (_GridSize / 2f);
 
-            _StartRotation = selfTransform.rotation;
+            _StartRotation = _Self.rotation;
             _EndRotation = Quaternion.AngleAxis(_BaseAngle, lAxis) * _StartRotation;
 
-            GetLerpMovement(selfTransform.position - _PivotPoint, _Direction);
+            GetLerpMovement(_Self.position - _PivotPoint, _Direction);
 
             doAction = Roll;
         }
 
         private void SetModeFall()
         {
-            GetLerpMovement(selfTransform.position, Vector3.down);
+            GetLerpMovement(_Self.position, Vector3.down);
             doAction = Fall;
         }
 
@@ -150,16 +150,14 @@ namespace Rush.Game
 
         void Roll()
         {
-            selfTransform.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, currentTickStep);
-            selfTransform.position = _PivotPoint + Vector3.Slerp(_StartPosition, _EndPosition, currentTickStep);
+            _Self.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, currentTickStep);
+            _Self.position = _PivotPoint + Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
         }
 
 
-        void Fall()
-        {
-            selfTransform.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
-        }
-        void Pause() { }
+        private void Fall() => _Self.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
+        
+        private void Pause() { }
 
         #endregion
 
