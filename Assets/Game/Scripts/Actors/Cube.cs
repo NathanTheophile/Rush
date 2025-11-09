@@ -4,10 +4,9 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
+using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Rush.Game
 {
@@ -41,13 +40,6 @@ namespace Rush.Game
 
         #endregion
 
-        #region _________________________/ RAYCAST VARS
-        [Header("Raycasts")]
-        [SerializeField] private LayerMask _GroundLayer;
-        [SerializeField] private LayerMask _TilesLayer;
-
-        #endregion
-
 
     // On utilise des directions logiques pr ne pas avoir à rotate le transform, on stocke les 4 directions dans une liste,
     // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
@@ -59,25 +51,12 @@ namespace Rush.Game
     private int DirectionIndexOf(Vector3Int pDirection) => System.Array.IndexOf(DIRECTIONS, pDirection);
 
 
-
-    
-
-
         void Awake()
         {
             selfTransform = transform;
             direction = selfTransform.forward;
             doAction = Wait;
         }
-
-
-        void Awake()
-        {
-            selfTransform = transform;
-            direction = selfTransform.forward;
-            doAction = Wait;
-        }
-
         void Start()
         {
 
@@ -115,7 +94,25 @@ namespace Rush.Game
         }
 
 
-        public void TickUpdate(int pTickIndex)
+        private void SetNextMode()
+        {
+            if (TryFindGround()) { Debug.Log("Sol detecté"); SetModeRoll(); }
+            else { Debug.Log("Sol non detecté"); SetModeFall(); }
+        }
+
+        #region _________________________| COLLISIONS
+        /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
+        private bool TryFindGround()
+        {
+            Debug.DrawRay(selfTransform.position, Vector3.down);
+            if (Physics.Raycast(selfTransform.position, Vector3.down, out var hit, _GridSize, _GroundLayer | _TilesLayer))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void Wait()
         {
             Snap();
             SetModeRoll();
