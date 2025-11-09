@@ -34,7 +34,7 @@ namespace Rush.Game
         void SpawnCube(int pTickIndex)
         {
             if (pTickIndex % _TickBetweenSpawns != 0) return;
-            Cube lCube = Instantiate(cubePrefab, transform.position + Vector3.up, Quaternion.identity);
+            Cube lCube = Instantiate(cubePrefab, transform.position, Quaternion.identity);
             timeManager.objectsAffectedByTime.Add(lCube);
             timeManager.onTickFinished += lCube.TickUpdate;
         }
