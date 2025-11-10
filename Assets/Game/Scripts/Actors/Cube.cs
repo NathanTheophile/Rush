@@ -28,7 +28,7 @@ namespace Rush.Game
 
         #region _________________________/ MOVEMENT VALUES
         [Header("Movement")]
-        private Vector3 _Direction = Vector3.forward;
+        public Vector3 _Direction = Vector3.forward;
 
         private float _BaseAngle = 90f;
         private Vector3 _PivotPoint;
@@ -83,28 +83,22 @@ namespace Rush.Game
         /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
         private void TryFindGround(out RaycastHit pHit)
         {
-            Debug.Log("Je teste sous mes pieds.");
             if (Physics.Raycast(_Self.position, Vector3.down, out pHit, _GridSize, _GroundLayer | _TilesLayer))
             {
-                Debug.Log("Il y a quelque chose.");
-                if (pHit.transform.gameObject.layer == _TilesLayer)
+                Debug.Log($"Il y a quelque chose. {pHit.transform.gameObject.layer}");
+                if (pHit.transform.gameObject.layer == 7)
+                {                Debug.Log("Il y a une tile.");
+
                     onTileDetected?.Invoke(this, pHit); //https://discussions.unity.com/t/solved-raycast-get-which-layer-was-hit/91039/2
-
-                else
-                {
-                    SetModeRoll(_Direction);
-                    Debug.Log("C'est le sol.");
                 }
-
+                else SetModeRoll(_Direction);
             }
             else SetModeSlide(Vector3.down);
         }
 
-        private void LookAround() {
-            Debug.Log("Je regarde autour de moi.");
-
+        private bool LookAround() {
             var lCheckingOrder = SetSidesCheckingOrder(); // là je sors une liste de direction à check en fonction de la direction actuelle
-            FindNewDirection(lCheckingOrder);
+            return FindNewDirection(lCheckingOrder);
         } // Je set une nouvelle direction et dedans je gère la pause
 
         /// <summary>
@@ -125,20 +119,18 @@ namespace Rush.Game
         /// on se base sur la liste pour check les 4 directions depuis la direction actuelle et on sort si un checkwall renvoie false
         /// </summary>
         /// <param name="pCheckingOrder"></param>
-        private void FindNewDirection(IEnumerable<Vector3Int> pCheckingOrder)
+        private bool FindNewDirection(IEnumerable<Vector3Int> pCheckingOrder)
         {
             foreach (var lDirection in pCheckingOrder)
             {
-                Debug.Log($"Je regarde à {lDirection}.");
-
                 if (!CheckForWall(lDirection)) //là il a trouvé une direction ou il prend rien dans la goule
                 {
 
                     _Direction = lDirection;
-                    return;
+                    return true;
                 }
-                else SetModePause(); //là il a mangé un truc dans la goule mdrrr
             }
+            return false;
         }
 
         #endregion
@@ -149,15 +141,19 @@ namespace Rush.Game
 
         public void SetModeRoll(Vector3 pDirection)
         {
-            LookAround();
+            _Direction = Vector3Int.RoundToInt(pDirection);
 
-            Vector3 lAxis = Vector3.Cross(Vector3.up, pDirection);
-            _PivotPoint = _Self.position + (Vector3.down + pDirection) * (_GridSize / 2f);
+            if (!LookAround()) {
+                SetModePause();
+                return; }
+                
+            Vector3 lAxis = Vector3.Cross(Vector3.up, _Direction);
+            _PivotPoint = _Self.position + (Vector3.down + _Direction) * (_GridSize / 2f);
 
             _StartRotation = _Self.rotation;
             _EndRotation = Quaternion.AngleAxis(_BaseAngle, lAxis) * _StartRotation;
 
-            GetLerpMovement(_Self.position - _PivotPoint, pDirection);
+            GetLerpMovement(_Self.position - _PivotPoint, _Direction);
 
             doAction = Roll;
         }

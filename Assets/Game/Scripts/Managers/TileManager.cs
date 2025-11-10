@@ -8,6 +8,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Unity.VisualScripting;
 
 namespace Rush.Game
 {
@@ -33,19 +34,21 @@ namespace Rush.Game
                 switch (lTile.tileVariant)
                 {
                     case Tile.TileVariants.Stopper:
-                        pCube.SetModePause();                   break;
+                        pCube.SetModePause(); break;
                     case Tile.TileVariants.Arrow:
-                        pCube.SetModeRoll(lTile.direction);     break;
+                        pCube.SetModeRoll(lTile.direction); break;
                     case Tile.TileVariants.Convoyer:
-                        pCube.SetModeSlide(lTile.direction);    break;
+                        pCube.SetModeSlide(lTile.direction); break;
                     case Tile.TileVariants.Dispatcher:
                         pCube.SetModeRoll(lTile.direction);
                         Dispatcher lDispatcher = (Dispatcher)lTile;
-                        lDispatcher.Switch();                   break;
+                        lDispatcher.Switch(); break;
                     case Tile.TileVariants.Teleporter:
                         Teleporter lTeleporter = (Teleporter)lTile;
                         Vector3 lTarget = lTeleporter.pairedTeleporter.position;
-                        pCube.SetModeTeleportation(lTarget);    break;
+                        pCube.SetModeTeleportation(lTarget); break;
+                    default: pCube.SetModeRoll(pCube._Direction); break;
+
                 }
             }
         }
