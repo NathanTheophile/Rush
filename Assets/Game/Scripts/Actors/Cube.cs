@@ -33,7 +33,7 @@ namespace Rush.Game
         private Vector3 _Direction;
         public Vector3  direction { set { _Direction = value; } }
         private Quaternion  _StartRotation, _EndRotation;
-        private Vector3     _StartPosition, _EndPosition;
+        private Vector3 _StartPosition, _EndPosition;
 
         #endregion
 
@@ -146,12 +146,27 @@ namespace Rush.Game
         private void SetModeFall()
         {
             GetLerpMovement(_Self.position, Vector3.down);
-            doAction = Fall;
+            doAction = Slide;
+        }
+
+        private void SetModeSlide(Vector3 pSlideDirection)
+        {
+
+            GetLerpMovement(_Self.position, pSlideDirection);
+            doAction = Slide;
+        }
+
+        private void SetModeTeleportation(Vector3 pTarget)
+        {
+            _EndPosition = pTarget;
+            doAction = Teleport;
         }
 
         #endregion
 
         #region _________________________/ STATES
+
+        private void Pause() { }
 
         void Roll()
         {
@@ -160,9 +175,15 @@ namespace Rush.Game
         }
 
 
-        private void Fall() => _Self.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
-        
-        private void Pause() { }
+        private void Slide() => _Self.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
+
+        private void Teleport()
+        {
+            float lSizeRatio = Mathf.Sin(currentTickStep * Mathf.PI);
+            float lSize = 1f - lSizeRatio;
+            _Self.localScale = Vector3.one * lSize;
+            if (currentTickStep > .5f) _Self.position = _EndPosition; 
+        }
 
         #endregion
 
