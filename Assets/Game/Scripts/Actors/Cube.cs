@@ -66,10 +66,16 @@ namespace Rush.Game
 
         private void Update() => doAction();
 
-        public void TickUpdate(int pTickIndex) => SetNextMode();
+        public void TickUpdate(int pTickIndex)
+        {
+            doAction(); // Petite execution pour appliquer la dernière step du tick ajustée à 1 dans le TImeManger
+            SetNextMode();
+        }
 
         private void SetNextMode()
         {
+            Debug.Log($"Current tick step = {currentTickStep}. Position = {_Self.position}");
+
             if (!TryFindGround()) { SetModeFall(); return; }
 
             var lDirsCheckingOrder = SetSidesCheckingOrder();    
@@ -150,7 +156,7 @@ namespace Rush.Game
         void Roll()
         {
             _Self.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, currentTickStep);
-            _Self.position = _PivotPoint + Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
+            _Self.position = _PivotPoint + Vector3.Slerp(_StartPosition, _EndPosition, currentTickStep);
         }
 
 
