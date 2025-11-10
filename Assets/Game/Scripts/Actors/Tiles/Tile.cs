@@ -11,7 +11,8 @@ namespace Rush.Game
     public class Tile : MonoBehaviour
     {
         [SerializeField] public TileVariants tileVariant = TileVariants.Default;
-        public Vector3 direction;
+        protected Vector3 m_Direction;
+        public Vector3 direction { get { return m_Direction; } }
 
         public enum TileVariants
         {
@@ -27,6 +28,6 @@ namespace Rush.Game
 
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start() { direction = transform.forward; }
+        protected virtual void Start() { m_Direction = transform.forward; }
     }
 }

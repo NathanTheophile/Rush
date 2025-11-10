@@ -8,7 +8,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-using UnityEngine.Events;
 
 namespace Rush.Game
 {
@@ -44,10 +43,8 @@ namespace Rush.Game
             DontDestroyOnLoad(gameObject);
         }
 
-        private void OnDestroy()
-        {
-            if (Instance == this) Instance = null;
-        }
+        private void OnDestroy() {
+            if (Instance == this) Instance = null; }
 
         private void Update()
         {
@@ -68,7 +65,6 @@ namespace Rush.Game
             _CurrentTickRatio = _ElapsedTime / _TickDuration;
 
             AdministrateTime();
-
         }
 
         private void AdministrateTime() {
