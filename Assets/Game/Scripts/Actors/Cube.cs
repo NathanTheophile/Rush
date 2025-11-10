@@ -22,7 +22,8 @@ namespace Rush.Game
 
         #region _________________________/ TIME VALUES
         [Header("Time")]
-        public float currentTickStep { get; set; }
+        public float currentTickStep { private get; set; }
+        public int pauseTicks { private get; set; }
 
         #endregion
 
@@ -74,9 +75,11 @@ namespace Rush.Game
 
         private void SetNextMode()
         {
-            Debug.Log($"Current tick step = {currentTickStep}. Position = {_Self.position}");
-
-            if (!TryFindGround()) { SetModeFall(); return; }
+            if (pauseTicks > 0) 
+                { SetModeFall(); return; }
+                
+            if (!TryFindGround()) 
+                { SetModeFall(); return; }
 
             var lDirsCheckingOrder = SetSidesCheckingOrder();    
             FindNewDirection(lDirsCheckingOrder); // Je set une nouvelle direction et dedans je gère la pause
@@ -128,7 +131,7 @@ namespace Rush.Game
 
         #region _________________________/ STATE MACHINE SETTERS
 
-        private void SetModePause() { doAction = Pause; }
+        private void SetModePause() { doAction = Pause; pauseTicks--; }
 
         public void SetModeRoll()
         {
