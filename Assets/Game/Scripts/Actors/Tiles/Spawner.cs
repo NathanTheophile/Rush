@@ -35,7 +35,7 @@ namespace Rush.Game
             timeManager.objectsAffectedByTime.Add(lCube);
             timeManager.onTickFinished += lCube.TickUpdate;
             lCube.onTileDetected += tileManager.TryGetTile;
-            lCube.SetModeRoll(direction);
+            lCube.SpawnDirection(direction);
         }
     }
 }

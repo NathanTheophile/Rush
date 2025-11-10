@@ -61,6 +61,8 @@ namespace Rush.Game
             doAction = Pause;
         }
 
+        public void SpawnDirection(Vector3 pDirection) => _Direction = pDirection;
+
         #endregion
 
         #region _________________________| GAME FLOW METHODS
