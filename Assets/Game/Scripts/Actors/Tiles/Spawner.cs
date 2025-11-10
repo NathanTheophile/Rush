@@ -11,14 +11,22 @@ namespace Rush.Game
 {
     public class Spawner : Tile
     {
-        [SerializeField] Cube cubePrefab;
+        [SerializeField] private Cube cubePrefab;
+        [SerializeField] private SOColors _ColorSO;   
 
         TimeManager timeManager;
         TileManager tileManager;
 
+        private Color _Color;
+
         private int _TickBetweenSpawns = 2;
 
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Awake()
+        {
+            _Color = _ColorSO.Color;
+            GetComponentInChildren<Renderer>().material.color = _Color;
+        }
+
         protected override void Start()
         {
             base.Start();
@@ -32,10 +40,12 @@ namespace Rush.Game
         {
             if (pTickIndex % _TickBetweenSpawns != 0) return;
             Cube lCube = Instantiate(cubePrefab, transform.position, Quaternion.identity);
+            lCube.SetColor(_Color);
             timeManager.objectsAffectedByTime.Add(lCube);
             timeManager.onTickFinished += lCube.TickUpdate;
             lCube.onTileDetected += tileManager.TryGetTile;
             lCube.SpawnDirection(direction);
+
         }
     }
 }

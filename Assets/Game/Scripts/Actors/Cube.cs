@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Rush.Game
 {
-    public class Cube : MonoBehaviour, ITickDependant
+    public class Cube : MonoBehaviour, ITickDependant, IColorDependant
     {
         #region _________________________/ MAIN VALUES
         [Header("Main")]
@@ -18,13 +18,15 @@ namespace Rush.Game
         private float _GridSize = 1f;
         private Action doAction;
 
+        public Color Color { get;  private set; }
+
         #endregion
 
         #region _________________________/ TIME VALUES
         [Header("Time")]
-        public  float currentTickStep { get; set; }
-        public  int   levelStopperTicks = 1;
-        private int   stopperTicks = 0;
+        public float currentTickStep { get; set; }
+        public int levelStopperTicks = 1;
+        private int stopperTicks = 0;
 
         #endregion
 
@@ -34,10 +36,10 @@ namespace Rush.Game
 
         private float _BaseAngle = 90f;
         private Vector3 _PivotPoint;
-        private Quaternion  _StartRotation, _EndRotation;
-        private Vector3     _StartPosition, _EndPosition;
-        
-        public  bool        justTeleported = false;
+        private Quaternion _StartRotation, _EndRotation;
+        private Vector3 _StartPosition, _EndPosition;
+
+        public bool justTeleported = false;
 
         // On utilise des directions logiques pr ne pas avoir à rotate le transform, on stocke les 4 directions dans une liste,
         // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
@@ -73,9 +75,11 @@ namespace Rush.Game
 
         private void Update() => doAction();
 
-        public void TickUpdate(int pTickIndex) {
+        public void TickUpdate(int pTickIndex)
+        {
             doAction(); // Petite execution pour appliquer la dernière step du tick ajustée à 1 dans le TImeManger
-            SetNextMode(); }
+            SetNextMode();
+        }
 
         private void SetNextMode() => TryFindGround(out _);
 
@@ -97,7 +101,8 @@ namespace Rush.Game
             else SetModeSlide(Vector3.down);
         }
 
-        private bool LookAround() {
+        private bool LookAround()
+        {
             var lCheckingOrder = SetSidesCheckingOrder(); // là je sors une liste de direction à check en fonction de la direction actuelle
             return FindNewDirection(lCheckingOrder);
         } // Je set une nouvelle direction et dedans je gère la pause
@@ -142,7 +147,7 @@ namespace Rush.Game
         {
             if (stopperTicks == levelStopperTicks) { SetModeRoll(); stopperTicks = 0; return; }
             stopperTicks++;
-            doAction = Pause;   
+            doAction = Pause;
         }
 
         public void SetModeRoll(Vector3 pDirection = default)
@@ -150,10 +155,12 @@ namespace Rush.Game
             if (pDirection == default) pDirection = _Direction;
             else _Direction = Vector3Int.RoundToInt(pDirection);
 
-            if (!LookAround()) {
+            if (!LookAround())
+            {
                 SetModePause();
-                return; }
-                
+                return;
+            }
+
             Vector3 lAxis = Vector3.Cross(Vector3.up, _Direction);
             _PivotPoint = _Self.position + (Vector3.down + _Direction) * (_GridSize / 2f);
 
@@ -165,13 +172,17 @@ namespace Rush.Game
             doAction = Roll;
         }
 
-        public void SetModeSlide(Vector3 pSlideDirection) {
+        public void SetModeSlide(Vector3 pSlideDirection)
+        {
             GetLerpMovement(_Self.position, pSlideDirection);
-            doAction = Slide; }
+            doAction = Slide;
+        }
 
-        public void SetModeTeleportation(Vector3 pTarget) {
+        public void SetModeTeleportation(Vector3 pTarget)
+        {
             _EndPosition = pTarget;
-            doAction = Teleport; }
+            doAction = Teleport;
+        }
 
         #endregion
 
@@ -205,6 +216,10 @@ namespace Rush.Game
             _StartPosition = pOrigin;
             _EndPosition = _StartPosition + pDirection * _GridSize;
         }
+
+        public void SetColor(Color pColor) {
+            Color = pColor; 
+            GetComponentInParent<Renderer>().material.color = Color; }
 
         #endregion
     }
