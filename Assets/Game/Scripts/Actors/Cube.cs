@@ -31,6 +31,7 @@ namespace Rush.Game
         private float   _BaseAngle = 90f;
         private Vector3 _PivotPoint;
         private Vector3 _Direction;
+        public Vector3  direction { set { _Direction = value; } }
         private Quaternion  _StartRotation, _EndRotation;
         private Vector3     _StartPosition, _EndPosition;
 
@@ -56,7 +57,6 @@ namespace Rush.Game
         private void Awake()
         {
             _Self = transform;
-            _Direction = _Self.forward;
             doAction = Pause;
         }
 
