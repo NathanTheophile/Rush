@@ -14,22 +14,16 @@ namespace Rush.Game
         [SerializeField] Cube cubePrefab;
 
         TimeManager timeManager;
-
-        private Transform self;
+        TileManager tileManager;
 
         private int _TickBetweenSpawns = 2;
 
-        void Awake()
-        {
-            tileVariant = TileVariants.Spawner;
-            self = transform;
-        }
-
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        protected override void Start()
         {
-            direction = self.forward;
+            base.Start();
             timeManager = TimeManager.Instance;
+            tileManager = TileManager.Instance;
             timeManager.onTickFinished += SpawnCube;
             SpawnCube(0);
         }
@@ -37,10 +31,11 @@ namespace Rush.Game
         void SpawnCube(int pTickIndex)
         {
             if (pTickIndex % _TickBetweenSpawns != 0) return;
-            Cube lCube = Instantiate(cubePrefab, self.position, Quaternion.identity);
-            lCube.direction = self.forward;
+            Cube lCube = Instantiate(cubePrefab, transform.position, Quaternion.identity);
             timeManager.objectsAffectedByTime.Add(lCube);
             timeManager.onTickFinished += lCube.TickUpdate;
+            lCube.onTileDetected += tileManager.TryGetTile;
+            lCube.SpawnDirection(direction);
         }
     }
 }

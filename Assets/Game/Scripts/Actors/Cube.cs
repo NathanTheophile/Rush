@@ -22,26 +22,22 @@ namespace Rush.Game
 
         #region _________________________/ TIME VALUES
         [Header("Time")]
-        public float currentTickStep { private get; set; }
-        public int pauseTicks { private get; set; }
+        public  float currentTickStep { get; set; }
+        public  int   levelStopperTicks = 1;
+        private int   stopperTicks = 0;
 
         #endregion
 
         #region _________________________/ MOVEMENT VALUES
         [Header("Movement")]
-        private float   _BaseAngle = 90f;
+        private Vector3 _Direction = Vector3.forward;
+
+        private float _BaseAngle = 90f;
         private Vector3 _PivotPoint;
-        private Vector3 _Direction;
-        public Vector3  direction { set { _Direction = value; } }
         private Quaternion  _StartRotation, _EndRotation;
         private Vector3     _StartPosition, _EndPosition;
-
-        #endregion
-
-        #region _________________________/ COLLISION VALUES
-        [Header("Collisions")]
-        [SerializeField] private LayerMask _GroundLayer;
-        [SerializeField] private LayerMask _TilesLayer;
+        
+        public  bool        justTeleported = false;
 
         // On utilise des directions logiques pr ne pas avoir à rotate le transform, on stocke les 4 directions dans une liste,
         // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
@@ -54,49 +50,57 @@ namespace Rush.Game
 
         #endregion
 
-        #region _________________________/ INIT
+        #region _________________________/ COLLISION VALUES
+        [Header("Collisions")]
+        [SerializeField] private LayerMask _GroundLayer;
+        [SerializeField] private LayerMask _TilesLayer;
+        public event Action<Cube, RaycastHit> onTileDetected;
+
+        #endregion
+
+        #region _________________________| INIT
         private void Awake()
         {
             _Self = transform;
             doAction = Pause;
         }
 
+        public void SpawnDirection(Vector3 pDirection) => _Direction = pDirection;
+
         #endregion
 
-        #region _________________________/ GAME FLOW METHODS
+        #region _________________________| GAME FLOW METHODS
 
         private void Update() => doAction();
 
-        public void TickUpdate(int pTickIndex)
-        {
+        public void TickUpdate(int pTickIndex) {
             doAction(); // Petite execution pour appliquer la dernière step du tick ajustée à 1 dans le TImeManger
-            SetNextMode();
-        }
+            SetNextMode(); }
 
-        private void SetNextMode()
-        {
-            if (pauseTicks > 0) 
-                { SetModeFall(); return; }
-                
-            if (!TryFindGround()) 
-                { SetModeFall(); return; }
+        private void SetNextMode() => TryFindGround(out _);
 
-            var lDirsCheckingOrder = SetSidesCheckingOrder();    
-            FindNewDirection(lDirsCheckingOrder); // Je set une nouvelle direction et dedans je gère la pause
-
-            SetModeRoll();
-        }
 
         #endregion
 
-        #region _________________________/ PHYSIC METHODS
+        #region _________________________| PHYSIC METHODS
 
         /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
-        private bool TryFindGround()
+        private void TryFindGround(out RaycastHit pHit)
         {
-            if (Physics.Raycast(_Self.position, Vector3.down, out var hit, _GridSize, _GroundLayer | _TilesLayer)) return true;
-            else return false;
+            if (Physics.Raycast(_Self.position, Vector3.down, out pHit, _GridSize, _GroundLayer | _TilesLayer))
+            {
+                if (pHit.transform.gameObject.layer == 7)
+                    onTileDetected?.Invoke(this, pHit); //https://discussions.unity.com/t/solved-raycast-get-which-layer-was-hit/91039/2
+
+                else SetModeRoll(_Direction);
+            }
+            else SetModeSlide(Vector3.down);
         }
+
+        private bool LookAround() {
+            var lCheckingOrder = SetSidesCheckingOrder(); // là je sors une liste de direction à check en fonction de la direction actuelle
+            return FindNewDirection(lCheckingOrder);
+        } // Je set une nouvelle direction et dedans je gère la pause
 
         /// <summary>
         /// on récupère l'index des directions correpsondant à la driection actuelle du cube, puis on définit depuis
@@ -116,25 +120,40 @@ namespace Rush.Game
         /// on se base sur la liste pour check les 4 directions depuis la direction actuelle et on sort si un checkwall renvoie false
         /// </summary>
         /// <param name="pCheckingOrder"></param>
-        private void FindNewDirection(IEnumerable<Vector3Int> pCheckingOrder)
+        private bool FindNewDirection(IEnumerable<Vector3Int> pCheckingOrder)
         {
             foreach (var lDirection in pCheckingOrder)
+            {
                 if (!CheckForWall(lDirection)) //là il a trouvé une direction ou il prend rien dans la goule
                 {
+
                     _Direction = lDirection;
-                    return;
+                    return true;
                 }
-                else SetModePause(); //là il a mangé un truc dans la goule mdrrr
+            }
+            return false;
         }
 
         #endregion
 
-        #region _________________________/ STATE MACHINE SETTERS
+        #region _________________________| STATE MACHINE SETTERS
 
-        private void SetModePause() { doAction = Pause; pauseTicks--; }
-
-        public void SetModeRoll()
+        public void SetModePause()
         {
+            if (stopperTicks == levelStopperTicks) { SetModeRoll(); stopperTicks = 0; return; }
+            stopperTicks++;
+            doAction = Pause;   
+        }
+
+        public void SetModeRoll(Vector3 pDirection = default)
+        {
+            if (pDirection == default) pDirection = _Direction;
+            else _Direction = Vector3Int.RoundToInt(pDirection);
+
+            if (!LookAround()) {
+                SetModePause();
+                return; }
+                
             Vector3 lAxis = Vector3.Cross(Vector3.up, _Direction);
             _PivotPoint = _Self.position + (Vector3.down + _Direction) * (_GridSize / 2f);
 
@@ -146,30 +165,40 @@ namespace Rush.Game
             doAction = Roll;
         }
 
-        private void SetModeFall()
-        {
-            GetLerpMovement(_Self.position, Vector3.down);
-            doAction = Fall;
-        }
+        public void SetModeSlide(Vector3 pSlideDirection) {
+            GetLerpMovement(_Self.position, pSlideDirection);
+            doAction = Slide; }
+
+        public void SetModeTeleportation(Vector3 pTarget) {
+            _EndPosition = pTarget;
+            doAction = Teleport; }
 
         #endregion
 
-        #region _________________________/ STATES
+        #region _________________________| STATES
 
-        void Roll()
+        private void Pause() { }
+
+        private void Roll()
         {
             _Self.rotation = Quaternion.Slerp(_StartRotation, _EndRotation, currentTickStep);
             _Self.position = _PivotPoint + Vector3.Slerp(_StartPosition, _EndPosition, currentTickStep);
         }
 
 
-        private void Fall() => _Self.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
-        
-        private void Pause() { }
+        private void Slide() => _Self.position = Vector3.Lerp(_StartPosition, _EndPosition, currentTickStep);
+
+        private void Teleport()
+        {
+            float lSizeRatio = Mathf.Sin(currentTickStep * Mathf.PI);
+            float lSize = 1f - lSizeRatio;
+            _Self.localScale = Vector3.one * lSize;
+            if (currentTickStep > .5f) _Self.position = _EndPosition;
+        }
 
         #endregion
 
-        #region _________________________/ MISC METHODS
+        #region _________________________| MISC METHODS
 
         private void GetLerpMovement(Vector3 pOrigin, Vector3 pDirection)
         {

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1520392748116811415
+--- !u!1001 &8406350446819924452
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1820389188126086, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
       propertyPath: m_Name
-      value: P_TileConvoyer
+      value: P_TileTeleporter
       objectReference: {fileID: 0}
     - target: {fileID: 4103324586174300, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,30 +55,30 @@ PrefabInstance:
     - target: {fileID: 23704975771370082, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8b0f33d4cb807f64bac7cbd279e8d892, type: 2}
+      objectReference: {fileID: 2100000, guid: 4917f8b35562be24080cc5371d169339, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1820389188126086, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5491307830706742576}
+      addedObject: {fileID: 7080511740769743917}
   m_SourcePrefab: {fileID: 100100000, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
---- !u!1 &1522201848973122321 stripped
+--- !u!1 &8407988040048090210 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1820389188126086, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
-  m_PrefabInstance: {fileID: 1520392748116811415}
+  m_PrefabInstance: {fileID: 8406350446819924452}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5491307830706742576
+--- !u!114 &7080511740769743917
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1522201848973122321}
+  m_GameObject: {fileID: 8407988040048090210}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 577bebf3e137896469d7d3ae8e79a87c, type: 3}
+  m_Script: {fileID: 11500000, guid: e8a0a2ef13a12484c92e365a326e3f7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileVariant: 2
+  tileVariant: 4
