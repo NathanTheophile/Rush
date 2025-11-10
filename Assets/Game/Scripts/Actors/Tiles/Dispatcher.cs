@@ -12,15 +12,15 @@ namespace Rush.Game
 {
     public class Dispatcher : Tile
     {
-        private bool _Switcher;
+        private bool _Switcher = true;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        protected override void Start() => base.Start();
+        protected override void Start() => m_Direction = Vector3.left;
 
         public void Switch()
         {
-            if (_Switcher) { m_Direction = Vector3.left; _Switcher = !_Switcher; }
-            else { m_Direction = Vector3.right; _Switcher = !_Switcher; }
+            if (_Switcher) { m_Direction = Vector3.right; _Switcher = false; }
+            else { m_Direction = Vector3.left; _Switcher = true; }
         }
     }
 }

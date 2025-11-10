@@ -5,10 +5,8 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
+using UnityEditor.Rendering;
 using UnityEngine;
-using System.Collections.Generic;
-using System;
-using Unity.VisualScripting;
 
 namespace Rush.Game
 {
@@ -33,24 +31,30 @@ namespace Rush.Game
             {
                 switch (lTile.tileVariant)
                 {
-                    case Tile.TileVariants.Stopper:
-                        pCube.SetModePause(); break;
-                    case Tile.TileVariants.Arrow:
-                        pCube.SetModeRoll(lTile.direction); break;
-                    case Tile.TileVariants.Convoyer:
-                        pCube.SetModeSlide(lTile.direction); break;
-                    case Tile.TileVariants.Dispatcher:
-                        pCube.SetModeRoll(lTile.direction);
-                        Dispatcher lDispatcher = (Dispatcher)lTile;
-                        lDispatcher.Switch(); break;
-                    case Tile.TileVariants.Teleporter:
-                        Teleporter lTeleporter = (Teleporter)lTile;
-                        Vector3 lTarget = lTeleporter.pairedTeleporter.position;
-                        pCube.SetModeTeleportation(lTarget); break;
-                    default: pCube.SetModeRoll(pCube._Direction); break;
+                    case Tile.TileVariants.Stopper:     Stopper(pCube);                         break;
+                    case Tile.TileVariants.Arrow:       Arrow(pCube, lTile);                    break;
+                    case Tile.TileVariants.Convoyer:    Convoyer(pCube, lTile);                 break;
+                    case Tile.TileVariants.Dispatcher:  Dispatcher(pCube, (Dispatcher)lTile);   break;
+                    case Tile.TileVariants.Teleporter:  Teleporter(pCube, (Teleporter)lTile);   break;
+                    default: pCube.SetModeRoll(); break;
 
                 }
             }
+        }
+
+        private void Stopper(Cube pCube) => pCube.SetModePause();
+        private void Arrow(Cube pCube, Tile pTile) => pCube.SetModeRoll(pTile.direction);
+        private void Convoyer(Cube pCube, Tile pTile) => pCube.SetModeSlide(pTile.direction);
+        private void Dispatcher(Cube pCube, Dispatcher pDispatcher) { pCube.SetModeRoll(pDispatcher.direction); pDispatcher.Switch(); }
+        private void Teleporter(Cube pCube, Teleporter pTeleporter)
+        {
+            if (pCube.justTeleported) { pCube.SetModeRoll(); pCube.justTeleported = false; }
+            else
+            {
+                pCube.justTeleported = true;
+                Vector3 lTarget = pTeleporter.pairedTeleporter.position;
+                pCube.SetModeTeleportation(lTarget); 
+            }            
         }
 
         private void OnDestroy()

@@ -24,13 +24,8 @@ namespace Rush.Game
             base.Start();
             timeManager = TimeManager.Instance;
             tileManager = TileManager.Instance;
-                        Cube lCube = Instantiate(cubePrefab, transform.position, Quaternion.identity);
-            timeManager.objectsAffectedByTime.Add(lCube);
-            timeManager.onTickFinished += lCube.TickUpdate;
-            lCube.onTileDetected += tileManager.TryGetTile;
-            lCube.SpawnDirection(direction);
-            //timeManager.onTickFinished += SpawnCube;
-            //SpawnCube(0);
+            timeManager.onTickFinished += SpawnCube;
+            SpawnCube(0);
         }
 
         void SpawnCube(int pTickIndex)

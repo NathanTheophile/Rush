@@ -22,18 +22,22 @@ namespace Rush.Game
 
         #region _________________________/ TIME VALUES
         [Header("Time")]
-        public float currentTickStep { get; set; }
+        public  float currentTickStep { get; set; }
+        public  int   levelStopperTicks = 1;
+        private int   stopperTicks = 0;
 
         #endregion
 
         #region _________________________/ MOVEMENT VALUES
         [Header("Movement")]
-        public Vector3 _Direction = Vector3.forward;
+        private Vector3 _Direction = Vector3.forward;
 
         private float _BaseAngle = 90f;
         private Vector3 _PivotPoint;
         private Quaternion  _StartRotation, _EndRotation;
         private Vector3     _StartPosition, _EndPosition;
+        
+        public  bool        justTeleported = false;
 
         // On utilise des directions logiques pr ne pas avoir à rotate le transform, on stocke les 4 directions dans une liste,
         // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
@@ -85,12 +89,9 @@ namespace Rush.Game
         {
             if (Physics.Raycast(_Self.position, Vector3.down, out pHit, _GridSize, _GroundLayer | _TilesLayer))
             {
-                Debug.Log($"Il y a quelque chose. {pHit.transform.gameObject.layer}");
                 if (pHit.transform.gameObject.layer == 7)
-                {                Debug.Log("Il y a une tile.");
-
                     onTileDetected?.Invoke(this, pHit); //https://discussions.unity.com/t/solved-raycast-get-which-layer-was-hit/91039/2
-                }
+
                 else SetModeRoll(_Direction);
             }
             else SetModeSlide(Vector3.down);
@@ -137,11 +138,17 @@ namespace Rush.Game
 
         #region _________________________| STATE MACHINE SETTERS
 
-        public void SetModePause() { doAction = Pause; }
-
-        public void SetModeRoll(Vector3 pDirection)
+        public void SetModePause()
         {
-            _Direction = Vector3Int.RoundToInt(pDirection);
+            if (stopperTicks == levelStopperTicks) { SetModeRoll(); stopperTicks = 0; return; }
+            stopperTicks++;
+            doAction = Pause;   
+        }
+
+        public void SetModeRoll(Vector3 pDirection = default)
+        {
+            if (pDirection == default) pDirection = _Direction;
+            else _Direction = Vector3Int.RoundToInt(pDirection);
 
             if (!LookAround()) {
                 SetModePause();
@@ -186,7 +193,7 @@ namespace Rush.Game
             float lSizeRatio = Mathf.Sin(currentTickStep * Mathf.PI);
             float lSize = 1f - lSizeRatio;
             _Self.localScale = Vector3.one * lSize;
-            if (currentTickStep > .5f) _Self.position = _EndPosition; 
+            if (currentTickStep > .5f) _Self.position = _EndPosition;
         }
 
         #endregion
