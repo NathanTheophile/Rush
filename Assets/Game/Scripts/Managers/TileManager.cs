@@ -42,7 +42,7 @@ namespace Rush.Game
             }
         }
 
-        private void Stopper(Cube pCube) => pCube.SetModePause();
+        private void Stopper(Cube pCube) => pCube.SetModePause(pCube.levelStopperTicks);
         private void Arrow(Cube pCube, Tile pTile) => pCube.SetModeRoll(pTile.direction);
         private void Convoyer(Cube pCube, Tile pTile) => pCube.SetModeSlide(pTile.direction);
         private void Dispatcher(Cube pCube, Dispatcher pDispatcher) { pCube.SetModeRoll(pDispatcher.direction); pDispatcher.Switch(); }
