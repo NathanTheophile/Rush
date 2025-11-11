@@ -25,7 +25,7 @@ namespace Rush.Game
         #region _________________________/ TIME VALUES
         [Header("Time")]
         public float currentTickStep { get; set; }
-        public int levelStopperTicks = 1;
+        public int levelStopperTicks = 2;
         private int stopperTicks = 0;
 
         #endregion

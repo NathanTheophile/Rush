@@ -81,6 +81,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02749f5278048b4fb72daef5515ee83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileVariant: 0
-  direction: {x: 0, y: 0, z: 1}
+  tileVariant: 6
   cubePrefab: {fileID: 2526059154965326359, guid: d11d60136d78d134383d4406c21f8cbd, type: 3}
+  _ColorSO: {fileID: 0}

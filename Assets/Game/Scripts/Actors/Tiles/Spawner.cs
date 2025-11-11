@@ -5,6 +5,7 @@
 #endregion
 
 using Rush.Game;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Rush.Game
@@ -20,6 +21,8 @@ namespace Rush.Game
         private Color _Color;
 
         private int _TickBetweenSpawns = 2;
+        [SerializeField] private int _AmountoOfCubes = 1;
+        private int _CurrentCubeSpawned = 0;
 
         void Awake()
         {
@@ -45,7 +48,8 @@ namespace Rush.Game
             timeManager.onTickFinished += lCube.TickUpdate;
             lCube.onTileDetected += tileManager.TryGetTile;
             lCube.SpawnDirection(direction);
-
+            _CurrentCubeSpawned++;
+            if (_CurrentCubeSpawned >= _AmountoOfCubes) timeManager.onTickFinished -= SpawnCube;
         }
     }
 }

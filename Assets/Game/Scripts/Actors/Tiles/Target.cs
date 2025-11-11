@@ -38,11 +38,12 @@ namespace Rush.Game
             onCubeValidation += levelManager.CubeValidated;
         }
 
-        public void CheckColor(Cube pCube)
+        public bool CheckColor(Cube pCube)
         {
-            if (pCube.Color == _Color)
-                DestroyCube(pCube);
-                onCubeValidation.Invoke();
+            if (pCube.Color != _Color) return false;
+            DestroyCube(pCube);
+            onCubeValidation.Invoke();
+            return true;
         }
         
         private void DestroyCube(Cube pCube)
