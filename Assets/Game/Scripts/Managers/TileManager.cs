@@ -31,7 +31,7 @@ namespace Rush.Game
             {
                 switch (lTile.tileVariant)
                 {
-                    case Tile.TileVariants.Stopper:     Stopper(pCube);                         break;
+                    case Tile.TileVariants.Stopper: Stopper(pCube); Debug.Log($"Cube stopping for {pCube.levelStopperTicks}.");                        break;
                     case Tile.TileVariants.Arrow:       Arrow(pCube, lTile);                    break;
                     case Tile.TileVariants.Convoyer:    Convoyer(pCube, lTile);                 break;
                     case Tile.TileVariants.Dispatcher:  Dispatcher(pCube, (Dispatcher)lTile);   break;
@@ -42,7 +42,7 @@ namespace Rush.Game
             }
         }
 
-        private void Stopper(Cube pCube) => pCube.SetModePause();
+        private void Stopper(Cube pCube) => pCube.SetModePause(pCube.levelStopperTicks);
         private void Arrow(Cube pCube, Tile pTile) => pCube.SetModeRoll(pTile.direction);
         private void Convoyer(Cube pCube, Tile pTile) => pCube.SetModeSlide(pTile.direction);
         private void Dispatcher(Cube pCube, Dispatcher pDispatcher) { pCube.SetModeRoll(pDispatcher.direction); pDispatcher.Switch(); }

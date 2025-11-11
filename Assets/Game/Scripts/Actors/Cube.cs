@@ -25,8 +25,8 @@ namespace Rush.Game
         #region _________________________/ TIME VALUES
         [Header("Time")]
         public float currentTickStep { get; set; }
-        public int levelStopperTicks = 2;
-        private int stopperTicks = 0;
+        public int levelStopperTicks { get; private set; } = 2;
+        private int pauseTicksRemaining = 0;
 
         #endregion
 
@@ -65,6 +65,7 @@ namespace Rush.Game
         {
             _Self = transform;
             doAction = Pause;
+            Debug.Log("Level Stopper Ticks = " + levelStopperTicks);
         }
 
         public void SpawnDirection(Vector3 pDirection) => _Direction = pDirection;
@@ -78,6 +79,14 @@ namespace Rush.Game
         public void TickUpdate(int pTickIndex)
         {
             doAction(); // Petite execution pour appliquer la dernière step du tick ajustée à 1 dans le TImeManger
+
+            if (pauseTicksRemaining > 0)
+            {
+                pauseTicksRemaining--;
+                if (pauseTicksRemaining == 0) SetModeRoll();
+                return;
+            }
+            
             SetNextMode();
         }
 
@@ -129,12 +138,15 @@ namespace Rush.Game
         {
             foreach (var lDirection in pCheckingOrder)
             {
-                if (!CheckForWall(lDirection)) //là il a trouvé une direction ou il prend rien dans la goule
-                {
+                if (CheckForWall(lDirection)) continue;
 
+                if (lDirection != _Direction) //là il a trouvé une direction ou il prend rien dans la goule
+                {
                     _Direction = lDirection;
                     return true;
                 }
+
+                break;
             }
             return false;
         }
@@ -143,19 +155,16 @@ namespace Rush.Game
 
         #region _________________________| STATE MACHINE SETTERS
 
-        public void SetModePause()
-        {
-            if (stopperTicks == levelStopperTicks) { SetModeRoll(); stopperTicks = 0; return; }
-            stopperTicks++;
-            doAction = Pause;
-        }
+        public void SetModePause(int pTicks = 1) {
+            pauseTicksRemaining = Mathf.Max(pauseTicksRemaining, pTicks);
+            doAction = Pause; }
 
         public void SetModeRoll(Vector3 pDirection = default)
         {
             if (pDirection == default) pDirection = _Direction;
             else _Direction = Vector3Int.RoundToInt(pDirection);
 
-            if (!LookAround())
+            if (LookAround())
             {
                 SetModePause();
                 return;
