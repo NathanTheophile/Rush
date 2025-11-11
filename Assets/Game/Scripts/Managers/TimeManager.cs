@@ -16,7 +16,7 @@ namespace Rush.Game
         public List<ITickDependant> objectsAffectedByTime = new List<ITickDependant>();
 
         [Header("Speed Values")]
-        [SerializeField, Range(1f, 5f)] private float _MaxSpeed = 3f;
+        [SerializeField, Range(1f, 20f)] private float _MaxSpeed = 20f;
 
         public event Action<int> onTickFinished;
 

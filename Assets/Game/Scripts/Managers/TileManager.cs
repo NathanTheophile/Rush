@@ -36,8 +36,8 @@ namespace Rush.Game
                     case Tile.TileVariants.Convoyer:    Convoyer(pCube, lTile);                 break;
                     case Tile.TileVariants.Dispatcher:  Dispatcher(pCube, (Dispatcher)lTile);   break;
                     case Tile.TileVariants.Teleporter:  Teleporter(pCube, (Teleporter)lTile);   break;
+                    case Tile.TileVariants.Target:      Target(pCube, (Target)lTile);                   break;
                     default: pCube.SetModeRoll(); break;
-
                 }
             }
         }
@@ -53,9 +53,10 @@ namespace Rush.Game
             {
                 pCube.justTeleported = true;
                 Vector3 lTarget = pTeleporter.pairedTeleporter.position;
-                pCube.SetModeTeleportation(lTarget); 
-            }            
+                pCube.SetModeTeleportation(lTarget);
+            }
         }
+        private void Target(Cube pCube, Target pTile) => pTile.CheckColor(pCube);
 
         private void OnDestroy()
         {

@@ -23,7 +23,7 @@ namespace Rush.Game
             Teleporter,
             Stopper,
             Spawner,
-            Target
+            Target,
         }
 
 
