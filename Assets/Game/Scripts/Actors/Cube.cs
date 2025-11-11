@@ -158,6 +158,7 @@ namespace Rush.Game
             if (!LookAround())
             {
                 SetModePause();
+                stopperTicks++;
                 return;
             }
 
