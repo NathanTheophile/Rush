@@ -78,10 +78,14 @@ namespace Rush.Game
         public void TickUpdate(int pTickIndex)
         {
             doAction(); // Petite execution pour appliquer la dernière step du tick ajustée à 1 dans le TImeManger
-            if (pauseTicksRemaining > 0) {
-                pauseTicksRemaining--;
-                return; }
 
+            if (pauseTicksRemaining > 0)
+            {
+                pauseTicksRemaining--;
+                if (pauseTicksRemaining == 0) SetModeRoll();
+                return;
+            }
+            
             SetNextMode();
         }
 
@@ -140,7 +144,6 @@ namespace Rush.Game
                 }
                 else return false;
             }
-            Debug.Log("caca");
             return false;
         }
 
