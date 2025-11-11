@@ -31,7 +31,7 @@ namespace Rush.Game
             {
                 switch (lTile.tileVariant)
                 {
-                    case Tile.TileVariants.Stopper:     Stopper(pCube);                         break;
+                    case Tile.TileVariants.Stopper: Stopper(pCube); Debug.Log($"Cube stopping for {pCube.levelStopperTicks}.");                        break;
                     case Tile.TileVariants.Arrow:       Arrow(pCube, lTile);                    break;
                     case Tile.TileVariants.Convoyer:    Convoyer(pCube, lTile);                 break;
                     case Tile.TileVariants.Dispatcher:  Dispatcher(pCube, (Dispatcher)lTile);   break;

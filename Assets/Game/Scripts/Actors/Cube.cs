@@ -25,7 +25,7 @@ namespace Rush.Game
         #region _________________________/ TIME VALUES
         [Header("Time")]
         public float currentTickStep { get; set; }
-        public int levelStopperTicks = 2;
+        public int levelStopperTicks { get; private set; } = 2;
         private int pauseTicksRemaining = 0;
 
         #endregion
@@ -65,6 +65,7 @@ namespace Rush.Game
         {
             _Self = transform;
             doAction = Pause;
+            Debug.Log("Level Stopper Ticks = " + levelStopperTicks);
         }
 
         public void SpawnDirection(Vector3 pDirection) => _Direction = pDirection;
@@ -137,12 +138,15 @@ namespace Rush.Game
         {
             foreach (var lDirection in pCheckingOrder)
             {
-                if (!CheckForWall(lDirection) && lDirection != _Direction) //là il a trouvé une direction ou il prend rien dans la goule
+                if (CheckForWall(lDirection)) continue;
+
+                if (lDirection != _Direction) //là il a trouvé une direction ou il prend rien dans la goule
                 {
                     _Direction = lDirection;
                     return true;
                 }
-                else return false;
+
+                break;
             }
             return false;
         }
@@ -152,7 +156,7 @@ namespace Rush.Game
         #region _________________________| STATE MACHINE SETTERS
 
         public void SetModePause(int pTicks = 1) {
-            pauseTicksRemaining = pTicks;
+            pauseTicksRemaining = Mathf.Max(pauseTicksRemaining, pTicks);
             doAction = Pause; }
 
         public void SetModeRoll(Vector3 pDirection = default)
