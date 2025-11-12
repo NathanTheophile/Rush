@@ -12,12 +12,12 @@ namespace Rush.Game
 {
     public class Target : Tile
     {
-        [SerializeField] private SOColors _ColorSO;
+        [SerializeField] private SO_Colors _ColorSO;
         private Color _Color;
 
-        private LevelManager    levelManager;
-        private TimeManager     timeManager;
-        private TileManager     tileManager;
+        private Manager_Level    levelManager;
+        private Manager_Time     timeManager;
+        private Manager_Tile     tileManager;
 
         public event Action onCubeValidation;
 
@@ -32,9 +32,9 @@ namespace Rush.Game
         protected override void Start()
         {
             base.Start();
-            levelManager = LevelManager.Instance;
-            timeManager = TimeManager.Instance;
-            tileManager = TileManager.Instance;
+            levelManager = Manager_Level.Instance;
+            timeManager = Manager_Time.Instance;
+            tileManager = Manager_Tile.Instance;
             onCubeValidation += levelManager.CubeValidated;
         }
 

@@ -65,7 +65,6 @@ namespace Rush.Game
         {
             _Self = transform;
             doAction = Pause;
-            Debug.Log("Level Stopper Ticks = " + levelStopperTicks);
         }
 
         public void SpawnDirection(Vector3 pDirection) => _Direction = pDirection;

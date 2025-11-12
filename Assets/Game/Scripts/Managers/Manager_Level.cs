@@ -11,9 +11,9 @@ using UnityEngine;
 
 namespace Rush.Game
 {
-    public class LevelManager : MonoBehaviour
+    public class Manager_Level : MonoBehaviour
     {
-        public static LevelManager Instance { get; private set; }
+        public static Manager_Level Instance { get; private set; }
 
         private int _CubesToSpawn;
         private int _CubesValidated;

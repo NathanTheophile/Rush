@@ -10,9 +10,9 @@ using UnityEngine;
 
 namespace Rush.Game
 {
-    public class TileManager : MonoBehaviour
+    public class Manager_Tile : MonoBehaviour
     {
-        public static TileManager Instance { get; private set; }
+        public static Manager_Tile Instance { get; private set; }
 
         private void Awake()
         {

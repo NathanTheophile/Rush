@@ -13,10 +13,10 @@ namespace Rush.Game
     public class Spawner : Tile
     {
         [SerializeField] private Cube cubePrefab;
-        [SerializeField] private SOColors _ColorSO;   
+        [SerializeField] private SO_Colors _ColorSO;   
 
-        TimeManager timeManager;
-        TileManager tileManager;
+        Manager_Time timeManager;
+        Manager_Tile tileManager;
 
         private Color _Color;
 
@@ -33,8 +33,8 @@ namespace Rush.Game
         protected override void Start()
         {
             base.Start();
-            timeManager = TimeManager.Instance;
-            tileManager = TileManager.Instance;
+            timeManager = Manager_Time.Instance;
+            tileManager = Manager_Tile.Instance;
             timeManager.onTickFinished += SpawnCube;
             SpawnCube(0);
         }
