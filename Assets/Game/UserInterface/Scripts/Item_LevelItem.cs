@@ -113,6 +113,7 @@ namespace Rush.UI
             transform.localScale = Vector3.one; }
 
         private void OnButtonClicked() {
+            Instantiate(_LevelData.levelPrefab, Vector3.zero, Quaternion.identity);
             Debug.Log(transform.root.name);
             Instantiate(_PanelToShow, transform.root);
             Destroy(_GridSelector.parent.GameObject());

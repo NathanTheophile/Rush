@@ -8,11 +8,11 @@ public class Btn_Transition : MonoBehaviour
     [SerializeField] private Transform _PanelToShow;
     [SerializeField] private Transform _PanelToHide;
 
-    private Manager_Ui manager_Ui;
+    private Manager_Game manager_Ui;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        manager_Ui = Manager_Ui.Instance;
+        manager_Ui = Manager_Game.Instance;
         if (_PanelToHide == null) _PanelToHide = transform.parent;
         _BtnTransition = GetComponent<Button>();
         _BtnTransition.onClick.AddListener(delegate { manager_Ui.SwitchPanel(_PanelToShow, _PanelToHide); });

@@ -5,7 +5,6 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Rush.Game
@@ -13,6 +12,10 @@ namespace Rush.Game
     public class Manager_Game : MonoBehaviour
     {
         public static Manager_Game Instance { get; private set; }
+
+        public enum GameStates { Cards, Setup, Play, Pause }
+
+        public GameStates gameState = GameStates.Cards;
 
         private void Awake()
         {
@@ -24,13 +27,6 @@ namespace Rush.Game
             Instance = this;
         }
 
-        public void ClosePanel(Transform pPanel) => Destroy(pPanel);
-
-        public void ShowPanel(Transform pPanel) => Instantiate(pPanel, Vector3.zero, Quaternion.identity);
-
-        public void SwitchPanel(Transform pPanelToShow, Transform lPanelToHide) {
-            Instantiate(pPanelToShow, transform);
-            Destroy(lPanelToHide.GameObject()); }
 
         private void OnDestroy()
         {
