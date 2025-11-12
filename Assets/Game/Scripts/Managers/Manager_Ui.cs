@@ -6,17 +6,13 @@
 #endregion
 
 using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace Rush.Game
 {
-    public class Manager_Level : MonoBehaviour
+    public class Manager_Ui : MonoBehaviour
     {
-        public static Manager_Level Instance { get; private set; }
-
-        private int _CubesToSpawn;
-        private int _CubesValidated;
+        public static Manager_Ui Instance { get; private set; }
 
         private void Awake()
         {
@@ -26,10 +22,15 @@ namespace Rush.Game
                 return;
             }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
-        public void CubeValidated() { _CubesValidated++; } 
+        public void ClosePanel(Transform pPanel) => Destroy(pPanel);
+
+        public void ShowPanel(Transform pPanel) => Instantiate(pPanel, Vector3.zero, Quaternion.identity);
+
+        public void SwitchPanel(Transform pPanelToShow, Transform lPanelToHide) {
+            Instantiate(pPanelToShow, transform);
+            Destroy(lPanelToHide.GameObject()); }
 
         private void OnDestroy()
         {
