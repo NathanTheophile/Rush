@@ -14,11 +14,9 @@ namespace Rush.UI
 {
     public class Item_LevelItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField]
-        private TMP_Text _PrefabNameText;
+        [SerializeField] private TMP_Text _PrefabNameText;
 
-        [SerializeField]
-        private RawImage _PreviewImage;
+        [SerializeField] private RawImage _PreviewImage;
 
         private Camera _PreviewCamera;
 
@@ -27,31 +25,12 @@ namespace Rush.UI
 
         public void Initialize(string prefabName, Camera previewCamera, Vector2Int previewResolution)
         {
-            if (_PrefabNameText != null)
-            {
-                _PrefabNameText.text = prefabName;
-            }
+            _PrefabNameText.text = prefabName;
 
-            if (_PreviewTexture != null)
-            {
-                CleanupTexture();
-            }
+            CleanupTexture();
 
             _PreviewCamera = previewCamera;
-            _PreviewCameraController = _PreviewCamera != null ? _PreviewCamera.GetComponent<PreviewCamera>() : null;
-            if (_PreviewCamera == null)
-            {
-                if (_PreviewImage != null)
-                {
-                    _PreviewImage.texture = null;
-                }
-                return;
-            }
-
-            if (previewResolution.x <= 0 || previewResolution.y <= 0)
-            {
-                previewResolution = new Vector2Int(256, 256);
-            }
+            _PreviewCameraController = _PreviewCamera.GetComponent<PreviewCamera>();
 
             _PreviewTexture = new RenderTexture(previewResolution.x, previewResolution.y, 24)
             {
@@ -63,39 +42,28 @@ namespace Rush.UI
             _PreviewCamera.targetTexture = _PreviewTexture;
             _PreviewCamera.enabled = true;
 
-            if (_PreviewImage != null)
-            {
-                _PreviewImage.texture = _PreviewTexture;
-            }
+            _PreviewImage.texture = _PreviewTexture;
         }
 
         private void CleanupTexture()
         {
-            if (_PreviewCamera != null)
+            if (_PreviewTexture == null)
             {
-                _PreviewCamera.targetTexture = null;
+                return;
             }
 
-            if (_PreviewTexture != null)
-            {
-                if (_PreviewTexture.IsCreated())
-                {
-                    _PreviewTexture.Release();
-                }
+            _PreviewCamera.targetTexture = null;
 
-                Destroy(_PreviewTexture);
-                _PreviewTexture = null;
+            if (_PreviewTexture.IsCreated())
+            {
+                _PreviewTexture.Release();
             }
 
-            if (_PreviewImage != null)
-            {
-                _PreviewImage.texture = null;
-            }
+            Destroy(_PreviewTexture);
+            _PreviewTexture = null;
 
-            if (_PreviewCameraController != null)
-            {
-                _PreviewCameraController.canRotate = false;
-            }
+            _PreviewImage.texture = null;
+            _PreviewCameraController.canRotate = false;
 
             _PreviewCamera = null;
             _PreviewCameraController = null;
@@ -106,20 +74,8 @@ namespace Rush.UI
             CleanupTexture();
         }
 
-                public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (_PreviewCameraController != null)
-            {
-                _PreviewCameraController.canRotate = true;
-            }
-        }
+        public void OnPointerEnter(PointerEventData eventData) => _PreviewCameraController.canRotate = true;
 
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (_PreviewCameraController != null)
-            {
-                _PreviewCameraController.canRotate = false;
-            }
-        }
+        public void OnPointerExit(PointerEventData eventData) => _PreviewCameraController.canRotate = false;
     }
 }
