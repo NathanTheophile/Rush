@@ -10,9 +10,9 @@ using UnityEngine;
 
 namespace Rush.Game
 {
-    public class Manager_Game : MonoBehaviour
+    public class Manager_Ui : MonoBehaviour
     {
-        public static Manager_Game Instance { get; private set; }
+        public static Manager_Ui Instance { get; private set; }
 
         private void Awake()
         {
