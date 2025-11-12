@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Rush.Game
 {
     [RequireComponent(typeof(Camera))]
-    public class SphericalOrbitCamera : MonoBehaviour
+    public class MainCamera : MonoBehaviour
     {
         #region ___________________________/ TARGET
         [Header("Target")]
@@ -46,18 +46,6 @@ namespace Rush.Game
 
         void Start()
         {
-            Vector3 lOffset = transform.position - _TargetPosition;
-            if (lOffset.sqrMagnitude > Mathf.Epsilon)
-            {
-                _Radius = Mathf.Clamp(lOffset.magnitude, _MinRadius, _MaxRadius);
-                Vector3 lNormalized = lOffset.normalized;
-                _Theta = Mathf.Atan2(lNormalized.z, lNormalized.x);
-            }
-            else
-            {
-                _Theta = 0f;
-            }
-
             UpdateCameraPosition();
         }
 
@@ -67,6 +55,8 @@ namespace Rush.Game
             ApplyInertia(Time.deltaTime);
             UpdateCameraPosition();
         }
+
+        #region ___________________________| INPUTS
 
         void HandleInput()
         {
@@ -166,6 +156,8 @@ namespace Rush.Game
                 _IsDragging = false;
             }
         }
+
+        #endregion
 
         void ApplyInertia(float pDeltaTime)
         {

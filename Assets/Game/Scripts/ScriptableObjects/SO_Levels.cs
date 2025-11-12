@@ -9,15 +9,12 @@ using UnityEngine;
 
 namespace Rush.Game
 {
-    [CreateAssetMenu(fileName = "SO_Colors", menuName = "Scriptable Objects/Colors")]
-    public class SO_Colors : ScriptableObject
+    [CreateAssetMenu(fileName = "SO_Levels", menuName = "Scriptable Objects/Levels")]
+    public class LevelCollection : ScriptableObject
     {
-        [SerializeField] private Color _Color;
+        [SerializeField]
+        private List<GameObject> _LevelPrefabs = new();
 
-        public Color Color
-        {
-            get { return _Color; }
-            set { _Color = value; }
-        }
+        public IReadOnlyList<GameObject> LevelPrefabs => _LevelPrefabs;
     }
 }
