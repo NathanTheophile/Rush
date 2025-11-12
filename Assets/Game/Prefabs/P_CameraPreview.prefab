@@ -58,7 +58,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8509582625888240027, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
       propertyPath: _Radius
-      value: 20
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8509582625888240027, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: _Colatitude
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8509582625888240027, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: _TargetPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8509582625888240027, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: _TargetPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8509582625888240027, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: _TargetPosition.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8420845232241739904, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
