@@ -11,7 +11,7 @@ using System;
 
 namespace Rush.Game
 {
-    public class TimeManager : MonoBehaviour
+    public class Manager_Time : MonoBehaviour
     {
         public List<ITickDependant> objectsAffectedByTime = new List<ITickDependant>();
 
@@ -30,7 +30,7 @@ namespace Rush.Game
         private float _TickDuration = 1f;
         private int _TickIndex = 0;
 
-        public static TimeManager Instance { get; private set; }
+        public static Manager_Time Instance { get; private set; }
 
         private void Awake()
         {

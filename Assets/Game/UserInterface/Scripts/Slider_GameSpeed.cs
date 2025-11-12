@@ -10,13 +10,13 @@ using UnityEngine.UI;
 
 namespace Rush.UI
 {
-    public class GameSpeedSlider : MonoBehaviour
+    public class Slider_GameSpeed : MonoBehaviour
     {
         private Slider _GameSpeedSlider;
 
         void Start() { _GameSpeedSlider = GetComponentInParent<Slider>(); _GameSpeedSlider.onValueChanged.AddListener(OnSliderValueChanged); }
 
-        public void OnSliderValueChanged(float pValue) => TimeManager.Instance.GlobalTickSpeed = pValue;
+        public void OnSliderValueChanged(float pValue) => Manager_Time.Instance.GlobalTickSpeed = pValue;
     }
 }
 

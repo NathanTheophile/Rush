@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SOColors", menuName = "Scriptable Objects/SOColors")]
-public class SOColors : ScriptableObject
+public class SO_Colors : ScriptableObject
 {
     [SerializeField] private Color _Color;
 
