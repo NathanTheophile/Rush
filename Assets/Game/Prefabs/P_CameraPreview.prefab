@@ -48,6 +48,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2119934401357819613, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: field of view
+      value: 26.231289
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119934401357819613, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: m_FOVAxisMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8147160801612577305, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
       propertyPath: m_Name
       value: P_CameraPreview
@@ -78,7 +86,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8420845232241739904, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+    - {fileID: 8509582625888240027, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8147160801612577305, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 871923205866392070}
   m_SourcePrefab: {fileID: 100100000, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+--- !u!1 &1883586245773995411 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8147160801612577305, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+  m_PrefabInstance: {fileID: 7724605886910502794}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &871923205866392070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883586245773995411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a416056aca664654ebae948c65bde104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TargetPosition: {x: 0, y: 0, z: 0}
+  _Radius: 40
+  _MinRadius: 5
+  _MaxRadius: 50
+  _Colatitude: 30
+  _RotationSensitivity: 0.1
+  _ScrollZoomSensitivity: 0.2
+  _PinchZoomSensitivity: 0.02
+  _InertiaDamping: 4
+  _RotateSpeed: 45
+  canRotate: 0

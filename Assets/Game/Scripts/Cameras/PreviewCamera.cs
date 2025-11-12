@@ -31,6 +31,8 @@ namespace Rush.Game
         [SerializeField] private float _ScrollZoomSensitivity = 0.2f; // Units per scroll step
         [SerializeField] private float _PinchZoomSensitivity = 0.02f; // Units per pixel
         [SerializeField] private float _InertiaDamping = 4f;
+
+                [SerializeField] private float _RotateSpeed = 45f;     
         #endregion
 
         #region ___________________________/ STATE
@@ -41,7 +43,10 @@ namespace Rush.Game
         private bool       _IsPinching;
         private bool       _HasZoomInput;
         private Vector2    _LastPointerPosition;
-        private float      _PreviousPinchDistance;
+        private float _PreviousPinchDistance;
+
+        public bool canRotate;
+                
         #endregion
 
         void Start()
@@ -52,6 +57,10 @@ namespace Rush.Game
         void Update()
         {
             ApplyInertia(Time.deltaTime);
+                        if (canRotate)
+            {
+                RotatePreview(Time.deltaTime);
+            }
             UpdateCameraPosition();
         }
 
@@ -112,6 +121,16 @@ namespace Rush.Game
 
             transform.position = _TargetPosition + lOffset;
             transform.LookAt(_TargetPosition, Vector3.up);
+        }
+
+                void RotatePreview(float pDeltaTime)
+        {
+            if (Mathf.Approximately(pDeltaTime, 0f))
+            {
+                return;
+            }
+
+            _Theta += _RotateSpeed * Mathf.Deg2Rad * pDeltaTime;
         }
     }
 }
