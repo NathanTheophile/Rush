@@ -17,12 +17,14 @@ namespace Rush.Game
 
         Manager_Time timeManager;
         Manager_Tile tileManager;
+        Manager_Game gameManager;
 
         private Color _Color;
 
         private int _TickBetweenSpawns = 2;
         [SerializeField] private int _AmountoOfCubes = 1;
         private int _CurrentCubeSpawned = 0;
+        private bool _Spawning = false;
 
         void Awake()
         {
@@ -35,8 +37,16 @@ namespace Rush.Game
             base.Start();
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
-            timeManager.onTickFinished += SpawnCube;
-            SpawnCube(0);
+            gameManager = Manager_Game.Instance;
+            if (gameManager != null)
+            {
+                gameManager.onGameStateChanged += OnGameStateChanged;
+                OnGameStateChanged(gameManager.CurrentState);
+            }
+            else
+            {
+                BeginSpawning();
+            }
         }
 
         void SpawnCube(int pTickIndex)
@@ -49,7 +59,51 @@ namespace Rush.Game
             lCube.onTileDetected += tileManager.TryGetTile;
             lCube.SpawnDirection(direction);
             _CurrentCubeSpawned++;
-            if (_CurrentCubeSpawned >= _AmountoOfCubes) timeManager.onTickFinished -= SpawnCube;
+            if (_CurrentCubeSpawned >= _AmountoOfCubes) StopSpawning();
+        }
+
+        private void OnGameStateChanged(Manager_Game.GameStates state)
+        {
+            if (timeManager == null) return;
+
+            bool shouldSpawn = state == Manager_Game.GameStates.Play && _CurrentCubeSpawned < _AmountoOfCubes;
+            if (shouldSpawn && !_Spawning)
+            {
+                BeginSpawning();
+            }
+            else if (!shouldSpawn && _Spawning)
+            {
+                StopSpawning();
+            }
+        }
+
+        private void BeginSpawning()
+        {
+            if (timeManager == null || _Spawning || _CurrentCubeSpawned >= _AmountoOfCubes) return;
+
+            timeManager.onTickFinished += SpawnCube;
+            _Spawning = true;
+            if (_CurrentCubeSpawned == 0)
+            {
+                SpawnCube(0);
+            }
+        }
+
+        private void StopSpawning()
+        {
+            if (!_Spawning || timeManager == null) return;
+
+            timeManager.onTickFinished -= SpawnCube;
+            _Spawning = false;
+        }
+
+        private void OnDestroy()
+        {
+            StopSpawning();
+            if (gameManager != null)
+            {
+                gameManager.onGameStateChanged -= OnGameStateChanged;
+            }
         }
     }
 }
