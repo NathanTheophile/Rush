@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 7791901761065862627}
   - component: {fileID: 4672349742603590985}
   - component: {fileID: 950785956838879186}
+  - component: {fileID: 1832525216883814532}
   m_Layer: 5
   m_Name: Btn_Play
   m_TagString: Untagged
@@ -257,6 +258,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1832525216883814532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3661926097618855961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60bcff14c727809439b0e7d7746a0b2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _BtnTransition: {fileID: 950785956838879186}
+  _PanelToShow: {fileID: 5411068302536572238, guid: b33fbd25acfe71342bb77172549a5bf9, type: 3}
+  _PanelToHide: {fileID: 5411068302536572238}
+  _UpdateGameState: 1
+  _TargetState: 2
 --- !u!1 &4945140549206634930
 GameObject:
   m_ObjectHideFlags: 0

@@ -117,7 +117,8 @@ namespace Rush.UI
             Debug.Log(transform.root.name);
             Instantiate(_PanelToShow, transform.root);
             Destroy(_GridSelector.parent.GameObject());
-            
+            Manager_Game.Instance?.SetState(Manager_Game.GameStates.Setup);
+
         }
 
         #endregion

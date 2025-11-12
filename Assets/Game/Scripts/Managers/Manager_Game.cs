@@ -15,7 +15,11 @@ namespace Rush.Game
 
         public enum GameStates { Cards, Setup, Play, Pause }
 
-        public GameStates gameState = GameStates.Cards;
+        [SerializeField] private GameStates _InitialState = GameStates.Cards;
+
+        public GameStates CurrentState { get; private set; }
+
+        public event System.Action<GameStates> onGameStateChanged;
 
         private void Awake()
         {
@@ -25,12 +29,31 @@ namespace Rush.Game
                 return;
             }
             Instance = this;
+            CurrentState = _InitialState;
+            ApplyState(CurrentState);
         }
-
 
         private void OnDestroy()
         {
             if (Instance == this) Instance = null;
+        }
+
+        public void SetState(GameStates newState)
+        {
+            if (CurrentState == newState) return;
+            Debug.Log("" + newState.ToString());
+            CurrentState = newState;
+            ApplyState(CurrentState);
+            onGameStateChanged?.Invoke(CurrentState);
+        }
+
+        private static void ApplyState(GameStates state)
+        {
+            Debug.Log($"{state}");
+            var timeManager = Manager_Time.Instance;
+            if (timeManager == null) return;
+
+            timeManager.pause = state == GameStates.Pause;
         }
     }
 }
