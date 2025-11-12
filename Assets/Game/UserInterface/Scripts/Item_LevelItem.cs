@@ -6,6 +6,7 @@
 
 using Rush.Game;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,18 +15,48 @@ namespace Rush.UI
 {
     public class Item_LevelItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private TMP_Text _PrefabNameText;
+        #region _____________________________/ ELEMENTS
 
+        [SerializeField] private TMP_Text _PrefabNameText;
         [SerializeField] private RawImage _PreviewImage;
+        [SerializeField] private Button _BtnLevel;
+        [SerializeField] private Transform _PanelToShow;
+        private RenderTexture _PreviewTexture;
+        private Transform _GridSelector;
+
+        #endregion
+
+        #region _____________________________/ DATA
+
+        private SO_LevelData _LevelData;
+
+        #endregion
+
+        #region _____________________________/ CAMERA
 
         private Camera _PreviewCamera;
-
         private PreviewCamera _PreviewCameraController;
-        private RenderTexture _PreviewTexture;
 
-        public void Initialize(string prefabName, Camera previewCamera, Vector2Int previewResolution)
+        #endregion
+
+        #region _____________________________/ DYNAMICS
+
+        private float _HoveringScale = 1.1f;
+
+        #endregion
+
+        #region _____________________________| INIT
+
+
+        private void Awake() {
+            _BtnLevel = GetComponent<Button>();
+            _BtnLevel.onClick.AddListener(OnButtonClicked); }
+
+        public void Initialize(Transform pGridSelector, SO_LevelData pLevelData, Camera previewCamera, Vector2Int previewResolution)
         {
-            _PrefabNameText.text = prefabName;
+            _GridSelector = pGridSelector;
+            _LevelData = pLevelData;
+            _PrefabNameText.text = _LevelData.levelName;
 
             CleanupTexture();
 
@@ -34,7 +65,7 @@ namespace Rush.UI
 
             _PreviewTexture = new RenderTexture(previewResolution.x, previewResolution.y, 24)
             {
-                name = $"RT_{prefabName}_Preview"
+                name = $"RT_{_LevelData.name}_Preview"
             };
 
             _PreviewTexture.Create();
@@ -47,17 +78,12 @@ namespace Rush.UI
 
         private void CleanupTexture()
         {
-            if (_PreviewTexture == null)
-            {
-                return;
-            }
+            if (_PreviewTexture == null) return;
 
-            _PreviewCamera.targetTexture = null;
+            if (_PreviewCamera != null)  _PreviewCamera.targetTexture = null;
 
-            if (_PreviewTexture.IsCreated())
-            {
-                _PreviewTexture.Release();
-            }
+
+            if (_PreviewTexture.IsCreated()) _PreviewTexture.Release();
 
             Destroy(_PreviewTexture);
             _PreviewTexture = null;
@@ -74,8 +100,25 @@ namespace Rush.UI
             CleanupTexture();
         }
 
-        public void OnPointerEnter(PointerEventData eventData) => _PreviewCameraController.canRotate = true;
+        #endregion        
 
-        public void OnPointerExit(PointerEventData eventData) => _PreviewCameraController.canRotate = false;
+        #region _____________________________| MOUSE EVENTS
+
+        public void OnPointerEnter(PointerEventData eventData) {
+            _PreviewCameraController.canRotate = true;
+            transform.localScale = Vector3.one * _HoveringScale; }
+
+        public void OnPointerExit(PointerEventData eventData) {
+            _PreviewCameraController.canRotate = false;
+            transform.localScale = Vector3.one; }
+
+        private void OnButtonClicked() {
+            Debug.Log(transform.root.name);
+            Instantiate(_PanelToShow, transform.root);
+            Destroy(_GridSelector.parent.GameObject());
+            
+        }
+
+        #endregion
     }
 }

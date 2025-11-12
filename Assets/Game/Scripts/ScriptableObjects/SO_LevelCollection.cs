@@ -10,11 +10,10 @@ using UnityEngine;
 namespace Rush.Game
 {
     [CreateAssetMenu(fileName = "SO_Levels", menuName = "Scriptable Objects/Levels")]
-    public class LevelCollection : ScriptableObject
+    public class SO_LevelCollection : ScriptableObject
     {
-        [SerializeField]
-        private List<GameObject> _LevelPrefabs = new();
+        [SerializeField] private List<SO_LevelData> _LevelDatas = new();
 
-        public IReadOnlyList<GameObject> LevelPrefabs => _LevelPrefabs;
+        public IReadOnlyList<SO_LevelData> levelDatas => _LevelDatas;
     }
 }

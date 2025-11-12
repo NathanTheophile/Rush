@@ -5,6 +5,7 @@
 #endregion
 
 using System.Collections.Generic;
+using NUnit.Framework.Internal.Execution;
 using Rush.Game;
 using UnityEngine;
 
@@ -14,9 +15,9 @@ namespace Rush.UI
     {
         [SerializeField] private Transform _GridRoot;
 
-        [SerializeField] private LevelCollection _LevelCollection;
+        [SerializeField] private SO_LevelCollection _LevelCollection;
 
-        [SerializeField] private GameObject _LevelItemPrefab;
+        [SerializeField] private Item_LevelItem _LevelItemPrefab;
 
         [SerializeField] private Vector2Int _PreviewResolution = new Vector2Int(512, 512);
 
@@ -26,28 +27,28 @@ namespace Rush.UI
 
         private readonly List<GameObject> _SpawnedLevelInstances = new();
 
-        private void Awake() => Populate();
+        private void Start() => Populate();
 
         private void Populate()
         {
-            var levelPrefabs = _LevelCollection.LevelPrefabs;
+            var lLevelCollection = _LevelCollection.levelDatas;
 
-            for (int i = 0; i < levelPrefabs.Count; i++)
+            for (int i = 0; i < lLevelCollection.Count; i++)
             {
-                var levelPrefab = levelPrefabs[i];
-                Vector3 spawnPosition = _PreviewOrigin + new Vector3(_PreviewOffset * i, 0f, 0f);
-                GameObject levelInstance = Instantiate(levelPrefab, spawnPosition, Quaternion.identity);
-                _SpawnedLevelInstances.Add(levelInstance);
+                var lCurrentLevel = lLevelCollection[i];
+                Vector3 lSpawnPosition = _PreviewOrigin + new Vector3(_PreviewOffset * i, 0f, 0f);
+                GameObject lLevelInstance = Instantiate(lCurrentLevel.levelPrefab, lSpawnPosition, Quaternion.identity);
+                _SpawnedLevelInstances.Add(lLevelInstance);
 
-                var orbitCameras = levelInstance.GetComponentsInChildren<PreviewCamera>(true);
+                var orbitCameras = lLevelInstance.GetComponentsInChildren<PreviewCamera>(true);
                 for (int j = 0; j < orbitCameras.Length; j++)
                 {
-                    orbitCameras[j].AddTargetWorldOffset(spawnPosition);
+                    orbitCameras[j].AddTargetWorldOffset(lSpawnPosition);
                 }
 
-                var previewCamera = GetPreviewCamera(levelInstance);
-                var levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
-                levelItem.Initialize(levelPrefab.name, previewCamera, _PreviewResolution);
+                var previewCamera = GetPreviewCamera(lLevelInstance);
+                Item_LevelItem levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
+                levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution);
             }
         }
 
