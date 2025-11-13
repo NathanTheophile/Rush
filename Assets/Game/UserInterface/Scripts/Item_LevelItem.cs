@@ -78,21 +78,31 @@ namespace Rush.UI
 
         private void CleanupTexture()
         {
-            if (_PreviewTexture == null) return;
+            ReleasePreviewCamera();
 
-            if (_PreviewCamera != null)  _PreviewCamera.targetTexture = null;
+            if (_PreviewTexture != null)
+            {
+                if (_PreviewTexture.IsCreated()) _PreviewTexture.Release();
 
-
-            if (_PreviewTexture.IsCreated()) _PreviewTexture.Release();
-
-            Destroy(_PreviewTexture);
-            _PreviewTexture = null;
+                Destroy(_PreviewTexture);
+                _PreviewTexture = null;
+            }
 
             _PreviewImage.texture = null;
-            _PreviewCameraController.canRotate = false;
-
             _PreviewCamera = null;
             _PreviewCameraController = null;
+        }
+
+        private void ReleasePreviewCamera()
+        {
+            if (_PreviewCamera == null) return;
+
+            _PreviewCamera.targetTexture = null;
+
+            if (_PreviewCameraController != null)
+            {
+                _PreviewCameraController.canRotate = false;
+            }
         }
 
         private void OnDestroy()
@@ -113,6 +123,7 @@ namespace Rush.UI
             transform.localScale = Vector3.one; }
 
         private void OnButtonClicked() {
+            CleanupTexture();
             Instantiate(_LevelData.levelPrefab, Vector3.zero, Quaternion.identity);
             Debug.Log(transform.root.name);
             Instantiate(_PanelToShow, transform.root);

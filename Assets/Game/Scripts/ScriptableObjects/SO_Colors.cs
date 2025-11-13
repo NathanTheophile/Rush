@@ -4,7 +4,6 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rush.Game
@@ -14,10 +13,6 @@ namespace Rush.Game
     {
         [SerializeField] private Color _Color;
 
-        public Color Color
-        {
-            get { return _Color; }
-            set { _Color = value; }
-        }
+        public Color Color { get { return _Color; } set { _Color = value; } }
     }
 }
