@@ -71,9 +71,11 @@ namespace Rush.Game
 
         #region _____________________________/ LEVEL DATA
 
-        public void UpdateCurrentLevel(SO_LevelData pLevelData)
+        public void SpawnCurrentLevel(SO_LevelData pLevelData)
         {
+            Debug.Log($"{pLevelData.levelName} has {pLevelData.levelPrefab.name} prefab.");
             CurrentLevel = pLevelData;
+            Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
         }
 
         #endregion

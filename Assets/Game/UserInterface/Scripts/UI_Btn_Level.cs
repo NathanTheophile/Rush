@@ -65,7 +65,7 @@ namespace Rush.UI
             _PrefabNameText.text = _LevelData.levelName;
 
 
-            GameObject lLevelInstance = Instantiate(_LevelData.levelPrefab, pSpawnPosition, Quaternion.identity);
+            GameObject lLevelInstance = Instantiate(_LevelData.levelPrefab, pSpawnPosition, Quaternion.identity, _RootCard);
 
             _Camera = Instantiate(_CameraPrefab, lLevelInstance.transform);
             if (_Camera == null)
@@ -149,12 +149,10 @@ namespace Rush.UI
 
         private void OnButtonClicked() {
             CleanupTexture();
-            Manager_Game.Instance?.UpdateCurrentLevel(_LevelData);
-            Instantiate(_LevelData.levelPrefab, Vector3.zero, Quaternion.identity);
+            Manager_Game.Instance?.SpawnCurrentLevel(_LevelData);
             Instantiate(_PanelToShow, transform.root);
             Destroy(_RootCard.GameObject());
             Manager_Game.Instance?.SetState(Manager_Game.GameStates.Setup);
-
         }
 
         #endregion
