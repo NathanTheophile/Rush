@@ -44,7 +44,7 @@ namespace Rush.UI
 
                 var previewCamera = Instantiate(_CameraPreview, lLevelInstance.transform);
                 Item_LevelItem levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
-                levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution);
+                levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution, lSpawnPosition);
             }
         }
 
