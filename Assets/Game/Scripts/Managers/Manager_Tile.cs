@@ -47,10 +47,14 @@ namespace Rush.Game
             }
         }
 
-        private void Stopper(Cube pCube) => pCube.SetModePause(pCube.levelStopperTicks);
-        private void Arrow(Cube pCube, Tile pTile) => pCube.SetModeRoll(pTile.direction);
-        private void Convoyer(Cube pCube, Tile pTile) => pCube.SetModeSlide(pTile.direction);
-        private void Dispatcher(Cube pCube, Dispatcher pDispatcher) { pCube.SetModeRoll(pDispatcher.direction); pDispatcher.Switch(); }
+        private void Stopper(Cube pCube)                => pCube.SetModePause(pCube.levelStopperTicks);
+        private void Arrow(Cube pCube, Tile pTile)      => pCube.SetModeRoll(pTile.direction);
+        private void Convoyer(Cube pCube, Tile pTile)   => pCube.SetModeSlide(pTile.direction);
+
+        private void Dispatcher(Cube pCube, Dispatcher pDispatcher) { 
+            pCube.SetModeRoll(pDispatcher.direction); 
+            pDispatcher.Switch(); }
+
         private void Teleporter(Cube pCube, Teleporter pTeleporter)
         {
             if (pCube.justTeleported) { pCube.SetModeRoll(); pCube.justTeleported = false; }
@@ -61,6 +65,7 @@ namespace Rush.Game
                 pCube.SetModeTeleportation(lTarget);
             }
         }
+        
         private void Target(Cube pCube, Target pTile) {
             if (!pTile.CheckColor(pCube))
                 pCube.SetModeRoll(); }

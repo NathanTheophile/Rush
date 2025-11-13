@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 4328668691210900650}
   - component: {fileID: 2949172158783137812}
   m_Layer: 5
-  m_Name: Ui_Tile
+  m_Name: PUI_Btn_InventoryTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

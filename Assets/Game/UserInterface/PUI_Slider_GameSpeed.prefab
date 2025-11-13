@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 1056909798249072718}
   - component: {fileID: 172792878205334904}
   m_Layer: 5
-  m_Name: UI_SliderGameSpeed
+  m_Name: PUI_Slider_GameSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

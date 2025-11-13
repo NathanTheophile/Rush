@@ -29,6 +29,12 @@ namespace Rush.Game
 
         #endregion
 
+        #region _____________________________/ LEVEL DATA
+
+        public SO_LevelData CurrentLevel { get; private set; }
+
+        #endregion
+
         #region _____________________________| INIT
 
         private void Awake()
@@ -45,10 +51,10 @@ namespace Rush.Game
 
         #region _____________________________| GAME STATES
 
-        public void SetState(GameStates newState)
+        public void SetState(GameStates pNewState)
         {
-            if (CurrentState == newState) return;
-            CurrentState = newState;
+            if (CurrentState == pNewState) return;
+            CurrentState = pNewState;
             ApplyState(CurrentState);
             onGameStateChanged?.Invoke(CurrentState);
         }
@@ -59,6 +65,15 @@ namespace Rush.Game
             if (timeManager == null) return;
 
             timeManager.pause = state == GameStates.Pause;
+        }
+
+        #endregion
+
+        #region _____________________________/ LEVEL DATA
+
+        public void UpdateCurrentLevel(SO_LevelData pLevelData)
+        {
+            CurrentLevel = pLevelData;
         }
 
         #endregion

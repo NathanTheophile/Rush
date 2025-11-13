@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 3369541981347591029}
   - component: {fileID: 7436386360614992839}
   m_Layer: 5
-  m_Name: Ui_TilesInventory
+  m_Name: PUi_Grid_TilesInventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

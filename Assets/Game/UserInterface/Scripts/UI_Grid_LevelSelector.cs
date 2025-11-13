@@ -5,7 +5,6 @@
 #endregion
 
 using System.Collections.Generic;
-using NUnit.Framework.Internal.Execution;
 using Rush.Game;
 using UnityEngine;
 
@@ -19,15 +18,11 @@ namespace Rush.UI
 
         [SerializeField] private UI_Btn_Level _LevelItemPrefab;
 
-        [SerializeField] private Vector2Int _PreviewResolution = new Vector2Int(512, 512);
-
         [SerializeField] private float _PreviewOffset = 50f;
 
         [SerializeField] private Vector3 _PreviewOrigin = new Vector3(10000f, 10000f, 10000f);
 
-        [SerializeField] public Camera _CameraPreview;
-
-        private readonly List<GameObject> _SpawnedLevelInstances = new();
+        private readonly List<UI_Btn_Level> _SpawnedLevelInstances = new();
 
         private void Start() => Populate();
 
@@ -37,14 +32,12 @@ namespace Rush.UI
 
             for (int i = 0; i < lLevelCollection.Count; i++)
             {
-                var lCurrentLevel = lLevelCollection[i];
                 Vector3 lSpawnPosition = _PreviewOrigin + new Vector3(_PreviewOffset * i, 0f, 0f);
-                GameObject lLevelInstance = Instantiate(lCurrentLevel.levelPrefab, lSpawnPosition, Quaternion.identity);
-                _SpawnedLevelInstances.Add(lLevelInstance);
 
-                var previewCamera = Instantiate(_CameraPreview, lLevelInstance.transform);
-                UI_Btn_Level levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<UI_Btn_Level>();
-                levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution, lSpawnPosition);
+                UI_Btn_Level levelItem = Instantiate(_LevelItemPrefab, transform).GetComponent<UI_Btn_Level>();
+                levelItem.Initialize(lSpawnPosition, lLevelCollection[i], transform.parent);
+
+                _SpawnedLevelInstances.Add(levelItem);
             }
         }
 
