@@ -9,7 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Btn_Navigation : MonoBehaviour
+public class UI_Btn_Navigation : MonoBehaviour
 {
     #region _____________________________/ BTN TYPES
     public enum BtnTransitions { Show, Hide, Switch, Quit }

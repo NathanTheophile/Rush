@@ -35,9 +35,7 @@ public class TilePlacer : MonoBehaviour
         Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(lRay.origin, lRay.direction * 20, Color.white);
         RaycastHit lHitObject;
-        if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance, _GroundLayer))
-        { 
-            Debug.Log("TOUCHE SOL."); previewTile.position = Vector3Int.RoundToInt(lHitObject.point);}
+        if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance, _GroundLayer)) previewTile.position = Vector3Int.RoundToInt(lHitObject.point);
         if (Input.GetMouseButtonUp(0)) Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity);
     }
 }

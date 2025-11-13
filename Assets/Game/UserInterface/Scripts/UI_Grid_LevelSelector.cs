@@ -11,13 +11,13 @@ using UnityEngine;
 
 namespace Rush.UI
 {
-    public class Grid_LevelSelector : MonoBehaviour
+    public class UI_Grid_LevelSelector : MonoBehaviour
     {
         [SerializeField] private Transform _GridRoot;
 
         [SerializeField] private SO_LevelCollection _LevelCollection;
 
-        [SerializeField] private Item_LevelItem _LevelItemPrefab;
+        [SerializeField] private UI_Btn_Level _LevelItemPrefab;
 
         [SerializeField] private Vector2Int _PreviewResolution = new Vector2Int(512, 512);
 
@@ -43,7 +43,7 @@ namespace Rush.UI
                 _SpawnedLevelInstances.Add(lLevelInstance);
 
                 var previewCamera = Instantiate(_CameraPreview, lLevelInstance.transform);
-                Item_LevelItem levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
+                UI_Btn_Level levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<UI_Btn_Level>();
                 levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution, lSpawnPosition);
             }
         }

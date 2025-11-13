@@ -13,7 +13,7 @@ using UnityEngine.UI;
 
 namespace Rush.UI
 {
-    public class Item_LevelItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class UI_Btn_Level : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         #region _____________________________/ ELEMENTS
 
