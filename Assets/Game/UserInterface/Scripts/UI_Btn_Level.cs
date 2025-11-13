@@ -67,12 +67,22 @@ namespace Rush.UI
             GameObject lLevelInstance = Instantiate(pLevelData.levelPrefab, pSpawnPosition, Quaternion.identity);
 
             _Camera = Instantiate(_CameraPrefab, lLevelInstance.transform);
-            _PreviewCamera = _Camera.GetComponent<PreviewCamera>(); 
+            if (_Camera == null)
+            {
+                Debug.LogError("Preview camera prefab instantiation failed.");
+                return;
+            }
+
+            if (!_Camera.TryGetComponent(out _PreviewCamera))
+            {
+                Debug.LogWarning("PreviewCamera component missing on preview camera prefab. Adding one at runtime to avoid breaking the level selector preview.");
+                _PreviewCamera = _Camera.gameObject.AddComponent<PreviewCamera>();
+            }
+            else Debug.LogWarning("PreviewCamera component found.");
+
 
             CleanupTexture();
 
-
-            Debug.Log(_PreviewCamera == null);
 
             _PreviewCamera.AddTargetWorldOffset(pSpawnPosition);
 
