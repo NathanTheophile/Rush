@@ -15,7 +15,6 @@ namespace Rush.Game
         [SerializeField] private SO_Colors _ColorSO;
         private Color _Color;
 
-        private Manager_Game    levelManager;
         private Manager_Time     timeManager;
         private Manager_Tile     tileManager;
 
@@ -32,7 +31,6 @@ namespace Rush.Game
         protected override void Start()
         {
             base.Start();
-            levelManager = Manager_Game.Instance;
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
         }

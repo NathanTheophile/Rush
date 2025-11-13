@@ -5,25 +5,30 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
-using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace Rush.Game
 {
     public class Manager_Tile : MonoBehaviour
     {
+        #region _____________________________/ SINGLETON
+
         public static Manager_Tile Instance { get; private set; }
+
+        #endregion
+
+        #region _____________________________| INIT
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
+            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        #endregion
+
+        #region _____________________________| MANAGE TILE
 
         public void TryGetTile(Cube pCube, RaycastHit pHit)
         {
@@ -60,9 +65,13 @@ namespace Rush.Game
             if (!pTile.CheckColor(pCube))
                 pCube.SetModeRoll(); }
 
-        private void OnDestroy()
-        {
-            if (Instance == this) Instance = null;
-        }
+        #endregion
+
+        #region _____________________________| DESTROY
+
+        private void OnDestroy() {
+            if (Instance == this) Instance = null; }
+
+        #endregion
     }
 }

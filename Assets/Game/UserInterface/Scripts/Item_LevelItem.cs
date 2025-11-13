@@ -52,7 +52,7 @@ namespace Rush.UI
             _BtnLevel = GetComponent<Button>();
             _BtnLevel.onClick.AddListener(OnButtonClicked); }
 
-        public void Initialize(Transform pGridSelector, SO_LevelData pLevelData, Camera previewCamera, Vector2Int previewResolution)
+        public void Initialize(Transform pGridSelector, SO_LevelData pLevelData, Camera previewCamera, Vector2Int previewResolution, Vector3 pPosition)
         {
             _GridSelector = pGridSelector;
             _LevelData = pLevelData;
@@ -63,6 +63,9 @@ namespace Rush.UI
             _PreviewCamera = previewCamera;
             _PreviewCameraController = _PreviewCamera.GetComponent<PreviewCamera>();
 
+            _PreviewCameraController.AddTargetWorldOffset(pPosition);
+
+
             _PreviewTexture = new RenderTexture(previewResolution.x, previewResolution.y, 24)
             {
                 name = $"RT_{_LevelData.name}_Preview"
@@ -71,28 +74,42 @@ namespace Rush.UI
             _PreviewTexture.Create();
 
             _PreviewCamera.targetTexture = _PreviewTexture;
+                        _PreviewCamera.forceIntoRenderTexture = true;
+
             _PreviewCamera.enabled = true;
+                        _PreviewCamera.Render();
 
             _PreviewImage.texture = _PreviewTexture;
+
         }
 
         private void CleanupTexture()
         {
-            if (_PreviewTexture == null) return;
+            ReleasePreviewCamera();
 
-            if (_PreviewCamera != null)  _PreviewCamera.targetTexture = null;
+            if (_PreviewTexture != null)
+            {
+                if (_PreviewTexture.IsCreated()) _PreviewTexture.Release();
 
-
-            if (_PreviewTexture.IsCreated()) _PreviewTexture.Release();
-
-            Destroy(_PreviewTexture);
-            _PreviewTexture = null;
+                Destroy(_PreviewTexture);
+                _PreviewTexture = null;
+            }
 
             _PreviewImage.texture = null;
-            _PreviewCameraController.canRotate = false;
-
             _PreviewCamera = null;
             _PreviewCameraController = null;
+        }
+
+        private void ReleasePreviewCamera()
+        {
+            if (_PreviewCamera == null) return;
+
+            _PreviewCamera.targetTexture = null;
+
+            if (_PreviewCameraController != null)
+            {
+                _PreviewCameraController.canRotate = false;
+            }
         }
 
         private void OnDestroy()
@@ -113,6 +130,7 @@ namespace Rush.UI
             transform.localScale = Vector3.one; }
 
         private void OnButtonClicked() {
+            CleanupTexture();
             Instantiate(_LevelData.levelPrefab, Vector3.zero, Quaternion.identity);
             Debug.Log(transform.root.name);
             Instantiate(_PanelToShow, transform.root);
