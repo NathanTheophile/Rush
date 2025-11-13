@@ -57,14 +57,15 @@ namespace Rush.UI
 
         public void Initialize(Vector3 pSpawnPosition, SO_LevelData pLevelData, Transform pRootCard)
         {
+            CleanupTexture();
+
             _RootCard = pRootCard;
 
             _LevelData = pLevelData;
             _PrefabNameText.text = _LevelData.levelName;
 
-            Manager_Game.Instance?.UpdateCurrentLevel(pLevelData);
 
-            GameObject lLevelInstance = Instantiate(pLevelData.levelPrefab, pSpawnPosition, Quaternion.identity);
+            GameObject lLevelInstance = Instantiate(_LevelData.levelPrefab, pSpawnPosition, Quaternion.identity);
 
             _Camera = Instantiate(_CameraPrefab, lLevelInstance.transform);
             if (_Camera == null)
@@ -79,10 +80,6 @@ namespace Rush.UI
                 _PreviewCamera = _Camera.gameObject.AddComponent<PreviewCamera>();
             }
             else Debug.LogWarning("PreviewCamera component found.");
-
-
-            CleanupTexture();
-
 
             _PreviewCamera.AddTargetWorldOffset(pSpawnPosition);
 
@@ -152,8 +149,8 @@ namespace Rush.UI
 
         private void OnButtonClicked() {
             CleanupTexture();
+            Manager_Game.Instance?.UpdateCurrentLevel(_LevelData);
             Instantiate(_LevelData.levelPrefab, Vector3.zero, Quaternion.identity);
-            Debug.Log(transform.root.name);
             Instantiate(_PanelToShow, transform.root);
             Destroy(_RootCard.GameObject());
             Manager_Game.Instance?.SetState(Manager_Game.GameStates.Setup);
