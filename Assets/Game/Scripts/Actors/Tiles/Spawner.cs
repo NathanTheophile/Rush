@@ -42,6 +42,7 @@ namespace Rush.Game
             {
                 gameManager.onGameStateChanged += OnGameStateChanged;
                 OnGameStateChanged(gameManager.CurrentState);
+                gameManager.UpdateCubesAmountoComplete(_AmountoOfCubes);
             }
             else
             {

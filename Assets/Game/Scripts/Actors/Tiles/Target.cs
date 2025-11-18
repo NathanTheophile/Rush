@@ -17,6 +17,7 @@ namespace Rush.Game
 
         private Manager_Time     timeManager;
         private Manager_Tile     tileManager;
+        private Manager_Game     gameManager;
 
         public event Action onCubeValidation;
 
@@ -33,6 +34,8 @@ namespace Rush.Game
             base.Start();
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
+            gameManager = Manager_Game.Instance;
+
         }
 
         public bool CheckColor(Cube pCube)
@@ -48,6 +51,7 @@ namespace Rush.Game
             timeManager.onTickFinished -= pCube.TickUpdate;
             timeManager.objectsAffectedByTime.Remove(pCube);
             pCube.onTileDetected -= tileManager.TryGetTile;
+            gameManager.UpdateCubeArrived();
 
             Destroy(pCube.GameObject());
         }

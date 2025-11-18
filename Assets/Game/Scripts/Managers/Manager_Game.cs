@@ -6,6 +6,7 @@
 #endregion
 
 using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace Rush.Game
@@ -26,12 +27,16 @@ namespace Rush.Game
         public  GameStates CurrentState { get; private set; }
 
         public event Action<GameStates> onGameStateChanged;
+        public event Action onLevelFinished;
 
         #endregion
 
         #region _____________________________/ LEVEL DATA
 
         public SO_LevelData CurrentLevel { get; private set; }
+
+        private int _CubesToComplete;
+        private int _CubesArrived;
 
         #endregion
 
@@ -67,6 +72,18 @@ namespace Rush.Game
             timeManager.pause = state == GameStates.Pause;
         }
 
+        public void UpdateCubesAmountoComplete(int pAmount) => _CubesToComplete += pAmount; 
+
+        public void UpdateCubeArrived()
+        {
+            _CubesArrived++;
+            if (_CubesArrived >= _CubesToComplete)
+            {            
+                onLevelFinished?.Invoke();
+                SetState(GameStates.Cards);
+            }
+        }
+        
         #endregion
 
         #region _____________________________/ LEVEL DATA
@@ -77,6 +94,9 @@ namespace Rush.Game
             CurrentLevel = pLevelData;
             Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
         }
+
+
+
 
         #endregion
 
