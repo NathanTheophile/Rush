@@ -14,7 +14,12 @@ namespace Rush.UI
     {
         private Slider _GameSpeedSlider;
 
-        void Start() { _GameSpeedSlider = GetComponentInParent<Slider>(); _GameSpeedSlider.onValueChanged.AddListener(OnSliderValueChanged); }
+        void Start() 
+        { 
+            _GameSpeedSlider = GetComponentInParent<Slider>(); 
+            _GameSpeedSlider.onValueChanged.AddListener(OnSliderValueChanged); 
+            Manager_Time.Instance.GlobalTickSpeed = _GameSpeedSlider.value;
+        }
 
         public void OnSliderValueChanged(float pValue) => Manager_Time.Instance.GlobalTickSpeed = pValue;
     }
