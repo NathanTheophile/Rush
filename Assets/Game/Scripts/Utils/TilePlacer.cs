@@ -56,12 +56,10 @@ public class TilePlacer : MonoBehaviour
         _HasGroundHit = false;
         if (previewTile != null)
         {
-            if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance, _TilesLayer))
+            if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance,  _GroundLayer | _TilesLayer))
             {
-                previewTile.position = InstantiatePos;
-            }
-            else if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance, _GroundLayer))
-            {
+                if (lHitObject.transform.gameObject.layer == 7) return;
+                
                 previewTile.position = Vector3Int.RoundToInt(lHitObject.point);
                 _HasGroundHit = true;
             }
