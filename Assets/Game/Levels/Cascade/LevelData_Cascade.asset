@@ -20,3 +20,13 @@ MonoBehaviour:
   _InventoryConvoyer: 1
   _InventoryDispatcher: 1
   _InventoryStopper: 0
+  inventory:
+  - type: 1
+    orientation: 1
+    quantity: 3
+  - type: 2
+    orientation: 2
+    quantity: 2
+  - type: 5
+    orientation: 0
+    quantity: 2

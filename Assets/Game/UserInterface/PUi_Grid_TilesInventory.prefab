@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 8942421151616111404}
   - component: {fileID: 3369541981347591029}
   - component: {fileID: 7436386360614992839}
+  - component: {fileID: 5794315870984387834}
   m_Layer: 5
   m_Name: PUi_Grid_TilesInventory
   m_TagString: Untagged
@@ -253,3 +254,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 64, z: 0, w: 0}
   m_Softness: {x: 0, y: 1024}
+--- !u!114 &5794315870984387834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7104475858893233897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dc992ab7dbf28948bf8e00692cf76ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  container: {fileID: 6276799011529999635}
+  inventoryTile: {fileID: 9084438993196360242, guid: d0c0af941bbd7f84ea0ff81a536b0a79, type: 3}

@@ -12,7 +12,12 @@ namespace Rush.Game
     {
         [SerializeField] public TileVariants tileVariant = TileVariants.Default;
         protected Vector3 m_Direction;
-        public Vector3 direction { get { return m_Direction; } }
+        public Vector3 direction { get => m_Direction; }
+
+        public enum TileOrientations
+    {
+        East, West, North, South   
+    }
 
         public enum TileVariants
         {

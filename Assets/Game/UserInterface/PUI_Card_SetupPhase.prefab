@@ -440,7 +440,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1028221786756975571, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 2
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 1028221786756975571, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
       propertyPath: m_SizeDelta.y
@@ -528,9 +528,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
+  m_MinWidth: 128
   m_MinHeight: -1
-  m_PreferredWidth: 128
+  m_PreferredWidth: 256
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
