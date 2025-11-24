@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c27715db560c9464d8d26e6b79fd6337, type: 3}
   m_Name: LevelCollection_BaseGame
   m_EditorClassIdentifier: 
-  _LevelDatas:
-  - {fileID: 11400000, guid: 61301da2f81dbe147aee8c06a418cb12, type: 2}
-  - {fileID: 11400000, guid: 41bee78d2a2dc34459d37084d51be1a0, type: 2}
+  _LevelPrefabs:
+  - {fileID: 7871752294018207239, guid: 5a4001aa6bec4224c80d803d17e8d2a4, type: 3}
+  - {fileID: 8889469495092285403, guid: 16c81310349543b42a9621f56d2e95c3, type: 3}

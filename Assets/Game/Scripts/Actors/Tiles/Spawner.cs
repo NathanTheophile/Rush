@@ -47,17 +47,6 @@ namespace Rush.Game
             {
                 BeginSpawning();
             }
-            gameManager = Manager_Game.Instance;
-            if (gameManager != null)
-            {
-                gameManager.onGameStateChanged += OnGameStateChanged;
-                OnGameStateChanged(gameManager.CurrentState);
-                gameManager.UpdateCubesAmountoComplete(_AmountoOfCubes);
-            }
-            else
-            {
-                BeginSpawning();
-            }
         }
 
         void SpawnCube(int pTickIndex)
