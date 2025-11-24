@@ -1,58 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3186543354080213143
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 898636344938064450}
-  - component: {fileID: 6985138637420767837}
-  m_Layer: 0
-  m_Name: TilePlacer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &898636344938064450
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3186543354080213143}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 206.35709, y: 180.79602, z: 1.9300756}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5411068302536572238}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6985138637420767837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3186543354080213143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e7396984d6fe4449abb95b6cc4008cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _TileToSpawn: {fileID: 5116307340863821749, guid: 3a04a2eecf6900249bd9d2c51b8bf800, type: 3}
-  _TilePreviewPrefab: {fileID: 6217075516189709499, guid: c647020b0aac81b49ac419461435cb87, type: 3}
-  _RaycastDistance: 20
-  _GroundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  _UiLayer:
-    serializedVersion: 2
-    m_Bits: 32
 --- !u!1 &3660993785315383670
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,7 +306,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1414216638965505013}
-  - {fileID: 898636344938064450}
   - {fileID: 7956536795042167872}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -493,6 +439,30 @@ PrefabInstance:
     - target: {fileID: 1028221786756975571, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829730314544358326, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
+      propertyPath: _TileToSpawn
+      value: 
+      objectReference: {fileID: 5116307340863821749, guid: 3a04a2eecf6900249bd9d2c51b8bf800, type: 3}
+    - target: {fileID: 1829730314544358326, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
+      propertyPath: _UiLayer.m_Bits
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829730314544358326, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
+      propertyPath: _RaycastDistance
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829730314544358326, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
+      propertyPath: _TilePreviewPrefab
+      value: 
+      objectReference: {fileID: 6217075516189709499, guid: c647020b0aac81b49ac419461435cb87, type: 3}
+    - target: {fileID: 1829730314544358326, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
+      propertyPath: _TilesLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829730314544358326, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
+      propertyPath: _GroundLayer.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 6276799011529999635, guid: 8c1e2c2fa259c9e42a9accff10edf957, type: 3}
       propertyPath: m_SizeDelta.y
