@@ -49,12 +49,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2119934401357819613, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: m_ClearFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119934401357819613, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
       propertyPath: field of view
       value: 26.231289
       objectReference: {fileID: 0}
     - target: {fileID: 2119934401357819613, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
       propertyPath: m_FOVAxisMode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5318056061948014317, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+      propertyPath: m_CameraType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8147160801612577305, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
       propertyPath: m_Name
@@ -113,12 +121,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TargetPosition: {x: 0, y: 0, z: 0}
   _Radius: 40
-  _MinRadius: 5
-  _MaxRadius: 50
   _Colatitude: 30
-  _RotationSensitivity: 0.1
-  _ScrollZoomSensitivity: 0.2
-  _PinchZoomSensitivity: 0.02
-  _InertiaDamping: 4
   _RotateSpeed: 45
   canRotate: 0

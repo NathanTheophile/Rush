@@ -25,6 +25,8 @@ namespace Rush.UI
 
         [SerializeField] private Vector3 _PreviewOrigin = new Vector3(10000f, 10000f, 10000f);
 
+        [SerializeField] public Camera _CameraPreview;
+
         private readonly List<GameObject> _SpawnedLevelInstances = new();
 
         private void Start() => Populate();
@@ -40,15 +42,15 @@ namespace Rush.UI
                 GameObject lLevelInstance = Instantiate(lCurrentLevel.levelPrefab, lSpawnPosition, Quaternion.identity);
                 _SpawnedLevelInstances.Add(lLevelInstance);
 
-                var orbitCameras = lLevelInstance.GetComponentsInChildren<PreviewCamera>(true);
+                var orbitCameras = levelInstance.GetComponentsInChildren<PreviewCamera>(true);
                 for (int j = 0; j < orbitCameras.Length; j++)
                 {
-                    orbitCameras[j].AddTargetWorldOffset(lSpawnPosition);
+                    orbitCameras[j].AddTargetWorldOffset(spawnPosition);
                 }
 
-                var previewCamera = GetPreviewCamera(lLevelInstance);
-                Item_LevelItem levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
-                levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution);
+                var previewCamera = GetPreviewCamera(levelInstance);
+                var levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
+                levelItem.Initialize(levelPrefab.name, previewCamera, _PreviewResolution);
             }
         }
 
@@ -60,20 +62,6 @@ namespace Rush.UI
             }
 
             _SpawnedLevelInstances.Clear();
-        }
-
-        private static Camera GetPreviewCamera(GameObject levelInstance)
-        {
-            var cameras = levelInstance.GetComponentsInChildren<Camera>(true);
-            for (int i = 0; i < cameras.Length; i++)
-            {
-                if (cameras[i].CompareTag("PreviewCamera"))
-                {
-                    return cameras[i];
-                }
-            }
-
-            return null;
         }
     }
 }

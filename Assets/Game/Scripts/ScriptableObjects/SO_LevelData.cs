@@ -18,19 +18,17 @@ namespace Rush.Game
         [SerializeField] public int cubesPerSpawner;
         [SerializeField] private int _InventoryArrows, _InventoryConvoyer, _InventoryDispatcher, _InventoryStopper;
 
-
         public Dictionary<Tile.TileVariants, int> tileInventory { get; private set; }
 
-
-            void Awake()
+        void Awake()
+        {
+            tileInventory = new Dictionary<Tile.TileVariants, int>()
             {
-                tileInventory = new Dictionary<Tile.TileVariants, int>()
-                {
-                    { Tile.TileVariants.Arrow, _InventoryArrows },
-                    { Tile.TileVariants.Convoyer, _InventoryConvoyer },
-                    { Tile.TileVariants.Dispatcher, _InventoryDispatcher },
-                    { Tile.TileVariants.Stopper, _InventoryStopper }
-                };
-            }
+                { Tile.TileVariants.Arrow, _InventoryArrows },
+                { Tile.TileVariants.Convoyer, _InventoryConvoyer },
+                { Tile.TileVariants.Dispatcher, _InventoryDispatcher },
+                { Tile.TileVariants.Stopper, _InventoryStopper }
+            };
+        }
     }
 }

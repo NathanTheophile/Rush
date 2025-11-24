@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Rush.Game
 {
-    public class Cube : MonoBehaviour, ITickDependant, IColorDependant
+    public class Cube : MonoBehaviour, ITickDependant
     {
         #region _________________________/ MAIN VALUES
         [Header("Main")]

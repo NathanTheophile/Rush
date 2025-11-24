@@ -13,38 +13,49 @@ namespace Rush.Game
 {
     public class Manager_Time : MonoBehaviour
     {
-        public List<ITickDependant> objectsAffectedByTime = new List<ITickDependant>();
+        #region _____________________________/ SINGLETON
 
+        public static Manager_Time Instance { get; private set; }
+
+        #endregion
+
+        #region _____________________________/ SPEED VALUES
         [Header("Speed Values")]
         [SerializeField, Range(1f, 20f)] private float _MaxSpeed = 20f;
-
-        public event Action<int> onTickFinished;
 
         private float _GlobalTickSpeed = 1f;
         public float GlobalTickSpeed { get => _GlobalTickSpeed; set => _GlobalTickSpeed = Mathf.Clamp(value, 0f, _MaxSpeed); }
 
+        private float   _TickDuration = 1f;
+        private int     _TickIndex = 0;
+        
+        private float _ElapsedTime = 0f;
         private float _CurrentTickRatio = 0f;
 
-        public bool pause = false;
-        private float _ElapsedTime = 0f;
-        private float _TickDuration = 1f;
-        private int _TickIndex = 0;
+        public event Action<int> onTickFinished;
 
-        public static Manager_Time Instance { get; private set; }
+        public bool pause = false;
+
+        #endregion
+
+        #region _____________________________/ MISC VALUES
+
+        public List<ITickDependant> objectsAffectedByTime = new List<ITickDependant>();
+
+        #endregion
+
+        #region _____________________________| INIT
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
+            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
-        private void OnDestroy() {
-            if (Instance == this) Instance = null; }
+        #endregion
+
+        #region _____________________________| UPDATE
 
         private void Update()
         {
@@ -67,7 +78,16 @@ namespace Rush.Game
             AdministrateTime();
         }
 
-        private void AdministrateTime() {
+        private void AdministrateTime() { 
             foreach (ITickDependant lObject in objectsAffectedByTime) lObject.currentTickStep = _CurrentTickRatio; }
+
+        #endregion
+
+        #region _____________________________| DESTROY
+
+        private void OnDestroy() { 
+            if (Instance == this) Instance = null; }
+            
+        #endregion
     }
 }
