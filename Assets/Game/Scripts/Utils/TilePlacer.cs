@@ -13,6 +13,7 @@ public class TilePlacer : MonoBehaviour
     [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
     private bool _HasGroundHit;
     public event Action OnTilePlaced;
+    public bool HandlingTile { get; private set; }
 
     private Vector3 InstantiatePos;
     public static Transform previewTile;
@@ -42,13 +43,15 @@ public class TilePlacer : MonoBehaviour
     public static void SwitchPreviewTile (Transform pPrefab)
     {
         Vector3 lCurrentPos = previewTile.position;
-        Destroy(previewTile);
+        Destroy(previewTile.gameObject);
         InstantiatePreviewTile(pPrefab, lCurrentPos);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!HandlingTile) return;
+
         if (EventSystem.current.IsPointerOverGameObject()) return;
         Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(lRay.origin, lRay.direction * 20, Color.white);
@@ -56,7 +59,7 @@ public class TilePlacer : MonoBehaviour
         _HasGroundHit = false;
         if (previewTile != null)
         {
-            if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance,  _GroundLayer | _TilesLayer))
+            if (TryGetPlacementHit(lRay, out lHitObject))
             {
                 if (lHitObject.transform.gameObject.layer == 7) return;
 
@@ -81,11 +84,34 @@ public class TilePlacer : MonoBehaviour
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
             Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity);
-
+            Destroy(previewTile.gameObject);
+            previewTile = null;
+            HandlingTile = false;
             OnTilePlaced?.Invoke();
         }
     }
 
+    private bool TryGetPlacementHit(Ray pRay, out RaycastHit pHit)
+    {
+        var lHits = Physics.RaycastAll(pRay, _RaycastDistance, _GroundLayer | _TilesLayer);
+        Array.Sort(lHits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (var lHit in lHits)
+        {
+            if (previewTile != null && (lHit.transform == previewTile || lHit.transform.IsChildOf(previewTile)))
+                continue;
+
+            pHit = lHit;
+            return true;
+        }
+
+        pHit = default;
+        return false;
+    }
+    public void StartHandlingTile()
+    {
+        HandlingTile = true;
+    }
     public void ClearSelection()
     {
         _TileToSpawn = null;
