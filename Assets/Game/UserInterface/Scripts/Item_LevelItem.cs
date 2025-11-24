@@ -52,7 +52,7 @@ namespace Rush.UI
             _BtnLevel = GetComponent<Button>();
             _BtnLevel.onClick.AddListener(OnButtonClicked); }
 
-        public void Initialize(string prefabName, Camera previewCamera, Vector2Int previewResolution)
+        public void Initialize(Transform pGridSelector, SO_LevelData pLevelData, Camera previewCamera, Vector2Int previewResolution, Vector3 pPosition)
         {
             _GridSelector = pGridSelector;
             _LevelData = pLevelData;
@@ -87,12 +87,9 @@ namespace Rush.UI
         {
             ReleasePreviewCamera();
 
-            _PreviewCamera.targetTexture = null;
-
-            if (_PreviewTexture.IsCreated())
+            if (_PreviewTexture != null)
             {
-                _PreviewTexture.Release();
-            }
+                if (_PreviewTexture.IsCreated()) _PreviewTexture.Release();
 
                 Destroy(_PreviewTexture);
                 _PreviewTexture = null;

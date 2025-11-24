@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4268631969340830, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 23704975771370082, guid: 2777fa4125ee24340ad1f0bc31d4fbaf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -84,3 +88,4 @@ MonoBehaviour:
   tileVariant: 6
   cubePrefab: {fileID: 2526059154965326359, guid: d11d60136d78d134383d4406c21f8cbd, type: 3}
   _ColorSO: {fileID: 0}
+  _AmountoOfCubes: 1

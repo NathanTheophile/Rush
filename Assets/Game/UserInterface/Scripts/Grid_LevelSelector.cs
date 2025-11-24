@@ -42,15 +42,9 @@ namespace Rush.UI
                 GameObject lLevelInstance = Instantiate(lCurrentLevel.levelPrefab, lSpawnPosition, Quaternion.identity);
                 _SpawnedLevelInstances.Add(lLevelInstance);
 
-                var orbitCameras = levelInstance.GetComponentsInChildren<PreviewCamera>(true);
-                for (int j = 0; j < orbitCameras.Length; j++)
-                {
-                    orbitCameras[j].AddTargetWorldOffset(spawnPosition);
-                }
-
-                var previewCamera = GetPreviewCamera(levelInstance);
-                var levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
-                levelItem.Initialize(levelPrefab.name, previewCamera, _PreviewResolution);
+                var previewCamera = Instantiate(_CameraPreview, lLevelInstance.transform);
+                Item_LevelItem levelItem = Instantiate(_LevelItemPrefab, _GridRoot).GetComponent<Item_LevelItem>();
+                levelItem.Initialize(transform, lCurrentLevel, previewCamera, _PreviewResolution, lSpawnPosition);
             }
         }
 
