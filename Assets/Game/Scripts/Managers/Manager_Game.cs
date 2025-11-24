@@ -95,9 +95,6 @@ namespace Rush.Game
             Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
         }
 
-
-
-
         #endregion
 
         #region _____________________________/ DESTROY
