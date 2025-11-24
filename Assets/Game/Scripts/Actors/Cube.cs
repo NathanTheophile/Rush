@@ -124,7 +124,7 @@ namespace Rush.Game
         private Vector3Int[] SetSidesCheckingOrder()
         {
             int i = DirectionIndexOf(Vector3Int.RoundToInt(_Direction));
-            return new[] { DIRECTIONS[i], DIRECTIONS[RightOf(i)], DIRECTIONS[LeftOf(i)], DIRECTIONS[BackOf(i)] };
+            return new[] { DIRECTIONS[i], DIRECTIONS[RightOf(i)], DIRECTIONS[BackOf(i)], DIRECTIONS[LeftOf(i)] };
         }
 
         private bool CheckForWall(Vector3Int pDirection) => Physics.Raycast(_Self.position, pDirection, _GridSize, _GroundLayer); //oeoe le raycast
@@ -148,6 +148,11 @@ namespace Rush.Game
                 break;
             }
             return false;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Cube")) Debug.Log("2 cubes se sont touchés.");
         }
 
         #endregion

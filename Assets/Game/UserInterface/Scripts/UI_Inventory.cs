@@ -4,6 +4,8 @@ using static Rush.Game.SO_LevelData;
 
 public class UI_Inventory : MonoBehaviour
 {
+    [SerializeField] TilePlacer _TilePlacer;
+
     SO_LevelData _CurrentLevel;
     [SerializeField] Transform container;
     [SerializeField] UI_Btn_InventoryTile inventoryTile;
@@ -15,9 +17,8 @@ public class UI_Inventory : MonoBehaviour
         foreach (InventoryTile item in _CurrentLevel.inventory)
         {
             UI_Btn_InventoryTile lTile = Instantiate(inventoryTile, container);
-            lTile._TileName.text = item.type.ToString();
-            lTile._TileAmount.text = item.quantity.ToString();
-            
+            lTile.Initialize(item, _TilePlacer);
+
         }
     }
 

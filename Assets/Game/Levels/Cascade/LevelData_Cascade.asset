@@ -15,18 +15,19 @@ MonoBehaviour:
   levelPrefab: {fileID: 7871752294018207239, guid: 5a4001aa6bec4224c80d803d17e8d2a4, type: 3}
   levelName: CASCADE
   stopperTicks: 2
-  cubesPerSpawner: 3
-  _InventoryArrows: 3
-  _InventoryConvoyer: 1
-  _InventoryDispatcher: 1
-  _InventoryStopper: 0
   inventory:
   - type: 1
     orientation: 1
     quantity: 3
+    tilePrefab: {fileID: 1519708505807681995, guid: d8933d0591b5185449cd286b9f4b5de1, type: 3}
+    previewPrefab: {fileID: 1519708505807681995, guid: d8933d0591b5185449cd286b9f4b5de1, type: 3}
   - type: 2
     orientation: 2
     quantity: 2
+    tilePrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
+    previewPrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
   - type: 5
     orientation: 0
     quantity: 2
+    tilePrefab: {fileID: 1519708505807681995, guid: 035905dcdb8fce946abc320f46ed45d5, type: 3}
+    previewPrefab: {fileID: 1519708505807681995, guid: 035905dcdb8fce946abc320f46ed45d5, type: 3}

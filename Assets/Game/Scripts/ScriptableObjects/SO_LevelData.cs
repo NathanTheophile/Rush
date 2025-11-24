@@ -18,12 +18,15 @@ namespace Rush.Game
         [SerializeField] public string levelName;
         [SerializeField] public int stopperTicks;
 
-    [Serializable] public struct InventoryTile
-    {
-        public Tile.TileVariants type;
-        public Tile.TileOrientations orientation;
-        public int quantity;
-    }
+        [Serializable] public struct InventoryTile
+        {
+            public Tile.TileVariants type;
+            public Tile.TileOrientations orientation;
+            public int quantity;
+            public Transform tilePrefab;
+            public Transform previewPrefab;
+        }
+        
         public List<InventoryTile> inventory;
     }
 
