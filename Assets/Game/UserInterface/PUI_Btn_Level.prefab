@@ -208,7 +208,7 @@ MonoBehaviour:
   _PrefabNameText: {fileID: 5386030485575330833}
   _PreviewImage: {fileID: 9070989855830078072}
   _BtnLevel: {fileID: 4053507832295043765}
-  _PanelToShow: {fileID: 5411068302536572238, guid: 7256607c2b184fe4b94d3e95929af0e6, type: 3}
+  _PanelToShow: {fileID: 5411068302536572238, guid: 1ae016203e69630498f5b2f0c39b554f, type: 3}
   _CameraPrefab: {fileID: 8527800346811119959, guid: 9b9841144ce7af749846feea7bd1248a, type: 3}
   _PreviewResolution: {x: 512, y: 512}
 --- !u!114 &4053507832295043765

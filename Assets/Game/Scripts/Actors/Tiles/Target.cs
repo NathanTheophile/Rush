@@ -35,8 +35,6 @@ namespace Rush.Game
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
             gameManager = Manager_Game.Instance;
-
-            onCubeValidation += levelManager.CubeValidated;
         }
 
         public bool CheckColor(Cube pCube)
