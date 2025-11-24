@@ -15,9 +15,10 @@ namespace Rush.Game
         [SerializeField] private SO_Colors _ColorSO;
         private Color _Color;
 
-        private Manager_Game    levelManager;
+        private Manager_Level    levelManager;
         private Manager_Time     timeManager;
         private Manager_Tile     tileManager;
+        private Manager_Game     gameManager;
 
         public event Action onCubeValidation;
 
@@ -32,9 +33,11 @@ namespace Rush.Game
         protected override void Start()
         {
             base.Start();
-            levelManager = Manager_Game.Instance;
+            levelManager = Manager_Level.Instance;
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
+            gameManager = Manager_Game.Instance;
+
         }
 
         public bool CheckColor(Cube pCube)
@@ -50,6 +53,7 @@ namespace Rush.Game
             timeManager.onTickFinished -= pCube.TickUpdate;
             timeManager.objectsAffectedByTime.Remove(pCube);
             pCube.onTileDetected -= tileManager.TryGetTile;
+            gameManager.UpdateCubeArrived();
 
             Destroy(pCube.GameObject());
         }

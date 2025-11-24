@@ -16,7 +16,7 @@ MonoBehaviour:
   levelName: CASCADE
   stopperTicks: 2
   cubesPerSpawner: 3
-  _InventoryArrows: 0
-  _InventoryConvoyer: 0
-  _InventoryDispatcher: 0
+  _InventoryArrows: 3
+  _InventoryConvoyer: 1
+  _InventoryDispatcher: 1
   _InventoryStopper: 0

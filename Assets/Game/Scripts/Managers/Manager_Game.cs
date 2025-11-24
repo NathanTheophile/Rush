@@ -6,6 +6,7 @@
 #endregion
 
 using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace Rush.Game
@@ -26,6 +27,16 @@ namespace Rush.Game
         public  GameStates CurrentState { get; private set; }
 
         public event Action<GameStates> onGameStateChanged;
+        public event Action onLevelFinished;
+
+        #endregion
+
+        #region _____________________________/ LEVEL DATA
+
+        public SO_LevelData CurrentLevel { get; private set; }
+
+        private int _CubesToComplete;
+        private int _CubesArrived;
 
         #endregion
 
@@ -45,10 +56,10 @@ namespace Rush.Game
 
         #region _____________________________| GAME STATES
 
-        public void SetState(GameStates newState)
+        public void SetState(GameStates pNewState)
         {
-            if (CurrentState == newState) return;
-            CurrentState = newState;
+            if (CurrentState == pNewState) return;
+            CurrentState = pNewState;
             ApplyState(CurrentState);
             onGameStateChanged?.Invoke(CurrentState);
         }
@@ -60,6 +71,32 @@ namespace Rush.Game
 
             timeManager.pause = state == GameStates.Pause;
         }
+
+        public void UpdateCubesAmountoComplete(int pAmount) => _CubesToComplete += pAmount; 
+
+        public void UpdateCubeArrived()
+        {
+            _CubesArrived++;
+            if (_CubesArrived >= _CubesToComplete)
+            {            
+                onLevelFinished?.Invoke();
+                SetState(GameStates.Cards);
+            }
+        }
+        
+        #endregion
+
+        #region _____________________________/ LEVEL DATA
+
+        public void SpawnCurrentLevel(SO_LevelData pLevelData)
+        {
+            Debug.Log($"{pLevelData.levelName} has {pLevelData.levelPrefab.name} prefab.");
+            CurrentLevel = pLevelData;
+            Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+
+
 
         #endregion
 

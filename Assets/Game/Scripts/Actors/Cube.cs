@@ -57,6 +57,7 @@ namespace Rush.Game
         [SerializeField] private LayerMask _GroundLayer;
         [SerializeField] private LayerMask _TilesLayer;
         public event Action<Cube, RaycastHit> onTileDetected;
+        public event Action<Cube> onCubesCollided;
 
         #endregion
 
@@ -149,6 +150,8 @@ namespace Rush.Game
             }
             return false;
         }
+
+        void OnTriggerEnter(Collider other) { if(other.TryGetComponent(out Cube pCube)) onCubesCollided(pCube); } 
 
         #endregion
 

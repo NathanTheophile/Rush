@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Rush.UI
 {
-    public class Slider_GameSpeed : MonoBehaviour
+    public class UI_Slider_GameSpeed : MonoBehaviour
     {
         private Slider _GameSpeedSlider;
 
