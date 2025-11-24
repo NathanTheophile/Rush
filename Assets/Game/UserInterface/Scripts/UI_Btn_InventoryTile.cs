@@ -96,4 +96,15 @@ public class UI_Btn_InventoryTile : MonoBehaviour
                 _TilePlacer.ClearSelection();
         }
     }
+
+        public static void ResetSelection(TilePlacer pTilePlacer)
+    {
+        if (_CurrentSelectedTile != null)
+        {
+            _CurrentSelectedTile._IsSelected = false;
+            _CurrentSelectedTile = null;
+        }
+
+        pTilePlacer?.ClearSelection();
+    }
 }

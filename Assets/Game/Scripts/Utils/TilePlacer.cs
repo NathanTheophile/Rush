@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,6 +15,7 @@ public class TilePlacer : MonoBehaviour
     private bool _HasGroundHit;
     public event Action OnTilePlaced;
     public bool HandlingTile { get; private set; }
+    private readonly List<Transform> _PlacedTiles = new();
 
     private Vector3 InstantiatePos;
     public static Transform previewTile;
@@ -52,6 +54,17 @@ public class TilePlacer : MonoBehaviour
     {
         if (!HandlingTile) return;
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (previewTile != null)
+            {
+                Destroy(previewTile.gameObject);
+                previewTile = null;
+            }
+
+            HandlingTile = false;
+            return;
+        }
         if (EventSystem.current.IsPointerOverGameObject()) return;
         Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(lRay.origin, lRay.direction * 20, Color.white);
@@ -83,8 +96,8 @@ public class TilePlacer : MonoBehaviour
 
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
-            Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity);
-            Destroy(previewTile.gameObject);
+            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity);
+            _PlacedTiles.Add(lNewTile);            Destroy(previewTile.gameObject);
             previewTile = null;
             HandlingTile = false;
             OnTilePlaced?.Invoke();
@@ -120,5 +133,19 @@ public class TilePlacer : MonoBehaviour
 
         if (previewTile != null)
             previewTile.position = InstantiatePos;
+    }
+
+    
+    public void ResetPlacedTiles()
+    {
+        foreach (Transform lTile in _PlacedTiles)
+        {
+            if (lTile != null)
+                Destroy(lTile.gameObject);
+        }
+
+        _PlacedTiles.Clear();
+        HandlingTile = false;
+        ClearSelection();
     }
 }
