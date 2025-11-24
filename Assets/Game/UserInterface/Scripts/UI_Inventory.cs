@@ -14,11 +14,28 @@ public class UI_Inventory : MonoBehaviour
     void Start()
     {
         _CurrentLevel = Manager_Game.Instance.CurrentLevel;
+        PopulateInventory();
+    }
+
+    public void ResetInventory()
+    {
+        UI_Btn_InventoryTile.ResetSelection(_TilePlacer);
+
+        foreach (Transform lChild in container)
+            Destroy(lChild.gameObject);
+
+        if (_CurrentLevel == null && Manager_Game.Instance != null)
+            _CurrentLevel = Manager_Game.Instance.CurrentLevel;
+
+        PopulateInventory();
+    }
+
+    private void PopulateInventory()
+    {
         foreach (InventoryTile item in _CurrentLevel.inventory)
         {
             UI_Btn_InventoryTile lTile = Instantiate(inventoryTile, container);
             lTile.Initialize(item, _TilePlacer);
-
         }
     }
 
