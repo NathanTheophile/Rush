@@ -108,10 +108,12 @@ public class TilePlacer : MonoBehaviour
         pHit = default;
         return false;
     }
+
     public void StartHandlingTile()
     {
         HandlingTile = true;
     }
+    
     public void ClearSelection()
     {
         _TileToSpawn = null;
