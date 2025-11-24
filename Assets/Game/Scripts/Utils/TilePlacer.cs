@@ -7,7 +7,7 @@ public class TilePlacer : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private Transform _TileToSpawn;
     [SerializeField] private Transform _TilePreviewPrefab;
-
+    [SerializeField, Range(0f, 1f)] private float _SurfaceNormalThreshold = 0.3f;
     [Header("Physics")]
     [SerializeField] private float _RaycastDistance = 20f;
     [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
@@ -59,9 +59,20 @@ public class TilePlacer : MonoBehaviour
             if (Physics.Raycast(lRay, out lHitObject, _RaycastDistance,  _GroundLayer | _TilesLayer))
             {
                 if (lHitObject.transform.gameObject.layer == 7) return;
-                
-                previewTile.position = Vector3Int.RoundToInt(lHitObject.point);
-                _HasGroundHit = true;
+
+                float lUpDot = Vector3.Dot(lHitObject.normal, Vector3.up);
+
+                if (lUpDot > 0.9f)
+                {
+                    Vector3 lOffsetPoint = lHitObject.point + lHitObject.normal * 0.5f;
+
+                    previewTile.position = Vector3Int.RoundToInt(lOffsetPoint);
+                    _HasGroundHit = true;
+                }
+                else
+                {
+                    previewTile.position = InstantiatePos;
+                }
             }
             else
                 previewTile.position = InstantiatePos;
