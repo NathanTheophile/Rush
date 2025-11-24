@@ -54,6 +54,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
             _TilePlacer.OnTilePlaced -= HandleTilePlaced;
             _TilePlacer.OnTilePlaced += HandleTilePlaced;
+            _TilePlacer.StartHandlingTile();
 
             _TilePlacer.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab);
         });
