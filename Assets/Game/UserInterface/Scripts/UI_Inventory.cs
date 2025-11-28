@@ -1,45 +1,63 @@
+#region _____________________________/ INFOS
+//  AUTHOR : Nathan THEOPHILE (2025)
+//  Engine : Unity
+//  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
+#endregion
+
 using Rush.Game;
 using UnityEngine;
 using static Rush.Game.SO_LevelData;
 
 public class UI_Inventory : MonoBehaviour
 {
-    SO_LevelData _CurrentLevel;
-    [SerializeField] Transform container;
-    [SerializeField] UI_Btn_InventoryTile inventoryTile;
+    #region _____________________________/ REFS
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("References")]
+    [SerializeField] private Transform _Container;
+    [SerializeField] private UI_Btn_InventoryTile _InventoryTile;
+
+    #endregion
+
+    #region _____________________________/ DATA
+
+    private SO_LevelData _CurrentLevel;
+
+    #endregion
+
+    #region _____________________________| INIT
+
+    private void Start()
     {
         _CurrentLevel = Manager_Game.Instance.CurrentLevel;
         PopulateInventory();
     }
 
+    #endregion
+
+    #region _____________________________| METHODS
+
     public void ResetInventory()
     {
         UI_Btn_InventoryTile.ResetSelection();
 
-        foreach (Transform lChild in container)
+        foreach (Transform lChild in _Container)
             Destroy(lChild.gameObject);
 
-        if (_CurrentLevel == null && Manager_Game.Instance != null)
-            _CurrentLevel = Manager_Game.Instance.CurrentLevel;
+        _CurrentLevel = Manager_Game.Instance.CurrentLevel;
 
         PopulateInventory();
     }
 
     private void PopulateInventory()
     {
-        foreach (InventoryTile item in _CurrentLevel.inventory)
+        if (_CurrentLevel == null) return;
+
+        foreach (InventoryTile lItem in _CurrentLevel.inventory)
         {
-            UI_Btn_InventoryTile lTile = Instantiate(inventoryTile, container);
-            lTile.Initialize(item);
+            UI_Btn_InventoryTile lTile = Instantiate(_InventoryTile, _Container);
+            lTile.Initialize(lItem);
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #endregion
 }

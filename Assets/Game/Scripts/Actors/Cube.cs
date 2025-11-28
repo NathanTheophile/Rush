@@ -45,10 +45,10 @@ namespace Rush.Game
         // on bouclera sur les 4 directions à partir de la direction actuelle en modulant par par 4 poru rester entre 0 et 3
         // et pouvoir check facilement les 3 directions peut importe la direction actuel du cube
         static readonly Vector3Int[] DIRECTIONS = { Vector3Int.forward, Vector3Int.right, Vector3Int.back, Vector3Int.left };
-        static int RightOf(int i) => (i + 1) % DIRECTIONS.Length;
-        static int BackOf(int i) => (i + 2) % DIRECTIONS.Length;
-        static int LeftOf(int i) => (i + 3) % DIRECTIONS.Length;
-        private int DirectionIndexOf(Vector3Int pDirection) => System.Array.IndexOf(DIRECTIONS, pDirection);
+        static int Right(int i) => (i + 1) % DIRECTIONS.Length;
+        static int Back(int i) => (i + 2) % DIRECTIONS.Length;
+        static int Left(int i) => (i + 3) % DIRECTIONS.Length;
+        private int DirectionIndexOf(Vector3Int pDirection) => Array.IndexOf(DIRECTIONS, pDirection);
 
         #endregion
 
@@ -134,7 +134,7 @@ namespace Rush.Game
         private Vector3Int[] SetSidesCheckingOrder()
         {
             int i = DirectionIndexOf(Vector3Int.RoundToInt(_Direction));
-            return new[] { DIRECTIONS[i], DIRECTIONS[RightOf(i)], DIRECTIONS[BackOf(i)], DIRECTIONS[LeftOf(i)] };
+            return new[] { DIRECTIONS[i], DIRECTIONS[Right(i)], DIRECTIONS[Back(i)], DIRECTIONS[Left(i)] };
         }
 
         private bool CheckForWall(Vector3Int pDirection) => Physics.Raycast(_Self.position, pDirection, _GridSize, _GroundLayer); //oeoe le raycast

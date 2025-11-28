@@ -8,6 +8,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 {
     [SerializeField] public TMP_Text _TileName;
     [SerializeField] public TMP_Text _TileAmount;
+        [SerializeField] private Image _TileImage;
+
     [SerializeField] private Transform _TileOrientationVisual;
 
     public int TileAmount { get; private set; }
@@ -24,6 +26,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     {
         if (_Button == null)
             _Button = GetComponent<Button>();
+            
+        _TileImage = GetComponent<Image>();
 
         _InventoryTile = pInventoryTile;
 
@@ -31,6 +35,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
         _TileName.text = pInventoryTile.type.ToString();
         _TileAmount.text = TileAmount.ToString();
+        ApplyTileSprite(pInventoryTile.image);
+
         ApplyTileOrientation(pInventoryTile.orientation);
 
         _Button.onClick.RemoveAllListeners();
@@ -100,17 +106,32 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     }
     private void ApplyTileOrientation(Rush.Game.Tile.TileOrientations pOrientation)
     {
-        if (_TileOrientationVisual == null)
+        Transform lTargetTransform = _TileOrientationVisual != null && _TileOrientationVisual != transform
+            ? _TileOrientationVisual
+            : _TileImage != null
+                ? _TileImage.rectTransform
+                : null;
+
+        if (lTargetTransform == null)
             return;
 
-        _TileOrientationVisual.localRotation = pOrientation switch
+        lTargetTransform.localRotation = pOrientation switch
         {
-            Rush.Game.Tile.TileOrientations.Right => Quaternion.Euler(0f, 0f, -90f),
-            Rush.Game.Tile.TileOrientations.Left => Quaternion.Euler(0f, 0f, 90f),
-            Rush.Game.Tile.TileOrientations.Down => Quaternion.Euler(0f, 0f, 180f),
+            Tile.TileOrientations.Right => Quaternion.Euler(0f, 0f, -90f),
+            Tile.TileOrientations.Left => Quaternion.Euler(0f, 0f, 90f),
+            Tile.TileOrientations.Down => Quaternion.Euler(0f, 0f, 180f),
             _ => Quaternion.identity
         };
     }
+
+    private void ApplyTileSprite(Sprite pSprite)
+    {
+        if (_TileImage == null || pSprite == null)
+            return;
+
+        _TileImage.sprite = pSprite;
+    }
+
     public static void ResetSelection()
     {
         if (_CurrentSelectedTile != null)

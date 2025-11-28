@@ -12,7 +12,8 @@ namespace Rush.UI
 
         #endregion
 
-        #region _____________________________| INIT
+        #region _____________________________| UNITY
+
         private void Awake() => _GameSpeedSlider ??= GetComponentInParent<Slider>();
 
         private void Start()

@@ -12,47 +12,41 @@ namespace Rush.UI
 {
     public class UI_Grid_LevelSelector : MonoBehaviour
     {
-        [SerializeField] private Transform _GridRoot;
+        #region _____________________________/ REFS
 
+        [Header("References")]
         [SerializeField] private SO_LevelCollection _LevelCollection;
-
         [SerializeField] private UI_Btn_Level _LevelItemPrefab;
 
-        [SerializeField] private float _PreviewOffset = 50f;
+        #endregion
 
+        #region _____________________________/ PREVIEW
+
+        [Header("Preview")]
+        [SerializeField] private float _PreviewOffset = 50f;
         [SerializeField] private Vector3 _PreviewOrigin = new Vector3(10000f, 10000f, 10000f);
+
+        #endregion
+
+        #region _____________________________/ MISC
 
         private readonly List<UI_Btn_Level> _SpawnedLevelInstances = new();
 
-        //private void Start() => Populate();
+        #endregion
 
-        /// <summary>
-        /// This function is called when the object becomes enabled and active.
-        /// </summary>
-        void OnEnable() => Populate();
+        #region _____________________________| UNITY
 
-        void OnDisable() 
+        private void OnEnable() => Populate();
+
+        private void OnDisable()
         {
             foreach (var level in _SpawnedLevelInstances)
             {
                 Destroy(level.instantiatedLevel);
-                Destroy(level.gameObject); 
+                Destroy(level.gameObject);
             }
-        }
 
-        private void Populate()
-        {
-            var lLevelCollection = _LevelCollection.levelDatas;
-
-            for (int i = 0; i < lLevelCollection.Count; i++)
-            {
-                Vector3 lSpawnPosition = _PreviewOrigin + new Vector3(_PreviewOffset * i, 0f, 0f);
-
-                UI_Btn_Level levelItem = Instantiate(_LevelItemPrefab, transform).GetComponent<UI_Btn_Level>();
-                levelItem.Initialize(lSpawnPosition, lLevelCollection[i], transform.parent);
-
-                _SpawnedLevelInstances.Add(levelItem);
-            }
+            _SpawnedLevelInstances.Clear();
         }
 
         private void OnDestroy()
@@ -64,5 +58,26 @@ namespace Rush.UI
 
             _SpawnedLevelInstances.Clear();
         }
+
+        #endregion
+
+        #region _____________________________| METHODS
+
+        private void Populate()
+        {
+            var lLevelCollection = _LevelCollection.levelDatas;
+
+            for (int i = 0; i < lLevelCollection.Count; i++)
+            {
+                Vector3 lSpawnPosition = _PreviewOrigin + new Vector3(_PreviewOffset * i, 0f, 0f);
+
+                UI_Btn_Level levelItem = Instantiate(_LevelItemPrefab, transform, false);
+                levelItem.Initialize(lSpawnPosition, lLevelCollection[i], transform.parent);
+
+                _SpawnedLevelInstances.Add(levelItem);
+            }
+        }
+
+        #endregion
     }
 }

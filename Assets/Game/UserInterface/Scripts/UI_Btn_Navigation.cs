@@ -12,6 +12,7 @@ using Rush.Game;
 public class UI_Btn_Navigation : MonoBehaviour
 {
     #region _____________________________/ BTN VALUES
+    
     public enum BtnTransitions { Show, Hide, Switch, Quit }
 
     [Header("Navigation")]
@@ -21,6 +22,7 @@ public class UI_Btn_Navigation : MonoBehaviour
     #endregion
 
     #region _____________________________/ REFS
+
     [Header("References")]
     [SerializeField] private Button _Button;
     [SerializeField] private Transform _CardToShow;
@@ -28,7 +30,8 @@ public class UI_Btn_Navigation : MonoBehaviour
 
     #endregion
 
-    #region _____________________________| INIT
+    #region _____________________________| UNITY
+
     private void Init() {
         if (_Button == null) _Button = GetComponent<Button>();
         if (_CardToHide == null) _CardToHide = transform.parent; }
