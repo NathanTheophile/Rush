@@ -17,6 +17,19 @@ namespace Rush.Game
 
         public static Manager_Time Instance { get; private set; }
 
+        private void CheckForInstance()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
+
         #endregion
 
         #region _____________________________/ SPEED VALUES
@@ -48,9 +61,7 @@ namespace Rush.Game
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            CheckForInstance();
         }
 
         #endregion

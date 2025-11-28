@@ -6,13 +6,13 @@
 #endregion
 
 using System;
-using UnityEditor;
 using UnityEngine;
 
-namespace Rush.Game
+namespace Rush.Game.Core
 {
     public class Manager_Game : MonoBehaviour
     {
+
         #region _____________________________/ SINGLETON
 
         public static Manager_Game Instance { get; private set; }
@@ -37,6 +37,12 @@ namespace Rush.Game
 
         private int _CubesToComplete;
         private int _CubesArrived;
+
+        [Header("UI")]
+        [SerializeField] private GameObject _WinScreenPrefab;
+        [SerializeField] private Transform _WinScreenParent;
+
+        private GameObject _WinScreenInstance;
 
         #endregion
 
@@ -72,18 +78,27 @@ namespace Rush.Game
             timeManager.pause = state == GameStates.Pause;
         }
 
-        public void UpdateCubesAmountoComplete(int pAmount) => _CubesToComplete += pAmount; 
+        public void UpdateCubesAmountoComplete(int pAmount) => _CubesToComplete += pAmount;
 
         public void UpdateCubeArrived()
         {
             _CubesArrived++;
             if (_CubesArrived >= _CubesToComplete)
-            {            
+            {
                 onLevelFinished?.Invoke();
+                //ShowWinScreen();
                 SetState(GameStates.Cards);
             }
         }
-        
+
+        private void HideWinScreen()
+        {
+            if (_WinScreenInstance == null) return;
+
+            Destroy(_WinScreenInstance);
+            _WinScreenInstance = null;
+        }
+
         #endregion
 
         #region _____________________________/ LEVEL DATA
@@ -92,7 +107,15 @@ namespace Rush.Game
         {
             Debug.Log($"{pLevelData.levelName} has {pLevelData.levelPrefab.name} prefab.");
             CurrentLevel = pLevelData;
+            ResetCubesProgress();
+            HideWinScreen();
             Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+        private void ResetCubesProgress()
+        {
+            _CubesArrived = 0;
+            _CubesToComplete = 0;
         }
 
         #endregion
