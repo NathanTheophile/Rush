@@ -4,6 +4,7 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
+using System.Collections.Generic;
 using Rush.Game.Core;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -25,6 +26,10 @@ namespace Rush.Game
         [SerializeField] private int _AmountoOfCubes = 1;
         private int _CurrentCubeSpawned = 0;
         private bool _Spawning = false;
+
+        public List<Cube> _SpawnerBabies = new List<Cube>();
+
+
 
         void Awake()
         {
@@ -53,6 +58,7 @@ namespace Rush.Game
             lCube.onCubeDeath += gameManager.GameOver;
             lCube.SpawnDirection(direction);
             _CurrentCubeSpawned++;
+            _SpawnerBabies.Add(lCube);
             if (_CurrentCubeSpawned >= _AmountoOfCubes) StopSpawning();
         }
 
@@ -66,15 +72,24 @@ namespace Rush.Game
 
         private void StopSpawning()
         {
-            if (!_Spawning || timeManager == null) return;
-
             timeManager.onTickFinished -= SpawnCube;
+
+
+
             _Spawning = false;
         }
 
         private void OnDestroy()
         {
             StopSpawning();
+            foreach (Cube lCube in _SpawnerBabies)
+            {
+                timeManager.objectsAffectedByTime.Remove(lCube);
+                timeManager.onTickFinished -= lCube.TickUpdate;
+                lCube.onTileDetected += tileManager.TryGetTile;
+                lCube.onCubeDeath += gameManager.GameOver;
+                Destroy(lCube.gameObject);
+            }
         }
     }
 }

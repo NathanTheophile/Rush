@@ -408,6 +408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _BtnType: 2
+  _LevelUnloader: 0
   _Button: {fileID: 0}
   _CardToShow: {fileID: 5411068302536572238, guid: b33fbd25acfe71342bb77172549a5bf9, type: 3}
   _CardToHide: {fileID: 5411068302536572238}
@@ -775,7 +776,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _BtnType: 2
-  _Button: {fileID: 0}
+  _LevelUnloader: 1
+  _Button: {fileID: 5135739483965806840}
   _CardToShow: {fileID: 4795109341393439310, guid: b58ca5e5effd6114fb3758998dfd225f, type: 3}
   _CardToHide: {fileID: 5411068302536572238}
 --- !u!1 &8032379435487581829
