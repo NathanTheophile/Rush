@@ -38,6 +38,7 @@ namespace Rush.Game
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
             gameManager = Manager_Game.Instance;
+            gameManager.UpdateCubesAmountoComplete(_AmountoOfCubes);
             if (gameManager != null)
             {
                 gameManager.onGameStateChanged += OnGameStateChanged;
