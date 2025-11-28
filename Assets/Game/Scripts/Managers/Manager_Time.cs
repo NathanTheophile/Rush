@@ -30,26 +30,25 @@ namespace Rush.Game.Core
 
         #endregion
 
-        #region _____________________________/ SPEED VALUES
+        #region _____________________________/ TICK VALUES
         [Header("Speed Values")]
         [SerializeField, Range(1f, 20f)] private float _MaxSpeed = 20f;
 
-        private float _GlobalTickSpeed = 1f;
-        public float GlobalTickSpeed { get => _GlobalTickSpeed; set => _GlobalTickSpeed = Mathf.Clamp(value, 0f, _MaxSpeed); }
+        private float   _GlobalTickSpeed = 1f;
+        public float    GlobalTickSpeed { get => _GlobalTickSpeed; set => _GlobalTickSpeed = Mathf.Clamp(value, 0f, _MaxSpeed); }
 
         private float   _TickDuration = 1f;
         private int     _TickIndex = 0;
         
-        private float _ElapsedTime = 0f;
-        private float _CurrentTickRatio = 0f;
+        private float   _ElapsedTime = 0f;
+        private float   _CurrentTickRatio = 0f;
 
         public event Action<int> onTickFinished;
-
-        public bool pause = true;
 
         #endregion
 
         #region _____________________________/ MISC VALUES
+        private bool _Pause = true;
 
         public List<ITickDependant> objectsAffectedByTime = new List<ITickDependant>();
 
@@ -59,7 +58,7 @@ namespace Rush.Game.Core
 
         private void Awake() => CheckForInstance();
 
-        private void Start() => pause = true;
+        private void Start() => _Pause = true;
 
         #endregion
 
@@ -67,7 +66,7 @@ namespace Rush.Game.Core
 
         private void Update()
         {
-            if (pause) return;
+            if (_Pause) return;
 
             _ElapsedTime += Time.deltaTime * _GlobalTickSpeed;
 
@@ -91,7 +90,7 @@ namespace Rush.Game.Core
 
         #endregion
 
-        public void SetPauseStatus() => pause = !pause;
+        public void SetPauseStatus() => _Pause = !_Pause;
 
         #region _____________________________| DESTROY
 

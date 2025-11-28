@@ -11,24 +11,27 @@ using Rush.Game;
 
 public class UI_Btn_Navigation : MonoBehaviour
 {
-    #region _____________________________/ BTN TYPES
+    #region _____________________________/ BTN VALUES
     public enum BtnTransitions { Show, Hide, Switch, Quit }
 
-    [Header("Type")][SerializeField] private BtnTransitions _BtnType;
-
+    [Header("Navigation")]
+    [SerializeField] private BtnTransitions _BtnType;
+    [SerializeField] private bool _LevelUnloader, _Retry;
+    
     #endregion
 
     #region _____________________________/ REFS
-    [Header("Optionnal References")]
-    [SerializeField] private bool _LevelUnloader, _Retry;
+    [Header("References")]
     [SerializeField] private Button _Button;
     [SerializeField] private Transform _CardToShow;
     [SerializeField] private Transform _CardToHide;
 
-
     #endregion
 
     #region _____________________________| INIT
+    private void Init() {
+        if (_Button == null) _Button = GetComponent<Button>();
+        if (_CardToHide == null) _CardToHide = transform.parent; }
 
     void Start()
     {
@@ -48,12 +51,6 @@ public class UI_Btn_Navigation : MonoBehaviour
         if (_LevelUnloader) _Button.onClick.AddListener(UnloadLevel);
     }
 
-    private void Init()
-    {
-        if (_Button == null) _Button = GetComponent<Button>();
-        if (_CardToHide == null) _CardToHide = transform.parent;
-    }
-
     #endregion
 
     #region _____________________________| UI METHODS
@@ -66,7 +63,7 @@ public class UI_Btn_Navigation : MonoBehaviour
 
     void QuitGame()         => Application.Quit();
 
-    void UnloadLevel() => Manager_Game.Instance.UnloadCurrentLevel(_Retry);
+    void UnloadLevel()      => Manager_Game.Instance.UnloadCurrentLevel(_Retry);
 
     #endregion
 }

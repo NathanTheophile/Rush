@@ -160,8 +160,16 @@ namespace Rush.Game
             return false;
         }
 
-        void OnTriggerEnter(Collider other) { if(other.TryGetComponent(out Cube pCube)) onCubeDeath.Invoke(); } 
+        void OnCollisionEnter(Collision other) => HandleCubeCollision(other.collider);
 
+        void OnTriggerEnter(Collider other) => HandleCubeCollision(other);
+
+        private void HandleCubeCollision(Component other)
+        {
+            if (other.TryGetComponent(out Cube _))
+                onCubeDeath?.Invoke();
+        }
+        
         #endregion
 
         #region _________________________| STATE MACHINE SETTERS

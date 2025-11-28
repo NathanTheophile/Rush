@@ -6,7 +6,6 @@
 
 using System.Collections.Generic;
 using Rush.Game.Core;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Rush.Game
@@ -72,6 +71,8 @@ namespace Rush.Game
 
         private void StopSpawning()
         {
+                        if (timeManager == null) return;
+
             timeManager.onTickFinished -= SpawnCube;
 
 
@@ -82,12 +83,15 @@ namespace Rush.Game
         private void OnDestroy()
         {
             StopSpawning();
+            if (timeManager == null) return;
+
             foreach (Cube lCube in _SpawnerBabies)
             {
+                if (lCube == null) continue;
                 timeManager.objectsAffectedByTime.Remove(lCube);
                 timeManager.onTickFinished -= lCube.TickUpdate;
-                lCube.onTileDetected += tileManager.TryGetTile;
-                lCube.onCubeDeath += gameManager.GameOver;
+                lCube.onTileDetected -= tileManager.TryGetTile;
+                lCube.onCubeDeath -= gameManager.GameOver;
                 Destroy(lCube.gameObject);
             }
         }

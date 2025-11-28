@@ -4,8 +4,6 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
-using System.Diagnostics;
-using Rush.Game;
 using UnityEngine;
 
 namespace Rush.Game

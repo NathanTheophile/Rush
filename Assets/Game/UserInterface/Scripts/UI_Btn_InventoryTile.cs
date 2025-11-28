@@ -106,9 +106,9 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
         _TileOrientationVisual.localRotation = pOrientation switch
         {
-            Rush.Game.Tile.TileOrientations.East => Quaternion.Euler(0f, 0f, -90f),
-            Rush.Game.Tile.TileOrientations.West => Quaternion.Euler(0f, 0f, 90f),
-            Rush.Game.Tile.TileOrientations.South => Quaternion.Euler(0f, 0f, 180f),
+            Rush.Game.Tile.TileOrientations.Right => Quaternion.Euler(0f, 0f, -90f),
+            Rush.Game.Tile.TileOrientations.Left => Quaternion.Euler(0f, 0f, 90f),
+            Rush.Game.Tile.TileOrientations.Down => Quaternion.Euler(0f, 0f, 180f),
             _ => Quaternion.identity
         };
     }

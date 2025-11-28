@@ -30,6 +30,8 @@ namespace Rush.Game
 
         #endregion
 
+        [SerializeField] private TilePlacer _TilePlacer;
+
         public event Action onLevelFinished;
         public event Action onGameOver;
         public event Action onGameWon;
@@ -60,13 +62,13 @@ namespace Rush.Game
             if (_CubesArrived >= _CubesToComplete)
             {
                 onGameWon?.Invoke();
+                Manager_Time.Instance.SetPauseStatus();
             }
         }
         
         public void GameOver()
         {
-            Debug.Log("GAME OVER");
-                        onGameOver?.Invoke();
+            onGameOver?.Invoke();
 
             Manager_Time.Instance.SetPauseStatus();
         }
@@ -75,12 +77,15 @@ namespace Rush.Game
 
         public void SpawnCurrentLevel(SO_LevelData pLevelData)
         {
+            _CubesToComplete = 0;
             CurrentLevel = pLevelData;
             _CurrentLevelPrefab = Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
         }
 
         public void UnloadCurrentLevel(bool pReload = false)
         {
+            _TilePlacer?.ResetPlacedTiles();
+
             Destroy(_CurrentLevelPrefab);
             if (pReload) SpawnCurrentLevel(CurrentLevel);
         }

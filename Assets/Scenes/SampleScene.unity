@@ -269,7 +269,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _MaxSpeed: 10
-  pause: 0
 --- !u!114 &293031528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,6 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571c2c1e16e79314abf4d1cc02589f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _TilePlacer: {fileID: 0}
 --- !u!114 &293031530
 MonoBehaviour:
   m_ObjectHideFlags: 0

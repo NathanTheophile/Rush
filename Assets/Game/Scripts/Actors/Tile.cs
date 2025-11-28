@@ -14,10 +14,7 @@ namespace Rush.Game
         protected Vector3 m_Direction;
         public Vector3 direction { get => m_Direction; }
 
-        public enum TileOrientations
-    {
-        East, West, North, South   
-    }
+        public enum TileOrientations { Right, Left, Up, Down }
 
         public enum TileVariants
         {
@@ -31,8 +28,6 @@ namespace Rush.Game
             Target,
         }
 
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
         protected virtual void Start() { m_Direction = transform.forward; }
     }
 }

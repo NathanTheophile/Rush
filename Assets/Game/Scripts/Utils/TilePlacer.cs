@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rush.Game;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,6 +17,7 @@ public class TilePlacer : MonoBehaviour
     public event Action OnTilePlaced;
     public bool HandlingTile { get; private set; }
     private readonly List<Transform> _PlacedTiles = new();
+    private Transform LevelRoot;
 
     private Vector3 InstantiatePos;
     public static Transform previewTile;
@@ -58,9 +60,9 @@ public class TilePlacer : MonoBehaviour
     {
         return pOrientation switch
         {
-            Rush.Game.Tile.TileOrientations.East => Quaternion.Euler(0f, 90f, 0f),
-            Rush.Game.Tile.TileOrientations.West => Quaternion.Euler(0f, -90f, 0f),
-            Rush.Game.Tile.TileOrientations.South => Quaternion.Euler(0f, 180f, 0f),
+            Rush.Game.Tile.TileOrientations.Right => Quaternion.Euler(0f, 90f, 0f),
+            Rush.Game.Tile.TileOrientations.Left => Quaternion.Euler(0f, -90f, 0f),
+            Rush.Game.Tile.TileOrientations.Down => Quaternion.Euler(0f, 180f, 0f),
             _ => Quaternion.identity,
         };
     }
@@ -112,8 +114,7 @@ public class TilePlacer : MonoBehaviour
 
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
-            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, _TileRotation);
-            _PlacedTiles.Add(lNewTile);
+            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity, LevelRoot);            _PlacedTiles.Add(lNewTile);
             Destroy(previewTile.gameObject);
             previewTile = null;
             HandlingTile = false;

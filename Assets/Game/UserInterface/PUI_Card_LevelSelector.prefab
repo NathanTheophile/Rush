@@ -566,6 +566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _BtnType: 2
   _LevelUnloader: 0
+  _Retry: 0
   _Button: {fileID: 0}
   _CardToShow: {fileID: 7445834480086517307, guid: badc02e39ab1a9749924d341f2000915, type: 3}
   _CardToHide: {fileID: 4795109341393439310}

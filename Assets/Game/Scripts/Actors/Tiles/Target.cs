@@ -42,7 +42,7 @@ namespace Rush.Game
         {
             if (pCube.Color != _Color) return false;
             DestroyCube(pCube);
-            onCubeValidation.Invoke();
+            onCubeValidation?.Invoke();
             return true;
         }
         
