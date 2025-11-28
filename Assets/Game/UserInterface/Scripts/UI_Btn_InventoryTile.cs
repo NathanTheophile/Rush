@@ -8,6 +8,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 {
     [SerializeField] public TMP_Text _TileName;
     [SerializeField] public TMP_Text _TileAmount;
+    [SerializeField] private Transform _TileOrientationVisual;
 
     public int TileAmount { get; private set; }
 
@@ -30,6 +31,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
         _TileName.text = pInventoryTile.type.ToString();
         _TileAmount.text = TileAmount.ToString();
+        ApplyTileOrientation(pInventoryTile.orientation);
 
         _Button.onClick.RemoveAllListeners();
         _Button.onClick.AddListener(() =>
@@ -56,7 +58,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             _TilePlacer.OnTilePlaced += HandleTilePlaced;
             _TilePlacer.StartHandlingTile();
 
-            _TilePlacer.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab);
+            _TilePlacer.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab, _InventoryTile.orientation);
         });
     }
 
@@ -95,6 +97,20 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             if (_TilePlacer != null)
                 _TilePlacer.ClearSelection();
         }
+    }
+
+    private void ApplyTileOrientation(Rush.Game.Tile.TileOrientations pOrientation)
+    {
+        if (_TileOrientationVisual == null)
+            return;
+
+        _TileOrientationVisual.localRotation = pOrientation switch
+        {
+            Rush.Game.Tile.TileOrientations.East => Quaternion.Euler(0f, 0f, -90f),
+            Rush.Game.Tile.TileOrientations.West => Quaternion.Euler(0f, 0f, 90f),
+            Rush.Game.Tile.TileOrientations.South => Quaternion.Euler(0f, 0f, 180f),
+            _ => Quaternion.identity
+        };
     }
 
         public static void ResetSelection(TilePlacer pTilePlacer)

@@ -17,17 +17,17 @@ MonoBehaviour:
   stopperTicks: 2
   inventory:
   - type: 1
-    orientation: 1
-    quantity: 3
+    orientation: 2
+    quantity: 1
     tilePrefab: {fileID: 1519708505807681995, guid: d8933d0591b5185449cd286b9f4b5de1, type: 3}
     previewPrefab: {fileID: 1519708505807681995, guid: d8933d0591b5185449cd286b9f4b5de1, type: 3}
   - type: 2
-    orientation: 2
-    quantity: 2
+    orientation: 3
+    quantity: 3
     tilePrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
     previewPrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
-  - type: 5
+  - type: 2
     orientation: 0
-    quantity: 2
-    tilePrefab: {fileID: 1519708505807681995, guid: 035905dcdb8fce946abc320f46ed45d5, type: 3}
-    previewPrefab: {fileID: 1519708505807681995, guid: 035905dcdb8fce946abc320f46ed45d5, type: 3}
+    quantity: 1
+    tilePrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
+    previewPrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}

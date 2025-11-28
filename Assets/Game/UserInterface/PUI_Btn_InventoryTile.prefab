@@ -235,9 +235,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8092d047f49ee8e49baf1096044851da, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   _TileName: {fileID: 7020894500740181012}
   _TileAmount: {fileID: 4176046964447177913}
+  _TileOrientationVisual: {fileID: 4318456729195536343}
 --- !u!222 &8526416527884280111
 CanvasRenderer:
   m_ObjectHideFlags: 0
