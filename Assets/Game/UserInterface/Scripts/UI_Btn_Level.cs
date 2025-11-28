@@ -5,6 +5,7 @@
 #endregion
 
 using Rush.Game;
+using Rush.Game.Core;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -150,8 +151,7 @@ namespace Rush.UI
         private void OnButtonClicked() {
             CleanupTexture();
             Manager_Game.Instance?.SpawnCurrentLevel(_LevelData);
-            Instantiate(_PanelToShow, transform.root);
-            Destroy(_RootCard.GameObject());
+            Manager_Ui.Instance?.Switch(_PanelToShow, _RootCard);
         }
 
         #endregion

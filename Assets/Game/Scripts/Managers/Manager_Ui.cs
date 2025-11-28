@@ -6,7 +6,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Rush.Game.Core
@@ -33,9 +32,10 @@ namespace Rush.Game.Core
 
         #region _____________________________/ VALUES
         [SerializeField] private Transform _MainCanvas;
+        [SerializeField] private Transform _WinScreen, _LoseScreen;
         [SerializeField] private List<Transform> _UiCards = new();
-        [SerializeField] private List<Transform> _ActiveCards = new();
-        [SerializeField] private Transform _CurrentCard;
+        
+        private Transform _CurrentCard;
 
         #endregion
 
@@ -43,7 +43,16 @@ namespace Rush.Game.Core
 
         private void Awake() => CheckForInstance();
 
-        void Start() { if (_CurrentCard != null) _UiCards.Add(_CurrentCard); }
+        /// <summary>
+        /// Start is called on the frame when a script is enabled just before
+        /// any of the Update methods is called the first time.
+        /// </summary>
+        void Start()
+        {
+            Debug.Log(Manager_Game.Instance);
+            Manager_Game.Instance.onGameOver += SwitchToLose;
+            Manager_Game.Instance.onGameWon += SwitchToWin;
+        }
 
         #endregion
 
@@ -54,8 +63,6 @@ namespace Rush.Game.Core
             if (pCard == null || _UiCards.Contains(pCard))
                 return;
 
-            Debug.Log(pCard.name + " ajoutée dans liste");
-
             Transform lCard = Instantiate(pCard, _MainCanvas);
             _UiCards.Add(lCard);
         }
@@ -65,25 +72,16 @@ namespace Rush.Game.Core
             if (pCard == null) return;
 
             AddCardToScene(pCard);
-
-            pCard.gameObject.SetActive(true);
-
-            if (!_ActiveCards.Contains(pCard))
-                _ActiveCards.Add(pCard);
-
             _CurrentCard = pCard;
+            pCard.gameObject.SetActive(true);
         }
 
         public void Hide(Transform pCard)
         {
             if (pCard == null) return;
-
+            
+            _CurrentCard = null;
             pCard.gameObject.SetActive(false);
-
-            _ActiveCards.Remove(pCard);
-
-            if (_CurrentCard == pCard)
-                _CurrentCard = _ActiveCards.LastOrDefault();
         }
 
         public void Switch(Transform pCardToShow, Transform pCardToHide)
@@ -91,6 +89,10 @@ namespace Rush.Game.Core
             Hide(pCardToHide);
             Show(pCardToShow);
         }
+
+        private void SwitchToWin()  => Switch(_WinScreen, _CurrentCard);
+        private void SwitchToLose() => Switch(_LoseScreen, _CurrentCard);
+
 
         #endregion
     }

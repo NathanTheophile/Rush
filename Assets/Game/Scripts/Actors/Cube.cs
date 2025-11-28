@@ -58,6 +58,7 @@ namespace Rush.Game
         [SerializeField] private LayerMask _TilesLayer;
         public event Action<Cube, RaycastHit> onTileDetected;
         public event Action<Cube> onCubesCollided;
+        public event Action onCubeInVoid;
 
         #endregion
 
@@ -102,12 +103,18 @@ namespace Rush.Game
         {
             if (Physics.Raycast(_Self.position, Vector3.down, out pHit, _GridSize, _GroundLayer | _TilesLayer))
             {
+                if (pHit.distance > _GridSize)
+                {
+                    SetModeSlide(Vector3.down);
+                    return;
+                }
+
                 if (pHit.transform.gameObject.layer == 7)
-                    onTileDetected?.Invoke(this, pHit); //https://discussions.unity.com/t/solved-raycast-get-which-layer-was-hit/91039/2
+                    onTileDetected?.Invoke(this, pHit);
 
                 else SetModeRoll(_Direction);
             }
-            else SetModeSlide(Vector3.down);
+            else onCubeInVoid?.Invoke();
         }
 
         private bool LookAround()

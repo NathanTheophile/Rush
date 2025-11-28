@@ -47,7 +47,7 @@ namespace Rush.Game.Core
 
         public event Action<int> onTickFinished;
 
-        public bool pause = false;
+        public bool pause = true;
 
         #endregion
 
@@ -59,10 +59,7 @@ namespace Rush.Game.Core
 
         #region _____________________________| INIT
 
-        private void Awake()
-        {
-            CheckForInstance();
-        }
+        private void Awake() => CheckForInstance();
 
         #endregion
 

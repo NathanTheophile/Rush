@@ -16,9 +16,24 @@ namespace Rush.Game
 
         public static Manager_Game Instance { get; private set; }
 
+        private void CheckForInstance()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
+
         #endregion
 
         public event Action onLevelFinished;
+        public event Action onGameOver;
+        public event Action onGameWon;
 
         #region _____________________________/ LEVEL DATA
 
@@ -31,12 +46,7 @@ namespace Rush.Game
 
         #region _____________________________| INIT
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        private void Awake() => CheckForInstance();
 
         #endregion
 
@@ -47,8 +57,13 @@ namespace Rush.Game
             _CubesArrived++;
             if (_CubesArrived >= _CubesToComplete)
             {
-                onLevelFinished?.Invoke();
+                onGameWon?.Invoke();
             }
+        }
+        
+        public void GameOver()
+        {
+            onGameOver?.Invoke();
         }
 
         #region _____________________________/ LEVEL DATA

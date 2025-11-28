@@ -285,6 +285,7 @@ GameObject:
   - component: {fileID: 4672349742603590985}
   - component: {fileID: 950785956838879186}
   - component: {fileID: 1832525216883814532}
+  - component: {fileID: 4738948634816167603}
   m_Layer: 5
   m_Name: Btn_Play
   m_TagString: Untagged
@@ -410,6 +411,19 @@ MonoBehaviour:
   _Button: {fileID: 0}
   _CardToShow: {fileID: 5411068302536572238, guid: b33fbd25acfe71342bb77172549a5bf9, type: 3}
   _CardToHide: {fileID: 5411068302536572238}
+--- !u!114 &4738948634816167603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3661926097618855961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c30238b96f5716c4fb41fe36ad540cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Tweaker: {fileID: 0}
 --- !u!1 &4945140549206634930
 GameObject:
   m_ObjectHideFlags: 0
