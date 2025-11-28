@@ -25,6 +25,7 @@ namespace Rush.UI
         [SerializeField] private Camera _CameraPrefab;
         private RenderTexture _PreviewTexture;
         private Transform _RootCard;
+        public GameObject instantiatedLevel { get; private set; }
         [SerializeField] private Vector2Int _PreviewResolution = new Vector2Int(512, 512);
 
         #endregion
@@ -66,9 +67,9 @@ namespace Rush.UI
             _PrefabNameText.text = _LevelData.levelName;
 
 
-            GameObject lLevelInstance = Instantiate(_LevelData.levelPrefab, pSpawnPosition, Quaternion.identity, _RootCard);
+            instantiatedLevel = Instantiate(_LevelData.levelPrefab, pSpawnPosition, Quaternion.identity, _RootCard);
 
-            _Camera = Instantiate(_CameraPrefab, lLevelInstance.transform);
+            _Camera = Instantiate(_CameraPrefab, instantiatedLevel.transform);
             if (_Camera == null)
             {
                 Debug.LogError("Preview camera prefab instantiation failed.");
@@ -150,8 +151,8 @@ namespace Rush.UI
 
         private void OnButtonClicked() {
             CleanupTexture();
-            Manager_Game.Instance?.SpawnCurrentLevel(_LevelData);
-            Manager_Ui.Instance?.Switch(_PanelToShow, _RootCard);
+            Manager_Game.Instance.SpawnCurrentLevel(_LevelData);
+            Manager_Ui.Instance.Switch(_PanelToShow, _RootCard);
         }
 
         #endregion

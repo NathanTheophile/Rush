@@ -53,11 +53,11 @@ public class UI_Btn_Navigation : MonoBehaviour
 
     #region _____________________________| UI METHODS
    
-    private void Show()     => Manager_Ui.Instance?.Show(_CardToShow);
+    private void Show()     => Manager_Ui.Instance.Show(_CardToShow);
 
-    private void Hide()     => Manager_Ui.Instance?.Hide(_CardToHide);
+    private void Hide()     => Manager_Ui.Instance.Hide(_CardToHide);
 
-    private void Switch()   => Manager_Ui.Instance?.Switch(_CardToShow, _CardToHide);
+    private void Switch()   => Manager_Ui.Instance.Switch(_CardToShow, _CardToHide);
 
     void QuitGame()         => Application.Quit();
 

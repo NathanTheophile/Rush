@@ -62,10 +62,6 @@ namespace Rush.Game
 
             timeManager.onTickFinished += SpawnCube;
             _Spawning = true;
-            if (_CurrentCubeSpawned == 0)
-            {
-                SpawnCube(0);
-            }
         }
 
         private void StopSpawning()

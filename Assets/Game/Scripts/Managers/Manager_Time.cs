@@ -26,6 +26,8 @@ namespace Rush.Game.Core
             }
 
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
         }
 
         #endregion
@@ -91,7 +93,7 @@ namespace Rush.Game.Core
 
         #endregion
 
-        public void UpdatePauseStatus() => pause = !pause;
+        public void SetPauseStatus() => pause = !pause;
 
         #region _____________________________| DESTROY
 

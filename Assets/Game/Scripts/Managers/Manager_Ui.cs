@@ -24,7 +24,9 @@ namespace Rush.Game.Core
                 return;
             }
 
-            Instance = this;    
+            Instance = this;  
+              
+            DontDestroyOnLoad(gameObject);
         }
 
         #endregion

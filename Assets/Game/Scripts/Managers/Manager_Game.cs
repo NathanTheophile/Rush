@@ -26,6 +26,8 @@ namespace Rush.Game
             }
 
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
         }
 
         #endregion
@@ -62,7 +64,8 @@ namespace Rush.Game
         
         public void GameOver()
         {
-            Manager_Time.Instance.UpdatePauseStatus();
+            Debug.Log("GAME OVER");
+            Manager_Time.Instance.SetPauseStatus();
             onGameOver?.Invoke();
         }
 
