@@ -564,11 +564,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60bcff14c727809439b0e7d7746a0b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BtnType: 2
+  _BtnType: 0
   _Button: {fileID: 0}
-  _PanelToShow: {fileID: 7445834480086517307, guid: badc02e39ab1a9749924d341f2000915, type: 3}
-  _PanelToHide: {fileID: 0}
-  _TargetState: 0
+  _CardToShow: {fileID: 0}
+  _CardToHide: {fileID: 0}
 --- !u!222 &970536182539217137
 CanvasRenderer:
   m_ObjectHideFlags: 0

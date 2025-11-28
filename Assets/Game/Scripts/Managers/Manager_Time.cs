@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-namespace Rush.Game
+namespace Rush.Game.Core
 {
     public class Manager_Time : MonoBehaviour
     {
@@ -47,7 +47,7 @@ namespace Rush.Game
 
         public event Action<int> onTickFinished;
 
-        public bool pause = false;
+        public bool pause = true;
 
         #endregion
 
@@ -59,10 +59,9 @@ namespace Rush.Game
 
         #region _____________________________| INIT
 
-        private void Awake()
-        {
-            CheckForInstance();
-        }
+        private void Awake() => CheckForInstance();
+
+        private void Start() => pause = true;
 
         #endregion
 
@@ -93,6 +92,8 @@ namespace Rush.Game
             foreach (ITickDependant lObject in objectsAffectedByTime) lObject.currentTickStep = _CurrentTickRatio; }
 
         #endregion
+
+        public void SetPauseStatus() => pause = !pause;
 
         #region _____________________________| DESTROY
 

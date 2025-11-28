@@ -5,6 +5,7 @@
 #endregion
 
 using Rush.Game;
+using Rush.Game.Core;
 using UnityEngine;
 using UnityEngine.UI;
 

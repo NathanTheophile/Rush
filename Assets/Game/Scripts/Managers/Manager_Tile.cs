@@ -15,16 +15,24 @@ namespace Rush.Game
 
         public static Manager_Tile Instance { get; private set; }
 
+        private void CheckForInstance()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
+
         #endregion
 
         #region _____________________________| INIT
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        private void Awake() => CheckForInstance();
 
         #endregion
 

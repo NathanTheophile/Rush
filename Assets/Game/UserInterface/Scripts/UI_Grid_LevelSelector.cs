@@ -24,7 +24,21 @@ namespace Rush.UI
 
         private readonly List<UI_Btn_Level> _SpawnedLevelInstances = new();
 
-        private void Start() => Populate();
+        //private void Start() => Populate();
+
+        /// <summary>
+        /// This function is called when the object becomes enabled and active.
+        /// </summary>
+        void OnEnable() => Populate();
+
+        void OnDisable() 
+        {
+            foreach (var level in _SpawnedLevelInstances)
+            {
+                Destroy(level.instantiatedLevel);
+                Destroy(level.gameObject); 
+            }
+        }
 
         private void Populate()
         {
