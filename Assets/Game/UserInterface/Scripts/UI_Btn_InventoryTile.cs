@@ -1,16 +1,29 @@
-using Rush.Game;
-using TMPro;
+#region _____________________________/ INFOS
+//  AUTHOR : Nathan THEOPHILE (2025)
+//  Engine : Unity
+//  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
+#endregion
+
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Rush.Game;
 
 [RequireComponent(typeof(Button))]
 public class UI_Btn_InventoryTile : MonoBehaviour
 {
-    [SerializeField] public TMP_Text _TileName;
-    [SerializeField] public TMP_Text _TileAmount;
-        [SerializeField] private Image _TileImage;
+    #region _____________________________/ REFS
+
+    [Header("References")]
+    [SerializeField] private TMP_Text _TileName;
+    [SerializeField] private TMP_Text _TileAmount;
+    [SerializeField] private Image _TileImage;
 
     [SerializeField] private Transform _TileOrientationVisual;
+
+    #endregion
+
+    #region _____________________________/ VALUES
 
     public int TileAmount { get; private set; }
 
@@ -22,12 +35,14 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
     private TilePlacer TilePlacerInstance => TilePlacer.Instance;
 
+    #endregion
+
+    #region _____________________________| PUBLIC
+
     public void Initialize(SO_LevelData.InventoryTile pInventoryTile)
     {
-        if (_Button == null)
-            _Button = GetComponent<Button>();
-            
-        _TileImage = GetComponent<Image>();
+        if (_Button == null) _Button = GetComponent<Button>();
+        if (_TileImage == null) _TileImage = GetComponent<Image>();
 
         _InventoryTile = pInventoryTile;
 
@@ -54,8 +69,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
                 return;
             }
 
-            if (_CurrentSelectedTile != null && _CurrentSelectedTile != this)
-                _CurrentSelectedTile._IsSelected = false;
+            if (_CurrentSelectedTile != null && _CurrentSelectedTile != this) _CurrentSelectedTile._IsSelected = false;
 
             _CurrentSelectedTile = this;
             _IsSelected = true;
@@ -64,8 +78,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             TilePlacerInstance.OnTilePlaced += HandleTilePlaced;
             TilePlacerInstance.StartHandlingTile();
 
-            TilePlacerInstance.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab, _InventoryTile.orientation);     
-               });
+            TilePlacerInstance.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab, _InventoryTile.orientation);
+        });
     }
 
     public bool ConsumeTile()
@@ -82,28 +96,33 @@ public class UI_Btn_InventoryTile : MonoBehaviour
         return true;
     }
 
-    void OnDestroy()
+    #endregion
+
+    #region _____________________________| UNITY
+
+    private void OnDestroy()
     {
-        if (TilePlacerInstance != null)
-            TilePlacerInstance.OnTilePlaced -= HandleTilePlaced;
+        if (TilePlacerInstance != null) TilePlacerInstance.OnTilePlaced -= HandleTilePlaced;
     }
+
+    #endregion
+
+    #region _____________________________| PRIVATE
 
     private void HandleTilePlaced()
     {
-        if (!_IsSelected)
-            return;
+        if (!_IsSelected) return;
 
         if (!ConsumeTile())
         {
             _IsSelected = false;
 
-            if (_CurrentSelectedTile == this)
-                _CurrentSelectedTile = null;
+            if (_CurrentSelectedTile == this) _CurrentSelectedTile = null;
 
-            if (TilePlacerInstance != null)
-                TilePlacerInstance.ClearSelection();
+            if (TilePlacerInstance != null) TilePlacerInstance.ClearSelection();
         }
     }
+
     private void ApplyTileOrientation(Rush.Game.Tile.TileOrientations pOrientation)
     {
         Transform lTargetTransform = _TileOrientationVisual != null && _TileOrientationVisual != transform
@@ -112,8 +131,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
                 ? _TileImage.rectTransform
                 : null;
 
-        if (lTargetTransform == null)
-            return;
+        if (lTargetTransform == null) return;
 
         lTargetTransform.localRotation = pOrientation switch
         {
@@ -126,11 +144,14 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
     private void ApplyTileSprite(Sprite pSprite)
     {
-        if (_TileImage == null || pSprite == null)
-            return;
+        if (_TileImage == null || pSprite == null) return;
 
         _TileImage.sprite = pSprite;
     }
+
+    #endregion
+
+    #region _____________________________| STATIC
 
     public static void ResetSelection()
     {
@@ -142,4 +163,6 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
         TilePlacer.Instance?.ClearSelection();
     }
+
+    #endregion
 }

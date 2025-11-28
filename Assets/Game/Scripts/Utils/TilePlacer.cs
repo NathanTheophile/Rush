@@ -1,3 +1,9 @@
+#region _____________________________/ INFOS
+//  AUTHOR : Rush Team
+//  Engine : Unity
+//  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
+#endregion
+
 using System;
 using System.Collections.Generic;
 using Rush.Game;
@@ -6,25 +12,11 @@ using UnityEngine.EventSystems;
 
 public class TilePlacer : MonoBehaviour
 {
+    #region _____________________________/ SINGLETON
+
     public static TilePlacer Instance { get; private set; }
 
-    [Header("Prefabs")]
-    [SerializeField] private Transform _TileToSpawn;
-    [SerializeField] private Transform _TilePreviewPrefab;
-    [SerializeField, Range(0f, 1f)] private float _SurfaceNormalThreshold = 0.3f;
-    [Header("Physics")]
-    [SerializeField] private float _RaycastDistance = 20f;
-    [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
-    private bool _HasGroundHit;
-    public event Action OnTilePlaced;
-    public bool HandlingTile { get; private set; }
-    private readonly List<Transform> _PlacedTiles = new();
-    private Quaternion _TileRotation = Quaternion.identity;
-
-    private Vector3 InstantiatePos;
-    public static Transform previewTile;
-
-    void Awake()
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -35,53 +27,55 @@ public class TilePlacer : MonoBehaviour
         Instance = this;
     }
 
-    void Start()
+    private void OnDestroy()
     {
-        InstantiatePos = new Vector3(1000, 1000, 1000);
+        if (Instance == this)
+            Instance = null;
+    }
+
+    #endregion
+
+    #region _____________________________/ PREFABS
+
+    [Header("Prefabs")]
+    [SerializeField] private Transform _TileToSpawn;
+    [SerializeField] private Transform _TilePreviewPrefab;
+    [SerializeField, Range(0f, 1f)] private float _SurfaceNormalThreshold = 0.3f;
+
+    #endregion
+
+    #region _____________________________/ PHYSICS
+
+    [Header("Physics")]
+    [SerializeField] private float _RaycastDistance = 20f;
+    [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
+
+    #endregion
+
+    #region _____________________________/ STATE
+
+    private bool _HasGroundHit;
+    private Vector3 _InstantiatePos;
+    private Quaternion _TileRotation = Quaternion.identity;
+    private readonly List<Transform> _PlacedTiles = new();
+
+    public static Transform previewTile;
+    public event Action OnTilePlaced;
+    public bool HandlingTile { get; private set; }
+
+    #endregion
+
+    #region _____________________________| UNITY
+
+    private void Start()
+    {
+        _InstantiatePos = new Vector3(1000, 1000, 1000);
+
         if (_TilePreviewPrefab != null)
-            InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);
+            InstantiatePreviewTile(_TilePreviewPrefab, _InstantiatePos);
     }
 
-    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab, Tile.TileOrientations pOrientation)    
-    {
-        _TileToSpawn = pTileToSpawn;
-        _TilePreviewPrefab = pPreviewPrefab != null ? pPreviewPrefab : pTileToSpawn;
-        _TileRotation = GetRotationFromOrientation(pOrientation);
-
-        if (_TilePreviewPrefab == null) return;
-
-        if (previewTile == null)
-            InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);
-        else
-            SwitchPreviewTile(_TilePreviewPrefab);
-        
-        previewTile.rotation = _TileRotation;
-    }
-
-
-    private void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, _TileRotation);
-
-
-    public void SwitchPreviewTile (Transform pPrefab)
-    {
-        Vector3 lCurrentPos = previewTile.position;
-        Destroy(previewTile.gameObject);
-        InstantiatePreviewTile(pPrefab, lCurrentPos);
-    }
-
-    private static Quaternion GetRotationFromOrientation(Tile.TileOrientations pOrientation)
-    {
-        return pOrientation switch
-        {
-            Tile.TileOrientations.Right => Quaternion.Euler(0f, 90f, 0f),
-            Tile.TileOrientations.Left => Quaternion.Euler(0f, -90f, 0f),
-            Tile.TileOrientations.Down => Quaternion.Euler(0f, 180f, 0f),
-            _ => Quaternion.identity,
-        };
-    }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (!HandlingTile) return;
 
@@ -96,11 +90,15 @@ public class TilePlacer : MonoBehaviour
             HandlingTile = false;
             return;
         }
+
         if (EventSystem.current.IsPointerOverGameObject()) return;
+
         Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(lRay.origin, lRay.direction * 20, Color.white);
+        Debug.DrawRay(lRay.origin, lRay.direction * 20, Color.white);
+
         RaycastHit lHitObject;
         _HasGroundHit = false;
+
         if (previewTile != null)
         {
             if (TryGetPlacementHit(lRay, out lHitObject))
@@ -118,23 +116,72 @@ public class TilePlacer : MonoBehaviour
                 }
                 else
                 {
-                    previewTile.position = InstantiatePos;
+                    previewTile.position = _InstantiatePos;
                 }
             }
             else
-                previewTile.position = InstantiatePos;
+            {
+                previewTile.position = _InstantiatePos;
+            }
         }
 
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
             Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, _TileRotation);
-                        _PlacedTiles.Add(lNewTile);
+
+            _PlacedTiles.Add(lNewTile);
             Destroy(previewTile.gameObject);
             previewTile = null;
             HandlingTile = false;
+
             OnTilePlaced?.Invoke();
         }
     }
+
+    #endregion
+
+    #region _____________________________| SETUP
+
+    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab, Tile.TileOrientations pOrientation)
+    {
+        _TileToSpawn = pTileToSpawn;
+        _TilePreviewPrefab = pPreviewPrefab != null ? pPreviewPrefab : pTileToSpawn;
+        _TileRotation = GetRotationFromOrientation(pOrientation);
+
+        if (_TilePreviewPrefab == null) return;
+
+        if (previewTile == null)
+            InstantiatePreviewTile(_TilePreviewPrefab, _InstantiatePos);
+        else
+            SwitchPreviewTile(_TilePreviewPrefab);
+
+        previewTile.rotation = _TileRotation;
+    }
+
+    private void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, _TileRotation);
+
+    public void SwitchPreviewTile(Transform pPrefab)
+    {
+        Vector3 lCurrentPos = previewTile.position;
+
+        Destroy(previewTile.gameObject);
+        InstantiatePreviewTile(pPrefab, lCurrentPos);
+    }
+
+    private static Quaternion GetRotationFromOrientation(Tile.TileOrientations pOrientation)
+    {
+        return pOrientation switch
+        {
+            Tile.TileOrientations.Right => Quaternion.Euler(0f, 90f, 0f),
+            Tile.TileOrientations.Left => Quaternion.Euler(0f, -90f, 0f),
+            Tile.TileOrientations.Down => Quaternion.Euler(0f, 180f, 0f),
+            _ => Quaternion.identity,
+        };
+    }
+
+    #endregion
+
+    #region _____________________________| PLACEMENT
 
     private bool TryGetPlacementHit(Ray pRay, out RaycastHit pHit)
     {
@@ -153,22 +200,21 @@ public class TilePlacer : MonoBehaviour
         pHit = default;
         return false;
     }
-    
+
     public void StartHandlingTile()
     {
         HandlingTile = true;
     }
-    
+
     public void ClearSelection()
     {
         _TileToSpawn = null;
         _TilePreviewPrefab = null;
 
         if (previewTile != null)
-            previewTile.position = InstantiatePos;
+            previewTile.position = _InstantiatePos;
     }
 
-    
     public void ResetPlacedTiles()
     {
         foreach (Transform lTile in _PlacedTiles)
@@ -179,12 +225,9 @@ public class TilePlacer : MonoBehaviour
 
         _PlacedTiles.Clear();
         HandlingTile = false;
+
         ClearSelection();
     }
 
-    void OnDestroy()
-    {
-        if (Instance == this)
-            Instance = null;
-    }
+    #endregion
 }

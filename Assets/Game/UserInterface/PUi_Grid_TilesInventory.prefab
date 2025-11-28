@@ -267,9 +267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dc992ab7dbf28948bf8e00692cf76ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TilePlacer: {fileID: 1829730314544358326}
-  container: {fileID: 6276799011529999635}
-  inventoryTile: {fileID: 9084438993196360242, guid: d0c0af941bbd7f84ea0ff81a536b0a79, type: 3}
+  _Container: {fileID: 6276799011529999635}
+  _InventoryTile: {fileID: 9084438993196360242, guid: d0c0af941bbd7f84ea0ff81a536b0a79, type: 3}
 --- !u!114 &1829730314544358326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,10 +283,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TileToSpawn: {fileID: 0}
   _TilePreviewPrefab: {fileID: 0}
+  _SurfaceNormalThreshold: 0.3
   _RaycastDistance: 20
   _GroundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   _UiLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 32
+  _TilesLayer:
+    serializedVersion: 2
+    m_Bits: 128
