@@ -92,8 +92,8 @@ namespace Rush.Game.Core
             Show(pCardToShow);
         }
 
-        private void SwitchToWin()  { Debug.Log("OUOUOUOUOU " + _CurrentCard.name); Switch(_WinScreen, _CurrentCard);}
-        private void SwitchToLose() { Debug.Log("OUOUOUOUOU " + _CurrentCard.name);  Switch(_LoseScreen, _CurrentCard);}
+        private void SwitchToWin()  { Switch(_WinScreen, _CurrentCard);}
+        private void SwitchToLose() { Switch(_LoseScreen, _CurrentCard);}
 
 
         #endregion

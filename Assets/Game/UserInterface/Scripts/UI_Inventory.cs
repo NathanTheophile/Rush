@@ -26,10 +26,9 @@ public class UI_Inventory : MonoBehaviour
 
     #region _____________________________| INIT
 
-    private void Start()
+    private void OnEnable()
     {
-        _CurrentLevel = Manager_Game.Instance.CurrentLevel;
-        PopulateInventory();
+        ResetInventory();
     }
 
     #endregion
