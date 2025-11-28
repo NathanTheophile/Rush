@@ -6,6 +6,7 @@
 #endregion
 
 using System;
+using Rush.Game.Core;
 using UnityEngine;
 
 namespace Rush.Game
@@ -25,8 +26,6 @@ namespace Rush.Game
             }
 
             Instance = this;
-
-            DontDestroyOnLoad(gameObject);
         }
 
         #endregion
@@ -63,6 +62,7 @@ namespace Rush.Game
         
         public void GameOver()
         {
+            Manager_Time.Instance.UpdatePauseStatus();
             onGameOver?.Invoke();
         }
 

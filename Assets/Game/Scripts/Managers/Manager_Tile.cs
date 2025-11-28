@@ -23,7 +23,6 @@ namespace Rush.Game
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         #endregion

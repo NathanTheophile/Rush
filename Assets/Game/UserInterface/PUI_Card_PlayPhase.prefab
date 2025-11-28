@@ -234,6 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30238b96f5716c4fb41fe36ad540cd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Tweaker: {fileID: 0}
 --- !u!224 &1484329823895718703 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 286362620214225341, guid: 90f6dcf512709cf429798acfdbcc3ff8, type: 3}

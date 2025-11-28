@@ -26,8 +26,6 @@ namespace Rush.Game.Core
             }
 
             Instance = this;
-
-            DontDestroyOnLoad(gameObject);
         }
 
         #endregion
@@ -60,6 +58,8 @@ namespace Rush.Game.Core
         #region _____________________________| INIT
 
         private void Awake() => CheckForInstance();
+
+        private void Start() => pause = true;
 
         #endregion
 

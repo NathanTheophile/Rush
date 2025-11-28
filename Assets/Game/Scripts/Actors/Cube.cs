@@ -58,7 +58,7 @@ namespace Rush.Game
         [SerializeField] private LayerMask _TilesLayer;
         public event Action<Cube, RaycastHit> onTileDetected;
         public event Action<Cube> onCubesCollided;
-        public event Action onCubeInVoid;
+        public event Action onCubeDeath;
 
         #endregion
 
@@ -101,7 +101,9 @@ namespace Rush.Game
         /// <returns>retourne si le raycast a détecté qq chose et si tile retourne tile sinon null</returns>
         private void TryFindGround(out RaycastHit pHit)
         {
-            if (Physics.Raycast(_Self.position, Vector3.down, out pHit, _GridSize, _GroundLayer | _TilesLayer))
+            float lMaxDistance = _GridSize * 3f;
+
+            if (Physics.Raycast(_Self.position, Vector3.down, out pHit, lMaxDistance, _GroundLayer | _TilesLayer))
             {
                 if (pHit.distance > _GridSize)
                 {
@@ -114,7 +116,7 @@ namespace Rush.Game
 
                 else SetModeRoll(_Direction);
             }
-            else onCubeInVoid?.Invoke();
+            else onCubeDeath?.Invoke();
         }
 
         private bool LookAround()
@@ -158,7 +160,7 @@ namespace Rush.Game
             return false;
         }
 
-        void OnTriggerEnter(Collider other) { if(other.TryGetComponent(out Cube pCube)) onCubesCollided(pCube); } 
+        void OnTriggerEnter(Collider other) { if(other.TryGetComponent(out Cube pCube)) onCubeDeath.Invoke(); } 
 
         #endregion
 

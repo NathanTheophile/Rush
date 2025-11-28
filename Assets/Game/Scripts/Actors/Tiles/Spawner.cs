@@ -50,7 +50,7 @@ namespace Rush.Game
             timeManager.objectsAffectedByTime.Add(lCube);
             timeManager.onTickFinished += lCube.TickUpdate;
             lCube.onTileDetected += tileManager.TryGetTile;
-            lCube.onCubeInVoid += gameManager.GameOver;
+            lCube.onCubeDeath += gameManager.GameOver;
             lCube.SpawnDirection(direction);
             _CurrentCubeSpawned++;
             if (_CurrentCubeSpawned >= _AmountoOfCubes) StopSpawning();
