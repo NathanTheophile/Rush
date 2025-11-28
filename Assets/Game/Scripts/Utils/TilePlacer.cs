@@ -1,0 +1,233 @@
+#region _____________________________/ INFOS
+//  AUTHOR : Rush Team
+//  Engine : Unity
+//  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
+#endregion
+
+using System;
+using System.Collections.Generic;
+using Rush.Game;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class TilePlacer : MonoBehaviour
+{
+    #region _____________________________/ SINGLETON
+
+    public static TilePlacer Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    #endregion
+
+    #region _____________________________/ PREFABS
+
+    [Header("Prefabs")]
+    [SerializeField] private Transform _TileToSpawn;
+    [SerializeField] private Transform _TilePreviewPrefab;
+    [SerializeField, Range(0f, 1f)] private float _SurfaceNormalThreshold = 0.3f;
+
+    #endregion
+
+    #region _____________________________/ PHYSICS
+
+    [Header("Physics")]
+    [SerializeField] private float _RaycastDistance = 20f;
+    [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
+
+    #endregion
+
+    #region _____________________________/ STATE
+
+    private bool _HasGroundHit;
+    private Vector3 _InstantiatePos;
+    private Quaternion _TileRotation = Quaternion.identity;
+    private readonly List<Transform> _PlacedTiles = new();
+
+    public static Transform previewTile;
+    public event Action OnTilePlaced;
+    public bool HandlingTile { get; private set; }
+
+    #endregion
+
+    #region _____________________________| UNITY
+
+    private void Start()
+    {
+        _InstantiatePos = new Vector3(1000, 1000, 1000);
+
+        if (_TilePreviewPrefab != null)
+            InstantiatePreviewTile(_TilePreviewPrefab, _InstantiatePos);
+    }
+
+    private void Update()
+    {
+        if (!HandlingTile) return;
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (previewTile != null)
+            {
+                Destroy(previewTile.gameObject);
+                previewTile = null;
+            }
+
+            HandlingTile = false;
+            return;
+        }
+
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
+        Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(lRay.origin, lRay.direction * 20, Color.white);
+
+        RaycastHit lHitObject;
+        _HasGroundHit = false;
+
+        if (previewTile != null)
+        {
+            if (TryGetPlacementHit(lRay, out lHitObject))
+            {
+                if (lHitObject.transform.gameObject.layer == 7) return;
+
+                float lUpDot = Vector3.Dot(lHitObject.normal, Vector3.up);
+
+                if (lUpDot > 0.9f)
+                {
+                    Vector3 lOffsetPoint = lHitObject.point + lHitObject.normal * 0.5f;
+
+                    previewTile.position = Vector3Int.RoundToInt(lOffsetPoint);
+                    _HasGroundHit = true;
+                }
+                else
+                {
+                    previewTile.position = _InstantiatePos;
+                }
+            }
+            else
+            {
+                previewTile.position = _InstantiatePos;
+            }
+        }
+
+        if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
+        {
+            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, _TileRotation);
+
+            _PlacedTiles.Add(lNewTile);
+            Destroy(previewTile.gameObject);
+            previewTile = null;
+            HandlingTile = false;
+
+            OnTilePlaced?.Invoke();
+        }
+    }
+
+    #endregion
+
+    #region _____________________________| SETUP
+
+    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab, Tile.TileOrientations pOrientation)
+    {
+        _TileToSpawn = pTileToSpawn;
+        _TilePreviewPrefab = pPreviewPrefab != null ? pPreviewPrefab : pTileToSpawn;
+        _TileRotation = GetRotationFromOrientation(pOrientation);
+
+        if (_TilePreviewPrefab == null) return;
+
+        if (previewTile == null)
+            InstantiatePreviewTile(_TilePreviewPrefab, _InstantiatePos);
+        else
+            SwitchPreviewTile(_TilePreviewPrefab);
+
+        previewTile.rotation = _TileRotation;
+    }
+
+    private void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, _TileRotation);
+
+    public void SwitchPreviewTile(Transform pPrefab)
+    {
+        Vector3 lCurrentPos = previewTile.position;
+
+        Destroy(previewTile.gameObject);
+        InstantiatePreviewTile(pPrefab, lCurrentPos);
+    }
+
+    private static Quaternion GetRotationFromOrientation(Tile.TileOrientations pOrientation)
+    {
+        return pOrientation switch
+        {
+            Tile.TileOrientations.Right => Quaternion.Euler(0f, 90f, 0f),
+            Tile.TileOrientations.Left => Quaternion.Euler(0f, -90f, 0f),
+            Tile.TileOrientations.Down => Quaternion.Euler(0f, 180f, 0f),
+            _ => Quaternion.identity,
+        };
+    }
+
+    #endregion
+
+    #region _____________________________| PLACEMENT
+
+    private bool TryGetPlacementHit(Ray pRay, out RaycastHit pHit)
+    {
+        var lHits = Physics.RaycastAll(pRay, _RaycastDistance, _GroundLayer | _TilesLayer);
+        Array.Sort(lHits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (var lHit in lHits)
+        {
+            if (previewTile != null && (lHit.transform == previewTile || lHit.transform.IsChildOf(previewTile)))
+                continue;
+
+            pHit = lHit;
+            return true;
+        }
+
+        pHit = default;
+        return false;
+    }
+
+    public void StartHandlingTile()
+    {
+        HandlingTile = true;
+    }
+
+    public void ClearSelection()
+    {
+        _TileToSpawn = null;
+        _TilePreviewPrefab = null;
+
+        if (previewTile != null)
+            previewTile.position = _InstantiatePos;
+    }
+
+    public void ResetPlacedTiles()
+    {
+        foreach (Transform lTile in _PlacedTiles)
+        {
+            if (lTile != null)
+                Destroy(lTile.gameObject);
+        }
+
+        _PlacedTiles.Clear();
+        HandlingTile = false;
+
+        ClearSelection();
+    }
+
+    #endregion
+}
