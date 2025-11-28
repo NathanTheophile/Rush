@@ -19,17 +19,20 @@ public class TilePlacer : MonoBehaviour
 
     private Vector3 InstantiatePos;
     public static Transform previewTile;
+    private Quaternion _TileRotation = Quaternion.identity;
 
     void Start()
     {
         InstantiatePos = new Vector3(1000, 1000, 1000);
         if (_TilePreviewPrefab != null)
-            InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);    }
+            InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);
+    }
 
-    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab)
+    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab, Rush.Game.Tile.TileOrientations pOrientation)
     {
         _TileToSpawn = pTileToSpawn;
         _TilePreviewPrefab = pPreviewPrefab != null ? pPreviewPrefab : pTileToSpawn;
+        _TileRotation = GetRotationFromOrientation(pOrientation);
 
         if (_TilePreviewPrefab == null) return;
 
@@ -37,16 +40,29 @@ public class TilePlacer : MonoBehaviour
             InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);
         else
             SwitchPreviewTile(_TilePreviewPrefab);
+
+        previewTile.rotation = _TileRotation;
     }
 
 
-    private static void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, Quaternion.identity);
+    private void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, _TileRotation);
 
-    public static void SwitchPreviewTile (Transform pPrefab)
+    private void SwitchPreviewTile(Transform pPrefab)
     {
         Vector3 lCurrentPos = previewTile.position;
         Destroy(previewTile.gameObject);
         InstantiatePreviewTile(pPrefab, lCurrentPos);
+    }
+
+    private static Quaternion GetRotationFromOrientation(Rush.Game.Tile.TileOrientations pOrientation)
+    {
+        return pOrientation switch
+        {
+            Rush.Game.Tile.TileOrientations.East => Quaternion.Euler(0f, 90f, 0f),
+            Rush.Game.Tile.TileOrientations.West => Quaternion.Euler(0f, -90f, 0f),
+            Rush.Game.Tile.TileOrientations.South => Quaternion.Euler(0f, 180f, 0f),
+            _ => Quaternion.identity,
+        };
     }
 
     // Update is called once per frame
@@ -96,8 +112,9 @@ public class TilePlacer : MonoBehaviour
 
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
-            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity);
-            _PlacedTiles.Add(lNewTile);            Destroy(previewTile.gameObject);
+            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, _TileRotation);
+            _PlacedTiles.Add(lNewTile);
+            Destroy(previewTile.gameObject);
             previewTile = null;
             HandlingTile = false;
             OnTilePlaced?.Invoke();
