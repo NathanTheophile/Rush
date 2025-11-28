@@ -231,9 +231,9 @@ GameObject:
   m_Component:
   - component: {fileID: 293031526}
   - component: {fileID: 293031529}
+  - component: {fileID: 293031530}
   - component: {fileID: 293031528}
   - component: {fileID: 293031527}
-  - component: {fileID: 293031530}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -309,9 +309,8 @@ MonoBehaviour:
   _MainCanvas: {fileID: 248068753}
   _WinScreen: {fileID: 3824900764612218940, guid: 93dad2e66224c9241a5d1c3173b46df4, type: 3}
   _LoseScreen: {fileID: 3824900764612218940, guid: a77651dff005a5241b9f349e186b4419, type: 3}
-  _UiCards:
-  - {fileID: 3824900764612218940, guid: 93dad2e66224c9241a5d1c3173b46df4, type: 3}
-  - {fileID: 3824900764612218940, guid: a77651dff005a5241b9f349e186b4419, type: 3}
+  _UiCards: []
+  lManager: {fileID: 293031529}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

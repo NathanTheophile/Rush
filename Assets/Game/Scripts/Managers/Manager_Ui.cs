@@ -25,8 +25,6 @@ namespace Rush.Game.Core
             }
 
             Instance = this;  
-              
-            DontDestroyOnLoad(gameObject);
         }
 
         #endregion
@@ -37,6 +35,8 @@ namespace Rush.Game.Core
         [SerializeField] private List<Transform> _UiCards = new();
         
         private Transform _CurrentCard;
+
+        [SerializeField] Manager_Game lManager;
 
         #endregion
 
@@ -50,9 +50,10 @@ namespace Rush.Game.Core
         /// </summary>
         void Start()
         {
-            Debug.Log(Manager_Game.Instance);
+            Debug.Log(Manager_Game.Instance == null);
             Manager_Game.Instance.onGameOver += SwitchToLose;
             Manager_Game.Instance.onGameWon += SwitchToWin;
+                        Debug.Log(Manager_Game.Instance == null);
         }
 
         #endregion
@@ -81,8 +82,8 @@ namespace Rush.Game.Core
         {
             if (pCard == null) return;
             
-            _CurrentCard = null;
             pCard.gameObject.SetActive(false);
+            _CurrentCard = null;
         }
 
         public void Switch(Transform pCardToShow, Transform pCardToHide)
@@ -91,8 +92,8 @@ namespace Rush.Game.Core
             Show(pCardToShow);
         }
 
-        private void SwitchToWin()  => Switch(_WinScreen, _CurrentCard);
-        private void SwitchToLose() => Switch(_LoseScreen, _CurrentCard);
+        private void SwitchToWin()  { Debug.Log("OUOUOUOUOU " + _CurrentCard.name); Switch(_WinScreen, _CurrentCard);}
+        private void SwitchToLose() { Debug.Log("OUOUOUOUOU " + _CurrentCard.name);  Switch(_LoseScreen, _CurrentCard);}
 
 
         #endregion

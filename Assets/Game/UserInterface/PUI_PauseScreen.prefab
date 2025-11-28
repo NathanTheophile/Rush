@@ -272,10 +272,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60bcff14c727809439b0e7d7746a0b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BtnType: 0
+  _BtnType: 2
+  _LevelUnloader: 1
+  _Retry: 0
   _Button: {fileID: 0}
-  _CardToShow: {fileID: 0}
-  _CardToHide: {fileID: 0}
+  _CardToShow: {fileID: 7445834480086517307, guid: badc02e39ab1a9749924d341f2000915, type: 3}
+  _CardToHide: {fileID: 3824900764612218940}
 --- !u!1 &4098434491403480406
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,10 +412,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60bcff14c727809439b0e7d7746a0b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BtnType: 0
+  _BtnType: 2
+  _LevelUnloader: 1
+  _Retry: 0
   _Button: {fileID: 0}
-  _CardToShow: {fileID: 0}
-  _CardToHide: {fileID: 0}
+  _CardToShow: {fileID: 4795109341393439310, guid: b58ca5e5effd6114fb3758998dfd225f, type: 3}
+  _CardToHide: {fileID: 3824900764612218940}
 --- !u!1 &4690762184330927925
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +692,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _BtnType: 2
+  _LevelUnloader: 0
+  _Retry: 0
   _Button: {fileID: 0}
   _CardToShow: {fileID: 5411068302536572238, guid: b33fbd25acfe71342bb77172549a5bf9, type: 3}
   _CardToHide: {fileID: 3824900764612218940}
@@ -703,7 +709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30238b96f5716c4fb41fe36ad540cd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Tweaker: {fileID: 0}
+  _Tweaker: {fileID: 5954929876964321304}
 --- !u!1 &5926483474505106742
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,7 +1003,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3824900764612218940
 RectTransform:
   m_ObjectHideFlags: 0

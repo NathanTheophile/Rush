@@ -7,6 +7,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Rush.Game.Core;
+using Rush.Game;
 
 public class UI_Btn_Navigation : MonoBehaviour
 {
@@ -19,9 +20,11 @@ public class UI_Btn_Navigation : MonoBehaviour
 
     #region _____________________________/ REFS
     [Header("Optionnal References")]
+    [SerializeField] private bool _LevelUnloader, _Retry;
     [SerializeField] private Button _Button;
     [SerializeField] private Transform _CardToShow;
     [SerializeField] private Transform _CardToHide;
+
 
     #endregion
 
@@ -41,6 +44,8 @@ public class UI_Btn_Navigation : MonoBehaviour
             case BtnTransitions.Quit:   _Button.onClick.AddListener(QuitGame);  break;
             default: break;
         }
+
+        if (_LevelUnloader) _Button.onClick.AddListener(UnloadLevel);
     }
 
     private void Init()
@@ -60,6 +65,8 @@ public class UI_Btn_Navigation : MonoBehaviour
     private void Switch()   => Manager_Ui.Instance.Switch(_CardToShow, _CardToHide);
 
     void QuitGame()         => Application.Quit();
+
+    void UnloadLevel() => Manager_Game.Instance.UnloadCurrentLevel(_Retry);
 
     #endregion
 }

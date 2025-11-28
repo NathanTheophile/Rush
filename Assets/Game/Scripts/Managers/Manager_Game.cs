@@ -26,8 +26,6 @@ namespace Rush.Game
             }
 
             Instance = this;
-
-            DontDestroyOnLoad(gameObject);
         }
 
         #endregion
@@ -42,6 +40,8 @@ namespace Rush.Game
 
         private int _CubesToComplete;
         private int _CubesArrived;
+
+        private GameObject _CurrentLevelPrefab;
 
         #endregion
 
@@ -65,17 +65,23 @@ namespace Rush.Game
         public void GameOver()
         {
             Debug.Log("GAME OVER");
+                        onGameOver?.Invoke();
+
             Manager_Time.Instance.SetPauseStatus();
-            onGameOver?.Invoke();
         }
 
         #region _____________________________/ LEVEL DATA
 
         public void SpawnCurrentLevel(SO_LevelData pLevelData)
         {
-            Debug.Log($"{pLevelData.levelName} has {pLevelData.levelPrefab.name} prefab.");
             CurrentLevel = pLevelData;
-            Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
+            _CurrentLevelPrefab = Instantiate(CurrentLevel.levelPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+        public void UnloadCurrentLevel(bool pReload = false)
+        {
+            Destroy(_CurrentLevelPrefab);
+            if (pReload) SpawnCurrentLevel(CurrentLevel);
         }
 
         #endregion
