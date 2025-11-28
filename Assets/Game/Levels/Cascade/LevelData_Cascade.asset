@@ -21,13 +21,16 @@ MonoBehaviour:
     quantity: 1
     tilePrefab: {fileID: 1519708505807681995, guid: d8933d0591b5185449cd286b9f4b5de1, type: 3}
     previewPrefab: {fileID: 1519708505807681995, guid: d8933d0591b5185449cd286b9f4b5de1, type: 3}
+    image: {fileID: 21300000, guid: a450b669c74848e4ba1e4faa9a3f0cff, type: 3}
   - type: 2
     orientation: 3
     quantity: 3
     tilePrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
     previewPrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
+    image: {fileID: 21300000, guid: bc4e7227db3b06247aecc669e6e19ccc, type: 3}
   - type: 2
     orientation: 0
     quantity: 1
     tilePrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
     previewPrefab: {fileID: 1519708505807681995, guid: 12c591d36e437dd4cafa2d34260e583e, type: 3}
+    image: {fileID: 21300000, guid: bc4e7227db3b06247aecc669e6e19ccc, type: 3}
