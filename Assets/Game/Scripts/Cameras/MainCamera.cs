@@ -6,6 +6,7 @@
 #endregion
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Rush.Game
 {
@@ -81,6 +82,12 @@ namespace Rush.Game
 
         void HandleMouseInput()
         {
+            if (IsPointerOverUI())
+            {
+                _IsDragging = false;
+                return;
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
                 _IsDragging = true;
@@ -202,6 +209,12 @@ namespace Rush.Game
 
             _HasZoomInput = true;
         }
+
+        bool IsPointerOverUI()
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        }
+
 
         void UpdateCameraPosition()
         {
