@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class UI_Btn_ResetTiles : MonoBehaviour
 {
     [SerializeField] private Button _Button;
-    [SerializeField] private TilePlacer _TilePlacer;
     [SerializeField] private UI_Inventory _Inventory;
 
     void Start()
@@ -19,7 +18,7 @@ public class UI_Btn_ResetTiles : MonoBehaviour
 
     private void ResetTiles()
     {
-        _TilePlacer?.ResetPlacedTiles();
+        TilePlacer.Instance?.ResetPlacedTiles();
         _Inventory?.ResetInventory();
     }
 }

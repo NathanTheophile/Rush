@@ -8,35 +8,33 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 {
     [SerializeField] public TMP_Text _TileName;
     [SerializeField] public TMP_Text _TileAmount;
-    [SerializeField] private Transform _TileOrientationVisual;
 
     public int TileAmount { get; private set; }
 
     private Button _Button;
-    private TilePlacer _TilePlacer;
     private SO_LevelData.InventoryTile _InventoryTile;
 
     private static UI_Btn_InventoryTile _CurrentSelectedTile;
     private bool _IsSelected;
 
-    public void Initialize(SO_LevelData.InventoryTile pInventoryTile, TilePlacer pTilePlacer)
+    private TilePlacer TilePlacerInstance => TilePlacer.Instance;
+
+    public void Initialize(SO_LevelData.InventoryTile pInventoryTile)
     {
         if (_Button == null)
             _Button = GetComponent<Button>();
 
-        _TilePlacer = pTilePlacer;
         _InventoryTile = pInventoryTile;
 
         TileAmount = pInventoryTile.quantity;
 
         _TileName.text = pInventoryTile.type.ToString();
         _TileAmount.text = TileAmount.ToString();
-        ApplyTileOrientation(pInventoryTile.orientation);
 
         _Button.onClick.RemoveAllListeners();
         _Button.onClick.AddListener(() =>
         {
-            if (_TilePlacer == null)
+            if (TilePlacerInstance == null)
             {
                 Debug.LogWarning("TilePlacer reference missing. Cannot set tile prefabs from inventory button.");
                 return;
@@ -54,11 +52,11 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             _CurrentSelectedTile = this;
             _IsSelected = true;
 
-            _TilePlacer.OnTilePlaced -= HandleTilePlaced;
-            _TilePlacer.OnTilePlaced += HandleTilePlaced;
-            _TilePlacer.StartHandlingTile();
+            TilePlacerInstance.OnTilePlaced -= HandleTilePlaced;
+            TilePlacerInstance.OnTilePlaced += HandleTilePlaced;
+            TilePlacerInstance.StartHandlingTile();
 
-            _TilePlacer.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab, _InventoryTile.orientation);
+            TilePlacerInstance.SetTilePrefabs(_InventoryTile.tilePrefab, _InventoryTile.previewPrefab);
         });
     }
 
@@ -78,8 +76,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
     void OnDestroy()
     {
-        if (_TilePlacer != null)
-            _TilePlacer.OnTilePlaced -= HandleTilePlaced;
+        if (TilePlacerInstance != null)
+            TilePlacerInstance.OnTilePlaced -= HandleTilePlaced;
     }
 
     private void HandleTilePlaced()
@@ -94,26 +92,12 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             if (_CurrentSelectedTile == this)
                 _CurrentSelectedTile = null;
 
-            if (_TilePlacer != null)
-                _TilePlacer.ClearSelection();
+            if (TilePlacerInstance != null)
+                TilePlacerInstance.ClearSelection();
         }
     }
 
-    private void ApplyTileOrientation(Rush.Game.Tile.TileOrientations pOrientation)
-    {
-        if (_TileOrientationVisual == null)
-            return;
-
-        _TileOrientationVisual.localRotation = pOrientation switch
-        {
-            Rush.Game.Tile.TileOrientations.Right => Quaternion.Euler(0f, 0f, -90f),
-            Rush.Game.Tile.TileOrientations.Left => Quaternion.Euler(0f, 0f, 90f),
-            Rush.Game.Tile.TileOrientations.Down => Quaternion.Euler(0f, 0f, 180f),
-            _ => Quaternion.identity
-        };
-    }
-
-        public static void ResetSelection(TilePlacer pTilePlacer)
+    public static void ResetSelection()
     {
         if (_CurrentSelectedTile != null)
         {
@@ -121,6 +105,6 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             _CurrentSelectedTile = null;
         }
 
-        pTilePlacer?.ClearSelection();
+        TilePlacer.Instance?.ClearSelection();
     }
 }

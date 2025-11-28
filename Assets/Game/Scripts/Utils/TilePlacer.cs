@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Rush.Game;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TilePlacer : MonoBehaviour
 {
+    public static TilePlacer Instance { get; private set; }
+
     [Header("Prefabs")]
     [SerializeField] private Transform _TileToSpawn;
     [SerializeField] private Transform _TilePreviewPrefab;
@@ -17,11 +18,20 @@ public class TilePlacer : MonoBehaviour
     public event Action OnTilePlaced;
     public bool HandlingTile { get; private set; }
     private readonly List<Transform> _PlacedTiles = new();
-    private Transform LevelRoot;
 
     private Vector3 InstantiatePos;
     public static Transform previewTile;
-    private Quaternion _TileRotation = Quaternion.identity;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     void Start()
     {
@@ -30,11 +40,10 @@ public class TilePlacer : MonoBehaviour
             InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);
     }
 
-    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab, Rush.Game.Tile.TileOrientations pOrientation)
+    public void SetTilePrefabs(Transform pTileToSpawn, Transform pPreviewPrefab)
     {
         _TileToSpawn = pTileToSpawn;
         _TilePreviewPrefab = pPreviewPrefab != null ? pPreviewPrefab : pTileToSpawn;
-        _TileRotation = GetRotationFromOrientation(pOrientation);
 
         if (_TilePreviewPrefab == null) return;
 
@@ -42,29 +51,16 @@ public class TilePlacer : MonoBehaviour
             InstantiatePreviewTile(_TilePreviewPrefab, InstantiatePos);
         else
             SwitchPreviewTile(_TilePreviewPrefab);
-
-        previewTile.rotation = _TileRotation;
     }
 
 
-    private void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, _TileRotation);
+    private static void InstantiatePreviewTile(Transform pPrefab, Vector3 pPosition) => previewTile = Instantiate(pPrefab, pPosition, Quaternion.identity);
 
-    private void SwitchPreviewTile(Transform pPrefab)
+    public static void SwitchPreviewTile (Transform pPrefab)
     {
         Vector3 lCurrentPos = previewTile.position;
         Destroy(previewTile.gameObject);
         InstantiatePreviewTile(pPrefab, lCurrentPos);
-    }
-
-    private static Quaternion GetRotationFromOrientation(Rush.Game.Tile.TileOrientations pOrientation)
-    {
-        return pOrientation switch
-        {
-            Rush.Game.Tile.TileOrientations.Right => Quaternion.Euler(0f, 90f, 0f),
-            Rush.Game.Tile.TileOrientations.Left => Quaternion.Euler(0f, -90f, 0f),
-            Rush.Game.Tile.TileOrientations.Down => Quaternion.Euler(0f, 180f, 0f),
-            _ => Quaternion.identity,
-        };
     }
 
     // Update is called once per frame
@@ -114,7 +110,8 @@ public class TilePlacer : MonoBehaviour
 
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
-            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity, LevelRoot);            _PlacedTiles.Add(lNewTile);
+            Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, Quaternion.identity);            
+            _PlacedTiles.Add(lNewTile);
             Destroy(previewTile.gameObject);
             previewTile = null;
             HandlingTile = false;
@@ -166,5 +163,11 @@ public class TilePlacer : MonoBehaviour
         _PlacedTiles.Clear();
         HandlingTile = false;
         ClearSelection();
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 }

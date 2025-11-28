@@ -1,9 +1,3 @@
-#region _____________________________/ INFOS
-//  AUTHOR : Nathan THEOPHILE (2025)
-//  Engine : Unity
-//  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
-#endregion
-
 using Rush.Game.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,16 +6,30 @@ namespace Rush.UI
 {
     public class UI_Slider_GameSpeed : MonoBehaviour
     {
-        private Slider _GameSpeedSlider;
+        #region _____________________________/ VALUES
 
-        void Start() 
-        { 
-            _GameSpeedSlider = GetComponentInParent<Slider>(); 
-            _GameSpeedSlider.onValueChanged.AddListener(OnSliderValueChanged); 
+        [SerializeField] private Slider _GameSpeedSlider;
+
+        #endregion
+
+        #region _____________________________| INIT
+        private void Awake() => _GameSpeedSlider ??= GetComponentInParent<Slider>();
+
+        private void Start()
+        {
+            if (_GameSpeedSlider == null)
+                return;
+
+            _GameSpeedSlider.onValueChanged.AddListener(OnSliderValueChanged);
             Manager_Time.Instance.GlobalTickSpeed = _GameSpeedSlider.value;
         }
 
-        public void OnSliderValueChanged(float pValue) => Manager_Time.Instance.GlobalTickSpeed = pValue;
+        #endregion
+
+        #region _____________________________| CALLBACKS
+
+        private void OnSliderValueChanged(float pValue) => Manager_Time.Instance.GlobalTickSpeed = pValue;
+
+        #endregion
     }
 }
-
