@@ -55,6 +55,7 @@ namespace Rush.Game
 
         public void UpdateCubeArrived()
         {
+            Debug.Log("Cubs to complete" + _CubesToComplete);
             _CubesArrived++;
             if (_CubesArrived >= _CubesToComplete)
             {
