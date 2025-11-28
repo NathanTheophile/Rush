@@ -32,7 +32,7 @@ namespace Rush.Game.Core
         #endregion
 
         #region _____________________________/ VALUES
-
+        [SerializeField] private Transform _MainCanvas;
         [SerializeField] private List<Transform> _UiCards = new();
         [SerializeField] private List<Transform> _ActiveCards = new();
         [SerializeField] private Transform _CurrentCard;
@@ -43,23 +43,28 @@ namespace Rush.Game.Core
 
         private void Awake() => CheckForInstance();
 
+        void Start() { if (_CurrentCard != null) _UiCards.Add(_CurrentCard); }
+
         #endregion
 
         #region _____________________________| CARDS
 
-        public void AddActivePanel(Transform pCard)
+        public void AddCardToScene(Transform pCard)
         {
             if (pCard == null || _UiCards.Contains(pCard))
                 return;
 
-            _UiCards.Add(pCard);
+            Debug.Log(pCard.name + " ajoutée dans liste");
+
+            Transform lCard = Instantiate(pCard, _MainCanvas);
+            _UiCards.Add(lCard);
         }
 
         public void Show(Transform pCard)
         {
             if (pCard == null) return;
 
-            AddActivePanel(pCard);
+            AddCardToScene(pCard);
 
             pCard.gameObject.SetActive(true);
 

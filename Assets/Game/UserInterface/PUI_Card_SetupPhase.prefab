@@ -406,11 +406,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60bcff14c727809439b0e7d7746a0b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BtnType: 2
+  _BtnType: 2
   _Button: {fileID: 0}
-  _PanelToShow: {fileID: 5411068302536572238, guid: b33fbd25acfe71342bb77172549a5bf9, type: 3}
-  _PanelToHide: {fileID: 5411068302536572238}
-  _TargetState: 2
+  _CardToShow: {fileID: 5411068302536572238, guid: b33fbd25acfe71342bb77172549a5bf9, type: 3}
+  _CardToHide: {fileID: 5411068302536572238}
 --- !u!1 &4945140549206634930
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,7 +626,6 @@ MonoBehaviour:
   _Button: {fileID: 0}
   _TilePlacer: {fileID: 8740137009475589157}
   _Inventory: {fileID: 3478535788386913129}
-  _RequiredState: 1
 --- !u!1 &7437137947544971300
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,11 +760,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60bcff14c727809439b0e7d7746a0b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BtnType: 2
+  _BtnType: 2
   _Button: {fileID: 0}
-  _PanelToShow: {fileID: 4795109341393439310, guid: b58ca5e5effd6114fb3758998dfd225f, type: 3}
-  _PanelToHide: {fileID: 5411068302536572238}
-  _TargetState: 0
+  _CardToShow: {fileID: 4795109341393439310, guid: b58ca5e5effd6114fb3758998dfd225f, type: 3}
+  _CardToHide: {fileID: 5411068302536572238}
 --- !u!1 &8032379435487581829
 GameObject:
   m_ObjectHideFlags: 0

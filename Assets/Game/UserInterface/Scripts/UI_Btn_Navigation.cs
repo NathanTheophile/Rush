@@ -46,7 +46,6 @@ public class UI_Btn_Navigation : MonoBehaviour
     private void Init()
     {
         if (_Button == null) _Button = GetComponent<Button>();
-        if (_CardToShow == null) Debug.Log("A button has missing card to show.");
         if (_CardToHide == null) _CardToHide = transform.parent;
     }
 
