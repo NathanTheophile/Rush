@@ -38,16 +38,8 @@ namespace Rush.Game
             timeManager = Manager_Time.Instance;
             tileManager = Manager_Tile.Instance;
             gameManager = Manager_Game.Instance;
-            gameManager.UpdateCubesAmountoComplete(_AmountoOfCubes);
-            if (gameManager != null)
-            {
-                gameManager.onGameStateChanged += OnGameStateChanged;
-                OnGameStateChanged(gameManager.CurrentState);
-            }
-            else
-            {
-                BeginSpawning();
-            }
+            gameManager?.UpdateCubesAmountoComplete(_AmountoOfCubes);
+            BeginSpawning();
         }
 
         void SpawnCube(int pTickIndex)
@@ -61,21 +53,6 @@ namespace Rush.Game
             lCube.SpawnDirection(direction);
             _CurrentCubeSpawned++;
             if (_CurrentCubeSpawned >= _AmountoOfCubes) StopSpawning();
-        }
-
-        private void OnGameStateChanged(Manager_Game.GameStates state)
-        {
-            if (timeManager == null) return;
-
-            bool shouldSpawn = state == Manager_Game.GameStates.Play && _CurrentCubeSpawned < _AmountoOfCubes;
-            if (shouldSpawn && !_Spawning)
-            {
-                BeginSpawning();
-            }
-            else if (!shouldSpawn && _Spawning)
-            {
-                StopSpawning();
-            }
         }
 
         private void BeginSpawning()
@@ -101,10 +78,6 @@ namespace Rush.Game
         private void OnDestroy()
         {
             StopSpawning();
-            if (gameManager != null)
-            {
-                gameManager.onGameStateChanged -= OnGameStateChanged;
-            }
         }
     }
 }

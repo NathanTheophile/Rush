@@ -152,7 +152,6 @@ namespace Rush.UI
             Manager_Game.Instance?.SpawnCurrentLevel(_LevelData);
             Instantiate(_PanelToShow, transform.root);
             Destroy(_RootCard.GameObject());
-            Manager_Game.Instance?.SetState(Manager_Game.GameStates.Setup);
         }
 
         #endregion
