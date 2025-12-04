@@ -33,7 +33,8 @@ namespace Rush.Game.Core
         [SerializeField] private Transform _MainCanvas;
         [SerializeField] private Transform _WinScreen, _LoseScreen;
         [SerializeField] private List<Transform> _UiCards = new();
-        
+
+        private readonly Dictionary<Transform, Transform> _UiCardInstances = new();
         private Transform _CurrentCard;
 
         [SerializeField] Manager_Game lManager;
@@ -50,40 +51,106 @@ namespace Rush.Game.Core
         /// </summary>
         void Start()
         {
-            Debug.Log(Manager_Game.Instance == null);
             Manager_Game.Instance.onGameOver += SwitchToLose;
             Manager_Game.Instance.onGameWon += SwitchToWin;
-                        Debug.Log(Manager_Game.Instance == null);
         }
 
         #endregion
 
         #region _____________________________| CARDS
 
-        public void AddCardToScene(Transform pCard)
+        public Transform AddCardToScene(Transform pCard)
         {
-            if (pCard == null || _UiCards.Contains(pCard))
-                return;
+            if (pCard == null)
+                return null;
 
-            Transform lCard = Instantiate(pCard, _MainCanvas);
+            if (_UiCardInstances.TryGetValue(pCard, out Transform lCard))
+            {
+                if (!_UiCards.Contains(lCard))
+                    _UiCards.Add(lCard);
+
+                return lCard;
+            }
+
+            // If the card is already part of the scene (not a prefab asset), just register it.
+            if (pCard.gameObject.scene.IsValid())
+            {
+                _UiCardInstances[pCard] = pCard;
+                if (!_UiCards.Contains(pCard))
+                    _UiCards.Add(pCard);
+
+                return pCard;
+            }
+
+            lCard = Instantiate(pCard, _MainCanvas);
+            _UiCardInstances[pCard] = lCard;
             _UiCards.Add(lCard);
+
+            return lCard;
         }
 
         public void Show(Transform pCard)
         {
             if (pCard == null) return;
 
-            AddCardToScene(pCard);
-            _CurrentCard = pCard;
-            pCard.gameObject.SetActive(true);
+            Transform lCard = AddCardToScene(pCard);
+            if (lCard == null) return;
+
+            HideOtherCards(lCard);
+
+            _CurrentCard = lCard;
+            lCard.gameObject.SetActive(true);
+        }
+
+        private void HideOtherCards(Transform pCardToKeep)
+        {
+            if (pCardToKeep == null)
+                return;
+
+            HashSet<Transform> lAllCards = new(_UiCards);
+            foreach (Transform lRegistered in _UiCardInstances.Values)
+                lAllCards.Add(lRegistered);
+
+            foreach (Transform lCard in lAllCards)
+            {
+                if (lCard == null)
+                    continue;
+
+                if (lCard == pCardToKeep)
+                    continue;
+
+                lCard.gameObject.SetActive(false);
+            }
         }
 
         public void Hide(Transform pCard)
         {
             if (pCard == null) return;
-            
-            pCard.gameObject.SetActive(false);
-            _CurrentCard = null;
+
+            Transform lCard = null;
+
+            if (_UiCardInstances.TryGetValue(pCard, out Transform lExisting))
+            {
+                lCard = lExisting;
+            }
+            else if (_UiCardInstances.ContainsValue(pCard))
+            {
+                lCard = pCard;
+            }
+            else if (pCard.gameObject.scene.IsValid())
+            {
+                // Register existing scene objects so they can be hidden without spawning duplicates.
+                lCard = pCard;
+                _UiCardInstances[pCard] = pCard;
+                if (!_UiCards.Contains(pCard))
+                    _UiCards.Add(pCard);
+            }
+
+            if (lCard == null) return;
+
+            lCard.gameObject.SetActive(false);
+            if (_CurrentCard == lCard)
+                _CurrentCard = null;
         }
 
         public void Switch(Transform pCardToShow, Transform pCardToHide)
