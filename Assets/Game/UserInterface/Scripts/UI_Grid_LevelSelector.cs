@@ -36,7 +36,7 @@ namespace Rush.UI
 
         #region _____________________________| UNITY
 
-        private void OnEnable() => Populate();
+        private void OnEnable() { TilePlacer.Instance?.ResetPlacedTiles(); Populate();}
 
         private void OnDisable()
         {
