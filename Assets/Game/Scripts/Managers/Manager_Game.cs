@@ -62,7 +62,7 @@ namespace Rush.Game
             if (_CubesArrived >= _CubesToComplete)
             {
                 onGameWon?.Invoke();
-                Manager_Time.Instance.SetPauseStatus();
+                Manager_Time.Instance.SetPauseStatus(true);
             }
         }
         
@@ -70,7 +70,7 @@ namespace Rush.Game
         {
             onGameOver?.Invoke();
 
-            Manager_Time.Instance.SetPauseStatus();
+            Manager_Time.Instance.SetPauseStatus(true);
         }
 
         #region _____________________________/ LEVEL DATA

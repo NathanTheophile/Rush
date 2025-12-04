@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using Rush.Game.Core;
 using UnityEngine;
 
 namespace Rush.Game
@@ -160,14 +161,14 @@ namespace Rush.Game
             return false;
         }
 
-        void OnCollisionEnter(Collision other) => HandleCubeCollision(other.collider);
+        void OnCollisionEnter(Collision other) => HandleCubeCollision(other.gameObject);
 
-        void OnTriggerEnter(Collider other) => HandleCubeCollision(other);
+        void OnTriggerEnter(Collider other) => HandleCubeCollision(other.gameObject);
 
-        private void HandleCubeCollision(Component other)
+        private void HandleCubeCollision(GameObject other)
         {
-            if (other.TryGetComponent(out Cube _))
-                onCubeDeath?.Invoke();
+            if (other.TryGetComponent(out Cube _)){
+                onCubeDeath?.Invoke();}
         }
         
         #endregion

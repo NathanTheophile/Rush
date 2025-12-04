@@ -90,7 +90,9 @@ namespace Rush.Game.Core
 
         #endregion
 
-        public void SetPauseStatus() => _Pause = !_Pause;
+        public void SetPauseStatus(bool pPause ) => _Pause = pPause;
+
+        public bool GetPauseStatus() => _Pause;
 
         #region _____________________________| DESTROY
 

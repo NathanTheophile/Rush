@@ -16,6 +16,6 @@ namespace Rush.Game.Utils
             _Tweaker.onClick.AddListener(TweakPause);
         }
 
-        void TweakPause() => Manager_Time.Instance.SetPauseStatus();
+        void TweakPause() => Manager_Time.Instance.SetPauseStatus(!Manager_Time.Instance.GetPauseStatus());
     }
 }
