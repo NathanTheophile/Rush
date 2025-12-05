@@ -47,6 +47,12 @@ namespace Rush.Game.Core
         private readonly Dictionary<string, AudioMixerGroup> _MixerGroupCache = new();
         #endregion
 
+        #region _____________________________/ ACCESSORS
+
+        public AudioMixer AudioBus => _AudioBus;
+
+        #endregion
+
         #region _____________________________| INIT
 
         private void Awake()
@@ -249,6 +255,31 @@ namespace Rush.Game.Core
 
         #endregion
 
+        #region _____________________________| MIXER VOLUMES
+
+        public float GetGroupVolume(string pGroupName, float pFallback = 1f)
+        {
+            if (string.IsNullOrWhiteSpace(pGroupName) || _AudioBus == null)
+                return pFallback;
+
+            if (_AudioBus.GetFloat($"{pGroupName}Volume", out float lVolumeDb))
+                return Mathf.Pow(10f, lVolumeDb / 20f);
+
+            return pFallback;
+        }
+
+        public void SetGroupVolume(string pGroupName, float pNormalizedVolume)
+        {
+            if (string.IsNullOrWhiteSpace(pGroupName) || _AudioBus == null)
+                return;
+
+            float lValue = Mathf.Clamp01(pNormalizedVolume);
+            float lVolumeDb = Mathf.Log10(Mathf.Max(lValue, 0.0001f)) * 20f;
+            _AudioBus.SetFloat($"{pGroupName}Volume", lVolumeDb);
+        }
+
+        #endregion
+        
         #region _____________________________| DESTROY
 
         private void OnDestroy()
