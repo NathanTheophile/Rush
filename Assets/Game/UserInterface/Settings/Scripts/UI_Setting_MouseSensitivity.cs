@@ -9,7 +9,7 @@ namespace Rush.UI
         #region _____________________________/ VALUES
 
         [SerializeField] private Slider _Slider;
-        [SerializeField] private MainCamera _TargetCamera;
+        [SerializeField] private OrbitCamera _TargetCamera;
         [SerializeField] private float _ScrollMultiplier = 0.2f;
 
         #endregion
@@ -19,7 +19,7 @@ namespace Rush.UI
         private void Awake()
         {
             _Slider ??= GetComponentInParent<Slider>();
-            _TargetCamera ??= FindObjectOfType<MainCamera>();
+            _TargetCamera ??= FindFirstObjectByType<OrbitCamera>();
         }
 
         private void OnEnable()

@@ -32,7 +32,6 @@ namespace Rush.Game
 
         [SerializeField] private TilePlacer _TilePlacer;
 
-        public event Action onLevelFinished;
         public event Action onGameOver;
         public event Action onGameWon;
 

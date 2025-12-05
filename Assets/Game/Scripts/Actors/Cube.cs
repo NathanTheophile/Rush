@@ -58,7 +58,6 @@ namespace Rush.Game
         [SerializeField] private LayerMask _GroundLayer;
         [SerializeField] private LayerMask _TilesLayer;
         public event Action<Cube, RaycastHit> onTileDetected;
-        public event Action<Cube> onCubesCollided;
         public event Action onCubeDeath;
 
         #endregion
