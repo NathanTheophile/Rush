@@ -22,7 +22,7 @@ namespace Rush.UI
                 _Slider = GetComponentInParent<Slider>();
 
             if (_TargetScaler == null)
-                _TargetScaler = FindObjectOfType<CanvasScaler>();
+                _TargetScaler = FindFirstObjectByType<CanvasScaler>();
         }
 
         private void OnEnable()

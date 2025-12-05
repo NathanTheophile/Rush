@@ -40,7 +40,6 @@ public class TilePlacer : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private Transform _TileToSpawn;
     [SerializeField] private Transform _TilePreviewPrefab;
-    [SerializeField, Range(0f, 1f)] private float _SurfaceNormalThreshold = 0.3f;
 
     #endregion
 

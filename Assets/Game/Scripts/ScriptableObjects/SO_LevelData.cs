@@ -25,7 +25,6 @@ namespace Rush.Game
             public int quantity;
             public Transform tilePrefab;
             public Transform previewPrefab;
-            public Sprite image;
         }
         
         public List<InventoryTile> inventory;

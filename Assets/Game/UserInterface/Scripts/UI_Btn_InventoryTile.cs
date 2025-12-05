@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Rush.Game;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(Button))]
 public class UI_Btn_InventoryTile : MonoBehaviour
@@ -18,9 +19,12 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     [Header("References")]
     [SerializeField] private TMP_Text _TileName;
     [SerializeField] private TMP_Text _TileAmount;
-    [SerializeField] private Image _TileImage;
+    [SerializeField] private RawImage _TileImage;
 
-    [SerializeField] private Transform _TileOrientationVisual;
+    [Header("Preview")]
+    [SerializeField] private Transform _PreviewCameraPrefab;
+    [SerializeField] private Vector3 _PreviewCameraOffset = new(0f, 1.5f, -3.5f);
+    [SerializeField] private int _PreviewTextureSize = 256;
 
     #endregion
 
@@ -35,7 +39,14 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     private static readonly List<UI_Btn_InventoryTile> _InventoryTiles = new();
     private bool _IsSelected;
 
+    private Transform _PreviewTileInstance;
+    private Transform _PreviewCameraInstance;
+    private Camera _PreviewCamera;
+    private RenderTexture _PreviewTexture;
+
     private TilePlacer TilePlacerInstance => TilePlacer.Instance;
+
+    private static readonly Vector3 PreviewSpawnPosition = new(10000f, 10000f, 10000f);
 
     #endregion
 
@@ -44,7 +55,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     public void Initialize(SO_LevelData.InventoryTile pInventoryTile)
     {
         if (_Button == null) _Button = GetComponent<Button>();
-        if (_TileImage == null) _TileImage = GetComponent<Image>();
+        EnsurePreviewImageExists();
 
         _InventoryTile = pInventoryTile;
 
@@ -55,9 +66,9 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
         _TileName.text = pInventoryTile.type.ToString();
         _TileAmount.text = TileAmount.ToString();
-        ApplyTileSprite(pInventoryTile.image);
 
-        ApplyTileOrientation(pInventoryTile.orientation);
+        SetupTilePreview();
+
 
         _Button.onClick.RemoveAllListeners();
         _Button.onClick.AddListener(() =>
@@ -121,7 +132,11 @@ public class UI_Btn_InventoryTile : MonoBehaviour
         _InventoryTiles.Remove(this);
 
         if (TilePlacerInstance != null) TilePlacerInstance.OnTilePlaced -= HandleTilePlaced;
+                CleanupPreview();
     }
+
+        private void Update() => UpdatePreviewCameraTransform();
+
 
     #endregion
 
@@ -141,32 +156,6 @@ public class UI_Btn_InventoryTile : MonoBehaviour
         }
     }
 
-    private void ApplyTileOrientation(Rush.Game.Tile.TileOrientations pOrientation)
-    {
-        Transform lTargetTransform = _TileOrientationVisual != null && _TileOrientationVisual != transform
-            ? _TileOrientationVisual
-            : _TileImage != null
-                ? _TileImage.rectTransform
-                : null;
-
-        if (lTargetTransform == null) return;
-
-        lTargetTransform.localRotation = pOrientation switch
-        {
-            Tile.TileOrientations.Right => Quaternion.Euler(0f, 0f, -90f),
-            Tile.TileOrientations.Left => Quaternion.Euler(0f, 0f, 90f),
-            Tile.TileOrientations.Down => Quaternion.Euler(0f, 0f, 180f),
-            _ => Quaternion.identity
-        };
-    }
-
-    private void ApplyTileSprite(Sprite pSprite)
-    {
-        if (_TileImage == null || pSprite == null) return;
-
-        _TileImage.sprite = pSprite;
-    }
-
     private void SetButtonInteractable(bool pIsInteractable)
     {
         if (_Button != null)
@@ -176,6 +165,137 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             _TileImage.color = pIsInteractable ? Color.white : new Color(1f, 1f, 1f, 0.5f);
     }
 
+    private void SetupTilePreview()
+    {
+        CleanupPreview();
+
+        if (_TileImage == null)
+            return;
+
+        if (_InventoryTile.tilePrefab == null)
+        {
+            Debug.LogWarning($"No tile prefab assigned for {_InventoryTile.type} in level data.");
+            return;
+        }
+
+        if (_PreviewCameraPrefab == null)
+        {
+            Debug.LogWarning("Preview camera prefab missing for inventory tile preview.");
+            return;
+        }
+
+        _PreviewTileInstance = Instantiate(_InventoryTile.tilePrefab, PreviewSpawnPosition, GetRotationFromOrientation(_InventoryTile.orientation));
+        _PreviewTileInstance.gameObject.name = $"{_InventoryTile.type}_Preview";
+
+        _PreviewCameraInstance = Instantiate(_PreviewCameraPrefab, _PreviewTileInstance);
+        _PreviewCameraInstance.localPosition = Vector3.zero;
+        _PreviewCameraInstance.localRotation = Quaternion.identity;
+
+        _PreviewCamera = _PreviewCameraInstance.GetComponentInChildren<Camera>();
+
+        if (_PreviewCamera == null)
+        {
+            Debug.LogWarning("Preview camera component not found on preview prefab.");
+            return;
+        }
+
+        if (_PreviewCamera.TryGetComponent(out AudioListener lAudioListener))
+            Destroy(lAudioListener);
+
+        if (_PreviewCamera.TryGetComponent(out MainCamera lMainCameraComponent))
+            Destroy(lMainCameraComponent);
+
+        if (_PreviewCamera.TryGetComponent(out UniversalAdditionalCameraData lCameraData))
+            lCameraData.renderType = CameraRenderType.Overlay;
+
+        _PreviewCamera.clearFlags = CameraClearFlags.SolidColor;
+        _PreviewCamera.backgroundColor = Color.clear;
+
+        _PreviewTexture = new RenderTexture(_PreviewTextureSize, _PreviewTextureSize, 16)
+        {
+            antiAliasing = 2,
+            name = $"RT_{_InventoryTile.type}_Preview"
+        };
+
+        _PreviewCamera.targetTexture = _PreviewTexture;
+        _TileImage.texture = _PreviewTexture;
+        _TileImage.enabled = true;
+
+        UpdatePreviewCameraTransform();
+    }
+
+    private void UpdatePreviewCameraTransform()
+    {
+        if (_PreviewCamera == null || _PreviewTileInstance == null)
+            return;
+
+        Camera lMainCamera = Camera.main;
+
+        if (lMainCamera == null)
+            return;
+
+        Vector3 lOffset = lMainCamera.transform.TransformVector(_PreviewCameraOffset);
+        _PreviewCamera.transform.position = _PreviewTileInstance.position + lOffset;
+
+        _PreviewCamera.transform.LookAt(_PreviewTileInstance.position, lMainCamera.transform.up);
+    }
+
+    private void CleanupPreview()
+    {
+        if (_PreviewCamera != null)
+            _PreviewCamera.targetTexture = null;
+
+        if (_PreviewTexture != null)
+        {
+            _PreviewTexture.Release();
+            Destroy(_PreviewTexture);
+        }
+
+        if (_PreviewCameraInstance != null)
+            Destroy(_PreviewCameraInstance.gameObject);
+
+        if (_PreviewTileInstance != null)
+            Destroy(_PreviewTileInstance.gameObject);
+
+        _PreviewTileInstance = null;
+        _PreviewCameraInstance = null;
+        _PreviewCamera = null;
+        _PreviewTexture = null;
+    }
+
+    private void EnsurePreviewImageExists()
+    {
+        if (_TileImage != null)
+            return;
+
+        _TileImage = GetComponentInChildren<RawImage>(true);
+
+        if (_TileImage != null)
+            return;
+
+        GameObject lPreviewObject = new("Img_Preview", typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
+        RectTransform lRect = lPreviewObject.GetComponent<RectTransform>();
+        lRect.SetParent(transform, false);
+        lRect.anchorMin = Vector2.zero;
+        lRect.anchorMax = Vector2.one;
+        lRect.offsetMin = Vector2.zero;
+        lRect.offsetMax = Vector2.zero;
+        lRect.SetAsFirstSibling();
+
+        _TileImage = lPreviewObject.GetComponent<RawImage>();
+        _TileImage.raycastTarget = false;
+    }
+
+    private static Quaternion GetRotationFromOrientation(Tile.TileOrientations pOrientation)
+    {
+        return pOrientation switch
+        {
+            Tile.TileOrientations.Right => Quaternion.Euler(0f, 90f, 0f),
+            Tile.TileOrientations.Left => Quaternion.Euler(0f, -90f, 0f),
+            Tile.TileOrientations.Down => Quaternion.Euler(0f, 180f, 0f),
+            _ => Quaternion.identity,
+        };
+    }
     private bool MatchesTile(Tile.TileVariants pType, Tile.TileOrientations pOrientation)
         => _InventoryTile.type == pType && _InventoryTile.orientation == pOrientation;
 

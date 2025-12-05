@@ -19,7 +19,7 @@ namespace Rush.UI
         private void Awake()
         {
             _Slider ??= GetComponentInParent<Slider>();
-            _TargetCamera ??= FindObjectOfType<MainCamera>();
+            _TargetCamera ??= FindFirstObjectByType<MainCamera>();
         }
 
         private void OnEnable()
