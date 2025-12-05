@@ -35,6 +35,7 @@ namespace Rush.Game
         #endregion
 
         #region ___________________________/ STATE
+        private Camera     _Camera;
         private float      _Theta;
         private float      _RotationVelocity;
         private float      _ZoomVelocity;
@@ -44,6 +45,35 @@ namespace Rush.Game
         private Vector2    _LastPointerPosition;
         private float      _PreviousPinchDistance;
         #endregion
+
+        #region ___________________________/ PROPERTIES
+        public float RotationSensitivity
+        {
+            get => _RotationSensitivity;
+            set => _RotationSensitivity = Mathf.Max(0f, value);
+        }
+
+        public float ScrollSensitivity
+        {
+            get => _ScrollZoomSensitivity;
+            set => _ScrollZoomSensitivity = Mathf.Max(0f, value);
+        }
+
+        public float FieldOfView
+        {
+            get => _Camera != null ? _Camera.fieldOfView : 60f;
+            set
+            {
+                if (_Camera != null)
+                    _Camera.fieldOfView = value;
+            }
+        }
+        #endregion
+
+        private void Awake()
+        {
+            _Camera ??= GetComponent<Camera>();
+        }
 
         void Start()
         {
