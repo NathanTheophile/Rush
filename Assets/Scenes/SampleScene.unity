@@ -234,6 +234,7 @@ GameObject:
   - component: {fileID: 293031530}
   - component: {fileID: 293031528}
   - component: {fileID: 293031527}
+  - component: {fileID: 293031531}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -309,9 +310,29 @@ MonoBehaviour:
   _MainCanvas: {fileID: 248068753}
   _WinScreen: {fileID: 3824900764612218940, guid: 93dad2e66224c9241a5d1c3173b46df4, type: 3}
   _LoseScreen: {fileID: 3824900764612218940, guid: a77651dff005a5241b9f349e186b4419, type: 3}
-  _UiCards: []
-  _CurrentCard: {fileID: 1562365956}
+  _UiCards:
+  - {fileID: 1562365956}
   lManager: {fileID: 293031529}
+--- !u!114 &293031531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293031525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3a1e6a9f1167104d9c3615b5b618b7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _InitialPoolSize: 8
+  _MaxPoolSize: 32
+  _DefaultVolume: 1
+  _DefaultPitch: 1
+  _LoopByDefault: 0
+  _AudioBus: {fileID: 24100000, guid: 9d42d4aa668319b459cb94123fe6c7d5, type: 2}
+  _DefaultMixerGroupName: Master
+  _DefaultMixerGroup: {fileID: 24300002, guid: 9d42d4aa668319b459cb94123fe6c7d5, type: 2}
 --- !u!1 &314759292
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,7 +841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4021994155100509376, guid: badc02e39ab1a9749924d341f2000915, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 256
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4021994155100509376, guid: badc02e39ab1a9749924d341f2000915, type: 3}
       propertyPath: m_AnchoredPosition.y
