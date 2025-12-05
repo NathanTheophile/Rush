@@ -46,7 +46,7 @@ public class TilePlacer : MonoBehaviour
     #region _____________________________/ PHYSICS
 
     [Header("Physics")]
-    [SerializeField] private float _RaycastDistance = 25f;
+    [SerializeField] private float _RaycastDistance = 10f;
         [SerializeField] private float _PreviewHoverDistance = 20f;
 
     [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
