@@ -46,7 +46,9 @@ public class TilePlacer : MonoBehaviour
     #region _____________________________/ PHYSICS
 
     [Header("Physics")]
-    [SerializeField] private float _RaycastDistance = 20f;
+    [SerializeField] private float _RaycastDistance = 25f;
+        [SerializeField] private float _PreviewHoverDistance = 20f;
+
     [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
 
     #endregion
@@ -101,6 +103,8 @@ public class TilePlacer : MonoBehaviour
 
         RaycastHit lHitObject;
         _HasGroundHit = false;
+                Vector3 lHoverPosition = lRay.GetPoint(_PreviewHoverDistance);
+
 
         if (previewTile != null)
         {
@@ -124,7 +128,7 @@ public class TilePlacer : MonoBehaviour
             }
             else
             {
-                previewTile.position = _InstantiatePos;
+                previewTile.position = lHoverPosition;
             }
         }
 

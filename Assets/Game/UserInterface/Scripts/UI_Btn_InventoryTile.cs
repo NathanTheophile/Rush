@@ -301,18 +301,6 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     private bool MatchesTile(Tile.TileVariants pType, Tile.TileOrientations pOrientation)
         => _InventoryTile.type == pType && _InventoryTile.orientation == pOrientation;
 
-    private void SetButtonInteractable(bool pIsInteractable)
-    {
-        if (_Button != null)
-            _Button.interactable = pIsInteractable;
-
-        if (_TileImage != null)
-            _TileImage.color = pIsInteractable ? Color.white : new Color(1f, 1f, 1f, 0.5f);
-    }
-
-    private bool MatchesTile(Tile.TileVariants pType, Tile.TileOrientations pOrientation)
-        => _InventoryTile.type == pType && _InventoryTile.orientation == pOrientation;
-
     #endregion
 
     #region _____________________________| STATIC
