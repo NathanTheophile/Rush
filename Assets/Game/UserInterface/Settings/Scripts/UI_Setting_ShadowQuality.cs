@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -8,13 +9,13 @@ namespace Rush.UI
     {
         #region _____________________________/ VALUES
 
-        [SerializeField] private Dropdown _Dropdown;
+        [SerializeField] private TMP_Dropdown _Dropdown;
 
         #endregion
 
         #region _____________________________| UNITY
 
-        private void Awake() => _Dropdown ??= GetComponentInChildren<Dropdown>();
+        private void Awake() => _Dropdown ??= GetComponentInChildren<TMP_Dropdown>();
 
         private void OnEnable()
         {

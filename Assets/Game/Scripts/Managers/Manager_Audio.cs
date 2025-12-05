@@ -43,6 +43,8 @@ namespace Rush.Game.Core
         [SerializeField] private string _DefaultMixerGroupName = "Master";
         [SerializeField] private AudioMixerGroup _DefaultMixerGroup;
 
+        [SerializeField] private AudioClip _DefaultMusic;
+
         private readonly List<PooledSource> _AudioSources = new();
         private readonly Dictionary<string, AudioMixerGroup> _MixerGroupCache = new();
         #endregion
@@ -63,6 +65,8 @@ namespace Rush.Game.Core
             WarmPool(_InitialPoolSize);
             if (_DefaultMixerGroup == null)
                 _DefaultMixerGroup = ResolveMixerGroup(_DefaultMixerGroupName);
+
+            PlayLoop(_DefaultMusic, _DefaultVolume, "Music");
         }
 
         #endregion
@@ -262,7 +266,7 @@ namespace Rush.Game.Core
             if (string.IsNullOrWhiteSpace(pGroupName) || _AudioBus == null)
                 return pFallback;
 
-            if (_AudioBus.GetFloat($"{pGroupName}Volume", out float lVolumeDb))
+            if (_AudioBus.GetFloat($"{pGroupName}", out float lVolumeDb))
                 return Mathf.Pow(10f, lVolumeDb / 20f);
 
             return pFallback;

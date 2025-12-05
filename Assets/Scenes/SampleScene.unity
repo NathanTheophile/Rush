@@ -333,6 +333,7 @@ MonoBehaviour:
   _AudioBus: {fileID: 24100000, guid: 9d42d4aa668319b459cb94123fe6c7d5, type: 2}
   _DefaultMixerGroupName: Master
   _DefaultMixerGroup: {fileID: 24300002, guid: 9d42d4aa668319b459cb94123fe6c7d5, type: 2}
+  _DefaultMusic: {fileID: 8300000, guid: f3394f30d39be51488993615d42c48e1, type: 3}
 --- !u!1 &314759292
 GameObject:
   m_ObjectHideFlags: 0
