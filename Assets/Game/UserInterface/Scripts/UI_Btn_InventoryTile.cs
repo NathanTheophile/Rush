@@ -4,6 +4,7 @@
 //  Note : MY_CONST, myPublic, m_MyProtected, _MyPrivate, lMyLocal, MyFunc(), pMyParam, onMyEvent, OnMyCallback, MyStruct
 #endregion
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -31,6 +32,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     private SO_LevelData.InventoryTile _InventoryTile;
 
     private static UI_Btn_InventoryTile _CurrentSelectedTile;
+    private static readonly List<UI_Btn_InventoryTile> _InventoryTiles = new();
     private bool _IsSelected;
 
     private TilePlacer TilePlacerInstance => TilePlacer.Instance;
@@ -45,6 +47,9 @@ public class UI_Btn_InventoryTile : MonoBehaviour
         if (_TileImage == null) _TileImage = GetComponent<Image>();
 
         _InventoryTile = pInventoryTile;
+
+        if (!_InventoryTiles.Contains(this))
+            _InventoryTiles.Add(this);
 
         TileAmount = pInventoryTile.quantity;
 
@@ -88,12 +93,23 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
         if (TileAmount <= 0)
         {
-            Destroy(gameObject);
+            TileAmount = 0;
+            _TileAmount.text = TileAmount.ToString();
+            SetButtonInteractable(false);
             return false;
         }
 
         _TileAmount.text = TileAmount.ToString();
         return true;
+    }
+
+    public void AddTileBack()
+    {
+        TileAmount++;
+        _TileAmount.text = TileAmount.ToString();
+
+        if (!_Button.interactable)
+            SetButtonInteractable(true);
     }
 
     #endregion
@@ -102,6 +118,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
     private void OnDestroy()
     {
+        _InventoryTiles.Remove(this);
+
         if (TilePlacerInstance != null) TilePlacerInstance.OnTilePlaced -= HandleTilePlaced;
     }
 
@@ -149,9 +167,26 @@ public class UI_Btn_InventoryTile : MonoBehaviour
         _TileImage.sprite = pSprite;
     }
 
+    private void SetButtonInteractable(bool pIsInteractable)
+    {
+        if (_Button != null)
+            _Button.interactable = pIsInteractable;
+
+        if (_TileImage != null)
+            _TileImage.color = pIsInteractable ? Color.white : new Color(1f, 1f, 1f, 0.5f);
+    }
+
+    private bool MatchesTile(Tile.TileVariants pType, Tile.TileOrientations pOrientation)
+        => _InventoryTile.type == pType && _InventoryTile.orientation == pOrientation;
+
     #endregion
 
     #region _____________________________| STATIC
+
+    public static UI_Btn_InventoryTile FindMatchingTile(Tile.TileVariants pType, Tile.TileOrientations pOrientation)
+    {
+        return _InventoryTiles.Find(lTile => lTile != null && lTile.MatchesTile(pType, pOrientation));
+    }
 
     public static void ResetSelection()
     {

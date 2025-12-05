@@ -77,10 +77,12 @@ public class TilePlacer : MonoBehaviour
 
     private void Update()
     {
-        if (!HandlingTile) return;
-
         if (Input.GetMouseButtonDown(1))
         {
+            if (TryRemoveTileUnderCursor()) return;
+
+            if (!HandlingTile) return;
+
             if (previewTile != null)
             {
                 Destroy(previewTile.gameObject);
@@ -90,6 +92,8 @@ public class TilePlacer : MonoBehaviour
             HandlingTile = false;
             return;
         }
+
+        if (!HandlingTile) return;
 
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -227,6 +231,68 @@ public class TilePlacer : MonoBehaviour
         HandlingTile = false;
 
         ClearSelection();
+    }
+
+        private bool TryRemoveTileUnderCursor()
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) return false;
+
+        Ray lRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (!Physics.Raycast(lRay, out RaycastHit lHit, _RaycastDistance, _TilesLayer))
+            return false;
+
+        if (previewTile != null && (lHit.transform == previewTile || lHit.transform.IsChildOf(previewTile)))
+            return false;
+
+        Tile lTile = lHit.transform.GetComponentInParent<Tile>();
+
+        if (lTile == null)
+            return false;
+
+        Tile.TileOrientations lOrientation = GetOrientationFromDirection(lTile.transform.forward);
+
+        UI_Btn_InventoryTile lInventoryTile = UI_Btn_InventoryTile.FindMatchingTile(lTile.tileVariant, lOrientation);
+
+        if (lInventoryTile != null)
+            lInventoryTile.AddTileBack();
+
+        _PlacedTiles.Remove(lTile.transform);
+        Destroy(lTile.gameObject);
+
+        return true;
+    }
+
+    private static Tile.TileOrientations GetOrientationFromDirection(Vector3 pDirection)
+    {
+        Vector3 lDir = pDirection.normalized;
+
+        float lRightDot = Vector3.Dot(lDir, Vector3.right);
+        float lLeftDot = Vector3.Dot(lDir, Vector3.left);
+        float lUpDot = Vector3.Dot(lDir, Vector3.forward);
+        float lDownDot = Vector3.Dot(lDir, Vector3.back);
+
+        float lMaxDot = lUpDot;
+        Tile.TileOrientations lBestOrientation = Tile.TileOrientations.Up;
+
+        if (lRightDot > lMaxDot)
+        {
+            lMaxDot = lRightDot;
+            lBestOrientation = Tile.TileOrientations.Right;
+        }
+
+        if (lLeftDot > lMaxDot)
+        {
+            lMaxDot = lLeftDot;
+            lBestOrientation = Tile.TileOrientations.Left;
+        }
+
+        if (lDownDot > lMaxDot)
+        {
+            lBestOrientation = Tile.TileOrientations.Down;
+        }
+
+        return lBestOrientation;
     }
 
     #endregion
