@@ -148,7 +148,6 @@ GameObject:
   - component: {fileID: 8052236371940912398}
   - component: {fileID: 9084438993196360242}
   - component: {fileID: 8526416527884280111}
-  - component: {fileID: 7260550576009261791}
   - component: {fileID: 4328668691210900650}
   - component: {fileID: 2949172158783137812}
   m_Layer: 5
@@ -219,7 +218,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 7260550576009261791}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -234,11 +233,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8092d047f49ee8e49baf1096044851da, type: 3}
   m_Name: 
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   _TileName: {fileID: 7020894500740181012}
   _TileAmount: {fileID: 4176046964447177913}
   _TileImage: {fileID: 0}
-  _PreviewCameraPrefab: {fileID: 1619551653465332647, guid: 0da9d297a11591a4389d7a85b0792036, type: 3}
+  _PreviewCameraPrefab: {fileID: 2964125413778095590, guid: a8f3e992056373d49a2a457b42eda206, type: 3}
   _PreviewCameraOffset: {x: 0, y: 1.5, z: -3.5}
   _PreviewTextureSize: 256
 --- !u!222 &8526416527884280111
@@ -249,36 +248,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5975272713199253725}
   m_CullTransparentMesh: 1
---- !u!114 &7260550576009261791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5975272713199253725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a450b669c74848e4ba1e4faa9a3f0cff, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &4328668691210900650
 MonoBehaviour:
   m_ObjectHideFlags: 0

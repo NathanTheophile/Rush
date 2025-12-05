@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
 namespace Rush.Game
 {
     [RequireComponent(typeof(Camera))]
-    public class MainCamera : MonoBehaviour
+    public class OrbitCamera : MonoBehaviour
     {
         #region ___________________________/ TARGET
         [Header("Target")]

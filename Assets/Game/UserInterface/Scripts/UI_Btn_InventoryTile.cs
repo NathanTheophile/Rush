@@ -23,7 +23,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
 
     [Header("Preview")]
     [SerializeField] private Transform _PreviewCameraPrefab;
-    [SerializeField] private Vector3 _PreviewCameraOffset = new(0f, 1.5f, -3.5f);
+    [SerializeField] private Vector3 _PreviewCameraOffset = new(0f, 1f, -2.5f);
     [SerializeField] private int _PreviewTextureSize = 256;
 
     #endregion
@@ -47,6 +47,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
     private TilePlacer TilePlacerInstance => TilePlacer.Instance;
 
     private static readonly Vector3 PreviewSpawnPosition = new(10000f, 10000f, 10000f);
+    private static Vector3 _NextPreviewSpawnPosition = PreviewSpawnPosition;
 
     #endregion
 
@@ -184,7 +185,8 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             return;
         }
 
-        _PreviewTileInstance = Instantiate(_InventoryTile.tilePrefab, PreviewSpawnPosition, GetRotationFromOrientation(_InventoryTile.orientation));
+        _PreviewTileInstance = Instantiate(_InventoryTile.tilePrefab, _NextPreviewSpawnPosition, GetRotationFromOrientation(_InventoryTile.orientation));
+        _NextPreviewSpawnPosition += new Vector3(1000f, 0f, 0f);
         _PreviewTileInstance.gameObject.name = $"{_InventoryTile.type}_Preview";
 
         _PreviewCameraInstance = Instantiate(_PreviewCameraPrefab, _PreviewTileInstance);
@@ -202,11 +204,11 @@ public class UI_Btn_InventoryTile : MonoBehaviour
         if (_PreviewCamera.TryGetComponent(out AudioListener lAudioListener))
             Destroy(lAudioListener);
 
-        if (_PreviewCamera.TryGetComponent(out MainCamera lMainCameraComponent))
+        if (_PreviewCamera.TryGetComponent(out OrbitCamera lMainCameraComponent))
             Destroy(lMainCameraComponent);
 
         if (_PreviewCamera.TryGetComponent(out UniversalAdditionalCameraData lCameraData))
-            lCameraData.renderType = CameraRenderType.Overlay;
+            lCameraData.renderType = CameraRenderType.Base;
 
         _PreviewCamera.clearFlags = CameraClearFlags.SolidColor;
         _PreviewCamera.backgroundColor = Color.clear;
@@ -235,7 +237,7 @@ public class UI_Btn_InventoryTile : MonoBehaviour
             return;
 
         Vector3 lOffset = lMainCamera.transform.TransformVector(_PreviewCameraOffset);
-        _PreviewCamera.transform.position = _PreviewTileInstance.position + lOffset;
+        _PreviewCamera.transform.position = _PreviewTileInstance.position + lOffset / 4;
 
         _PreviewCamera.transform.LookAt(_PreviewTileInstance.position, lMainCamera.transform.up);
     }
