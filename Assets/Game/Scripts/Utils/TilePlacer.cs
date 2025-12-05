@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Rush.Game;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -40,13 +41,17 @@ public class TilePlacer : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private Transform _TileToSpawn;
     [SerializeField] private Transform _TilePreviewPrefab;
-
+    [Header("Effects")]
+    [SerializeField] private ParticleSystem _PlacementDustEffect;
+    [SerializeField] private Vector3 _DustSpawnOffset = new(0f, 0.1f, 0f);
     #endregion
 
     #region _____________________________/ PHYSICS
 
     [Header("Physics")]
     [SerializeField] private float _RaycastDistance = 10f;
+        private Vector3 _LastGroundNormal = Vector3.up;
+
         [SerializeField] private float _PreviewHoverDistance = 20f;
 
     [SerializeField] private LayerMask _GroundLayer, _UiLayer, _TilesLayer;
@@ -120,6 +125,8 @@ public class TilePlacer : MonoBehaviour
 
                     previewTile.position = Vector3Int.RoundToInt(lOffsetPoint);
                     _HasGroundHit = true;
+                                        _LastGroundNormal = lHitObject.normal;
+
                 }
                 else
                 {
@@ -135,6 +142,9 @@ public class TilePlacer : MonoBehaviour
         if (_TileToSpawn != null && previewTile != null && _HasGroundHit && Input.GetMouseButtonUp(0))
         {
             Transform lNewTile = Instantiate(_TileToSpawn, previewTile.position, _TileRotation);
+            Vector3 lLandingPosition = previewTile.position;
+
+            PlayPlacementTween(lNewTile, lLandingPosition);
 
             _PlacedTiles.Add(lNewTile);
             Destroy(previewTile.gameObject);
@@ -296,6 +306,52 @@ public class TilePlacer : MonoBehaviour
         }
 
         return lBestOrientation;
+    }
+
+    #endregion
+
+    #region _____________________________| ANIMATION
+
+    private static void PlayPlacementTween(Transform pTile, Vector3 pLandingPosition)
+    {
+        if (pTile == null) return;
+
+        pTile.position = pLandingPosition + Vector3.up * 0.1f;
+
+        Sequence lSequence = DOTween.Sequence();
+
+        lSequence.Join(pTile
+            .DOMoveY(pLandingPosition.y, 0.2f)
+            .SetEase(Ease.OutBounce)
+            .SetLoops(3, LoopType.Restart));
+
+        lSequence.Join(pTile
+            .DORotate(pTile.eulerAngles + new Vector3(0f, 360f, 0f), 0.45f, RotateMode.FastBeyond360)
+            .SetEase(Ease.InQuad));
+    }
+
+    #endregion
+
+        #region _____________________________| EFFECTS
+
+    private void SpawnPlacementDust(Vector3 pPosition, Vector3 pNormal)
+    {
+        if (_PlacementDustEffect == null) return;
+
+        Vector3 lTangent = Vector3.Cross(Vector3.up, pNormal);
+
+        if (lTangent.sqrMagnitude < 0.001f)
+            lTangent = Vector3.Cross(Vector3.right, pNormal);
+
+        Quaternion lRotation = Quaternion.LookRotation(lTangent, pNormal);
+        ParticleSystem lDustInstance = Instantiate(_PlacementDustEffect, pPosition + _DustSpawnOffset, lRotation);
+
+        lDustInstance.Play();
+
+        ParticleSystem.MainModule lMain = lDustInstance.main;
+        float lDuration = lMain.duration + lMain.startLifetimeMultiplier;
+
+        Destroy(lDustInstance.gameObject, lDuration);
     }
 
     #endregion

@@ -283,8 +283,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TileToSpawn: {fileID: 0}
   _TilePreviewPrefab: {fileID: 0}
-  _SurfaceNormalThreshold: 0.3
+  _PlacementDustEffect: {fileID: 0}
+  _DustSpawnOffset: {x: 0, y: 0.1, z: 0}
   _RaycastDistance: 20
+  _PreviewHoverDistance: 20
   _GroundLayer:
     serializedVersion: 2
     m_Bits: 64
